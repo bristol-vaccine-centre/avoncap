@@ -1,0 +1,26 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+#library(avoncap)
+devtools::load_all()
+
+# This works on my development machine but will need to be modified for use
+options("avoncap.input" = "~/Git/avoncap-analysis/input")
+
+fs::dir_tree(getOption("avoncap.input"))
+
+```

@@ -1,0 +1,774 @@
+
+# TODO refactor to have more sensible names
+# populationVar could be "dependent"
+# comparisonVars could be "explanatory"
+# TODO consider whether this could be substituted for functions in finalfit package
+# TODO a tidier version of this
+
+## Demographic tables ----
+
+# iris %>% stats::filter(Species!="setosa") %>% compare_population(populationVar = Species, comparisonVars = ggrrr::as_vars(-Species))
+
+tidy_ks = function(df, formula) {
+  populationVar = rlang::f_rhs(formula)
+  comp = rlang::f_lhs(formula)
+  tmp = df %>% dplyr::group_modify(function(d,f,...) {
+    # browser()
+    if (length(unique(d %>% dplyr::pull(!!populationVar))) > 2) stop("more than 2 classes in comparison.")
+    if (length(unique(d %>% dplyr::pull(!!populationVar))) < 2) return(tibble::tibble(p = NA, method = "2 sided ks")) # only one side present in this subgroup 
+    
+    side1 = d %>% dplyr::group_by(!!populationVar) %>% stats::filter(dplyr::cur_group_id()==1) %>% dplyr::pull(!!comp)
+    side2 = d %>% dplyr::group_by(!!populationVar) %>% stats::filter(dplyr::cur_group_id()==2) %>% dplyr::pull(!!comp)
+    
+    pval = tryCatch({stats::ks.test(side1,side2) %>% broom::tidy() %>% dplyr::pull(p.value)}, error=function(e) NA) # not able to perform ks test - e.g. all zeros
+    return(tibble::tibble(p = pval, method = "2 sided ks"))
+  })
+  # if (class(populationVar)=="call") comp = rlang::call_args(comp)
+  return(tmp)
+}
+
+tidy_wilcoxon = function(df, formula) {
+  populationVar = rlang::f_rhs(formula)
+  comp = rlang::f_lhs(formula)
+  tmp = df %>% dplyr::group_modify(function(d,f,...) {
+    # browser()
+    if (length(unique(d %>% dplyr::pull(!!populationVar))) > 2) stop("more than 2 classes in comparison.")
+    if (length(unique(d %>% dplyr::pull(!!populationVar))) < 2) return(tibble::tibble(p = NA, method = "2 sided wilcoxon")) # only one side present in this subgroup 
+    
+    side1 = d %>% dplyr::group_by(!!populationVar) %>% stats::filter(dplyr::cur_group_id()==1) %>% dplyr::pull(!!comp)
+    side2 = d %>% dplyr::group_by(!!populationVar) %>% stats::filter(dplyr::cur_group_id()==2) %>% dplyr::pull(!!comp)
+    
+    pval = tryCatch({stats::wilcox.test(side1,side2) %>% broom::tidy() %>% dplyr::pull(p.value)}, error=function(e) NA) # not able to perform ks test - e.g. all zeros
+    return(tibble::tibble(p = pval, method = "2 sided wilcoxon"))
+  })
+  # if (class(populationVar)=="call") comp = rlang::call_args(comp)
+  return(tmp)
+}
+
+compare_population = function(
+  avoncap_variants, 
+  populationVar = "genomic.variant", 
+  comparisonVars = dplyr::vars(demog.age,demog.gender,demog.ethnicity),
+  na.rm=FALSE,
+  p.value=TRUE
+) {
+  populationVar = rlang::ensym(populationVar)
+  avoncap_variants = avoncap_variants %>% dplyr::ungroup()
+  
+  missingness = avoncap_variants %>% stats::filter(is.na(!!populationVar)) %>% nrow()
+  if(missingness > 0) warning("excluding ",missingness," records with missing dependent variable")
+  avoncap_variants = avoncap_variants %>% stats::filter(!is.na(!!populationVar)) %>% dplyr::mutate(across(where(is.factor), forcats::fct_drop))
+  
+  comparisonList = lapply(comparisonVars, function(comp) {
+    
+    variableName = readable_label(!!comp)
+    variableLabel = rlang::as_label(comp)
+    if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.numeric()) {
+      
+      compare_count = avoncap_variants %>% 
+        dplyr::group_by(side = !!populationVar) %>%
+        dplyr::summarise(
+          N=sum(!(is.na(!!comp))),
+          mean.value = mean(!!comp,na.rm = TRUE),
+          sd.value = stats::sd(!!comp,na.rm = TRUE),
+          median = stats::quantile(!!comp,0.5,na.rm = TRUE),
+          lqr = stats::quantile(!!comp,0.25,na.rm = TRUE),
+          uqr = stats::quantile(!!comp,0.75,na.rm = TRUE),
+          .groups = "drop"
+        ) %>% 
+        dplyr::mutate(variable = variableName, variable.original = variableLabel) %>% 
+        dplyr::select(side,variable,variable.original,N,mean.value,sd.value,median,lqr,uqr)
+      
+      # How many sides does the comparison have.
+      sides = compare_count %>% dplyr::pull(side) %>% unique() %>% length()
+      
+      # test for skewness possible but upper limit is a function of size:
+      # this simulates:0.95 CI for different sample sizes
+      # tmp = tibble::tibble(skew95 = sapply(seq(1,4,length.out = 20),function(f) sapply(1:100,function(e) e1071::skewness(stats::rnorm(10^f))) %>% abs() %>% stats::quantile(0.95)), size = 10^seq(1,4,length.out = 20))
+      # skew95 and size have a log-log relationship
+      # ggplot2::ggplot(tmp, ggplot2::aes(x=size,y=skew95))+ggplot2::geom_point()+ggplot2::geom_smooth()+ggplot2::scale_x_log10()+ggplot2::scale_y_log10()
+      # which can be fitted:
+      # stats::lm(formula = log(skew95) ~ log(size), tmp) giving the following relationship for the 95% CI of the absolute value of skewness in a normal:
+      skew95 = function(size) {exp(1.23740 -0.45564 * log(size))}
+      
+      # Determine if the continuous variable is normally distributed
+      # This uses shapiro wilkes test, or for larger groups (>5000) a test to see if the skew is > 95% of expected for a normal distribution.
+      parametric = tryCatch({
+          # cannot reject null hypothesis that it is normally distributed at 0.05
+          # will throw an error if size is gt 5000.
+          shap = (avoncap_variants %>% dplyr::group_by(side = !!populationVar) %>% rstatix::shapiro_test(!!comp) %>% dplyr::pull(p) %>% min())
+          message(rlang::as_label(comp),": lowest p-value for shapiro wilks test: ",shap)
+          shap > 0.05
+          # Shapiro test will fail for larger N
+        }, error = function(e) {
+          # browser()
+          # abs(skew) is larger than expected for a normal at p = 0.05
+          tryCatch({
+            maxSkew = avoncap_variants %>% dplyr::group_by(side = !!populationVar) %>% dplyr::summarise(skew = abs(e1071::skewness(!!comp, na.rm=TRUE,type=2)), size = n(),.groups = "drop") %>% 
+              dplyr::mutate(skew95 = skew95(size)) %>% stats::filter(skew/skew95 == suppressWarnings(max(skew/skew95)))
+            message(rlang::as_label(comp),": max skew value is ",maxSkew$skew," versus expected 95% quantile ",maxSkew$skew95," on ",maxSkew$size," samples.")
+            maxSkew$skew < maxSkew$skew95
+          }, error = function(e) FALSE)
+      })
+      
+      if(length(parametric)==0) parametric = FALSE
+      
+      if (parametric) {
+        compare_count = compare_count %>% dplyr::mutate(
+          value = sprintf("%1.3g \u00B1 %1.3g",mean.value,sd.value),
+          alt.value = sprintf("%1.3g \u00B1 %1.3g (%1.0f)",mean.value,sd.value,N),
+          group = factor("(mean \u00B1 SD)")
+        )
+      } else {
+        compare_count = compare_count %>% dplyr::mutate(
+          value = sprintf("%1.3g [%1.3g \u2013 %1.3g]",median,lqr,uqr),
+          alt.value = sprintf("%1.3g [%1.3g \u2013 %1.3g] (%1.0f)",median,lqr,uqr,N),
+          group = factor("(median [IQR])")
+        )
+      }
+      
+      # TODO: TEST THIS: what about p-value when more than 2 comparison classes
+      # https://statsandr.com/blog/how-to-do-a-t-test-or-anova-for-many-variables-at-once-in-r-and-communicate-the-results-in-a-better-way/#anova
+      # kruskal.test or anova depending on normality assumption
+      if (p.value & sides > 1) {
+        
+        formula = stats::as.formula(paste0(rlang::as_label(comp)," ~ ",rlang::as_label(populationVar)))
+        
+        if (!parametric) {
+          # this is a non parametric problem
+          
+          if (sides == 2) {
+            # we can use ks test to for 2 sides non-parametric
+            tmp = avoncap_variants %>% dplyr::pull(!!comp)
+            tiesFrac = 1-length(unique(tmp))/length(tmp)
+            # However if there are lots of ties (and we have enabled it a wilcoxon is better)
+            if (getOption("use.wilcoxon",TRUE) & tiesFrac > 0.75) {
+              pval = avoncap_variants %>% dplyr::ungroup() %>% tidy_wilcoxon(formula) %>% dplyr::pull(p)
+              pmethod = "2-sided wilcoxon"
+            } else {
+              pval = avoncap_variants %>% dplyr::ungroup() %>% tidy_ks(formula) %>% dplyr::pull(p)
+              pmethod = "2-sided ks"
+            }
+          } else {
+            # more than 2 sides
+            # we can use kruskal-wallis test to detect if all samples come from same distribution
+            pval = avoncap_variants %>% rstatix::kruskal_test(formula) %>% dplyr::pull(p)
+            pmethod = "kruskal"
+          }
+        } else {
+          # parametric
+          if (sides == 2) {
+            
+            pval = avoncap_variants %>% rstatix::t_test(formula) %>% dplyr::pull(p)
+            pmethod = "t-test"
+          } else {
+            
+            pval = avoncap_variants %>% rstatix::anova_test(formula) %>% dplyr::pull(p)
+            pmethod = "anova"
+          }
+        }  
+        
+        compare_count = compare_count %>% dplyr::mutate(
+          p.value = if(is.na(pval)) "\u2014" else scales::pvalue(pval), 
+          p.method=pmethod,
+          p.excluding_missing = pval
+        )
+        
+        #browser()
+        
+        
+      }
+      
+      return(compare_count %>% dplyr::select(-c(mean.value,sd.value,median,lqr,uqr)))
+      
+    } else if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.ordered() | avoncap_variants %>% dplyr::pull(!!comp) %>% is.logical() | avoncap_variants %>% dplyr::pull(!!comp) %>% is.factor()) {
+      
+      formula = stats::as.formula(paste0(rlang::as_label(comp)," ~ ",rlang::as_label(populationVar)))
+      tmp = avoncap_variants
+      
+      if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.logical()) {
+        tmp = tmp %>% dplyr::mutate(!!comp := !!comp %>% ordered(labels=c("false","true")))
+      }
+      
+      if (na.rm) {
+        tmp = tmp %>% stats::filter(!is.na(!!comp))
+      } else {
+        tmp = tmp %>% dplyr::mutate(!!comp := forcats::fct_explicit_na(!!comp, "<missing>"))
+      }
+      
+      tmp = tmp %>% dplyr::mutate(
+        !!populationVar := forcats::fct_drop(!!populationVar), 
+        !!comp := forcats::fct_drop(!!comp),
+        side = !!populationVar, 
+        group = !!comp
+      )
+      
+      compare_count = tmp %>%
+        dplyr::group_by(side, group) %>%
+        dplyr::summarise(N = n(),.groups = "drop") %>%
+        dplyr::ungroup() %>%
+        tidyr::complete(side,group,fill=list(N=0)) %>%
+        dplyr::group_by(side) %>%
+        dplyr::mutate(binom::binom.confint(x=N,n=sum(N),method="wilson")) %>%
+        dplyr::mutate(
+          # value = sprintf("%1.1f%% [%1.1f%%\u00A0\u2013\u00A0%1.1f%%]",mean*100,lower*100,upper*100),
+          value = sprintf("%1.1f%% [%1.1f%%\u2013%1.1f%%]",mean*100,lower*100,upper*100),
+          alt.value = sprintf("%1.1f%% (%1.0f/%1.0f)",mean*100,x,n),
+          variable = variableName,
+          variable.original = variableLabel
+        ) %>%
+        dplyr::select(side,variable,variable.original,group,N,value,alt.value) %>%
+        dplyr::ungroup()
+      # %>%
+      # tidyr::complete(side,variable,group,fill=list(N=0, value="\u2014"))
+      
+      sides = compare_count %>% dplyr::pull(side) %>% unique() %>% length()
+      
+      if (p.value & sides > 1) {
+        
+        # TODO: https://www.sheffield.ac.uk/polopoly_fs/1.885177!/file/93_ChiSquare.pdf
+        # check assumptions 
+        # or use fishers exact test
+        
+        # chi.data = matrix(
+        #   compare_count %>% dplyr::arrange(side,group) %>% dplyr::pull(N),
+        #   ncol = sides)
+        
+        chi.data = with(tmp, table(side,group))
+        
+        # pval = suppressWarnings(stats::chisq.test(chi.data) %>% broom::tidy() %>% dplyr::pull(p.value))
+        pval = tryCatch({
+          suppressWarnings(stats::fisher.test(chi.data, simulate.p.value=TRUE,B=1e5) %>% broom::tidy() %>% dplyr::pull(p.value))
+        },error= function(e) NA_real_)
+        pmethod="fisher"
+        
+        compare_count = compare_count %>% dplyr::mutate(
+          p.value = if(is.na(pval)) "\u2014" else scales::pvalue(pval), 
+          p.method=pmethod,
+          p.including_missing = pval
+        )
+        
+        # what would the association have been without missing data categories
+        if (!na.rm) {
+          chi.data2 = with(tmp %>% stats::filter(group != "<missing>") %>% dplyr::mutate(group= group %>% forcats::fct_drop()), table(side,group))
+          
+          # pval = suppressWarnings(stats::chisq.test(chi.data) %>% broom::tidy() %>% dplyr::pull(p.value))
+          pmissing = tryCatch({
+            suppressWarnings(stats::fisher.test(chi.data2,simulate.p.value=TRUE,B=1e5) %>% broom::tidy() %>% dplyr::pull(p.value))
+          },error= function(e) NA_real_)
+          
+          compare_count = compare_count %>% 
+            dplyr::mutate(p.excluding_missing = pmissing)
+          
+          compare_count = compare_count %>%
+            dplyr::mutate(
+              p.value = ifelse(is.na(p.excluding_missing) | is.na(p.including_missing), p.value,
+                sprintf("%s (%s)",
+                  scales::pvalue(p.excluding_missing),
+                  scales::pvalue(p.including_missing)
+                ))
+            )
+        }
+        
+      }
+      
+      return(compare_count)
+    } else {
+      message("skipping comparison: ",rlang::as_label(comp)," value is a ",class(avoncap_variants %>% dplyr::pull(!!comp)))
+      return(tibble::tibble(side=character(),variable=character(),variable.original=character(),group=character(),N=integer(),value=character(),alt.value=character()))
+    }
+  })
+  
+  sideList = avoncap_variants %>% dplyr::pull(!!populationVar) %>% forcats::fct_drop() %>% levels()
+  # TODO: figure out wher this is going wrong...
+  # levelList = comparisonList %>% sapply(function(.d) try(.d %>% dplyr::pull(group) %>% levels())) %>% unlist() %>% unname() %>% unique(fromLast=TRUE)
+  # groupLevels = unlist(unname((sapply(levelList, function(.l) .l[.l != "<missing>"]))))
+  # groupLevels = c("(mean \u00B1 SD)",levelList)
+  
+  comparisonLabels = readable_label_mapping(comparisonVars) %>% unique(fromLast=TRUE)
+  # browser()
+  out = ggrrr::bind_rows_with_factors(!!!comparisonList)
+  out = out %>% dplyr::mutate(
+      group = suppressWarnings(forcats::fct_relevel(group, "<missing>", after = Inf)),
+      side = ordered(side, levels = sideList),
+      variable = ordered(variable, levels=unname(comparisonLabels))
+    ) %>% 
+    dplyr::arrange(side,variable,group)
+    
+  # Combine list of sub-analyses into one data-frame  
+  # out = comparisonList %>% lapply(function(.d) {
+  #   # convert factors to text
+  #   #if(is.null(.d)) return(tibble::tibble())
+  #   .d %>% dplyr::mutate(
+  #     side = as.character(side),
+  #     group = as.character(group),
+  #     variable = as.character(variable)
+  #   )
+  # }) %>% 
+  #   # combine dataframes
+  #   dplyr::bind_rows() %>%
+  #   # convert text back to factors back
+  #   dplyr::mutate(
+  #     side = ordered(side, levels = sideList),
+  #     group = ordered(group, levels = groupLevels),
+  #     variable = ordered(variable, levels=unname(comparisonLabels))
+  #   )
+  # 
+  # 
+  
+  return(out)
+  
+}
+
+population_comparison_table = function(comparison, show_method=TRUE, compact=FALSE ) {
+  grps = comparison %>% dplyr::groups()
+  show_p = "p.value" %in% colnames(comparison)
+  if (show_p) {
+    if (show_method) {
+      tmp2 = comparison %>% 
+        dplyr::select(!tidyselect::any_of(c("p.including_missing","p.excluding_missing","variable.original"))) %>%
+        dplyr::rename(Characteristic = variable,Group = group, `P-value`=p.value,method=p.method)
+      if (compact) {
+        tmp2 = tmp2 %>% dplyr::select(-N,-value) %>% dplyr::rename(value = alt.value)
+      } else {
+        tmp2 = tmp2 %>% dplyr::select(-alt.value)
+      }
+      tmp2 = tmp2 %>% ggrrr::hux_tidy(rowGroupVars = dplyr::vars(Characteristic,!!!grps,`P-value`,method,Group),colGroupVars = dplyr::vars(side)) %>% dplyr::relocate(`P-value`,method,.after=last_col())
+      
+    } else {
+      tmp2 = comparison %>% 
+        dplyr::select(!tidyselect::any_of(c("p.including_missing","p.excluding_missing","variable.original","p.method"))) %>%
+        dplyr::rename(Characteristic = variable,Group = group, `P-value`=p.value)
+      if (compact) {
+        tmp2 = tmp2 %>% dplyr::select(-N,-value) %>% dplyr::rename(value = alt.value)
+      } else {
+        tmp2 = tmp2 %>% dplyr::select(-alt.value)
+      }
+      tmp2 = tmp2 %>% ggrrr::hux_tidy(rowGroupVars = dplyr::vars(Characteristic,!!!grps,`P-value`,Group),colGroupVars = dplyr::vars(side)) %>% dplyr::relocate(`P-value`,.after=last_col())
+    }
+  } else {
+    tmp2 = comparison %>% 
+      dplyr::select(!tidyselect::any_of(c("p.including_missing","p.excluding_missing","variable.original","p.method","p.value"))) %>%
+      dplyr::rename(Characteristic = variable,Group = group)
+    if (compact) {
+      tmp2 = tmp2 %>% dplyr::select(-N,-value) %>% dplyr::rename(value = alt.value)
+    } else {
+      tmp2 = tmp2 %>% dplyr::select(-alt.value)
+    }
+    tmp2 = tmp2 %>% ggrrr::hux_tidy(rowGroupVars = dplyr::vars(Characteristic,!!!grps, Group),colGroupVars = dplyr::vars(side))
+  }
+  tmp2
+}
+
+## Basic stats ----
+
+describe_population = function(
+  avoncap_variants, 
+  comparisonVars = dplyr::vars(demog.age,demog.gender,demog.ethnicity),
+  na.rm=FALSE, CI=TRUE
+) {
+  avoncap_variants = avoncap_variants %>% dplyr::ungroup()
+  
+  comparisonList = lapply(comparisonVars, function(comp) {
+    
+    variableName = readable_label(!!comp)
+    variableLabel = rlang::as_label(comp)
+    if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.numeric()) {
+      
+      compare_count = avoncap_variants %>% 
+        dplyr::summarise(
+          N=sum(!(is.na(!!comp))),
+          mean.value = mean(!!comp,na.rm = TRUE),
+          sd.value = stats::sd(!!comp,na.rm = TRUE),
+          value = sprintf("%1.3g \u00B1 %1.3g",mean.value,sd.value),
+          group=factor("(mean \u00B1 SD)"),
+          .groups = "drop"
+        ) %>% 
+        dplyr::mutate(variable = variableName, variable.original = variableLabel) %>% 
+        dplyr::select(variable,variable.original,group,N,value)
+      
+      return(compare_count)
+      
+    } else if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.ordered() | avoncap_variants %>% dplyr::pull(!!comp) %>% is.logical() | avoncap_variants %>% dplyr::pull(!!comp) %>% is.factor()) {
+      
+      tmp = avoncap_variants
+      
+      if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.logical()) {
+        tmp = tmp %>% dplyr::mutate(!!comp := !!comp %>% ordered(labels=c("false","true")))
+      }
+      
+      if (na.rm) {
+        tmp = tmp %>% stats::filter(!is.na(!!comp))
+      } else {
+        tmp = tmp %>% dplyr::mutate(!!comp := forcats::fct_explicit_na(!!comp, "<missing>"))
+      }
+      
+      tmp = tmp %>% dplyr::mutate(
+        !!comp := forcats::fct_drop(!!comp),
+        group = !!comp
+      )
+      
+      compare_count = tmp %>%
+        dplyr::group_by(group) %>%
+        dplyr::summarise(N = n(),.groups = "drop") %>%
+        dplyr::ungroup() %>%
+        tidyr::complete(group,fill=list(N=0)) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(binom::binom.confint(x=N,n=sum(N),method="wilson")) 
+      
+      if (CI) {
+        compare_count = compare_count %>%
+          dplyr::mutate(
+            value = sprintf("%1.1f%% [%1.1f%%\u2013%1.1f%%]",mean*100,lower*100,upper*100),
+          )
+      } else {
+        compare_count = compare_count %>%
+          dplyr::mutate(
+            value = sprintf("%1.1f%%",mean*100)
+          )
+      }
+      
+      compare_count = compare_count %>% dplyr::mutate(
+          variable = variableName,
+          variable.original = variableLabel
+        ) %>%
+        dplyr::select(variable,variable.original,group,N,value) %>%
+        dplyr::ungroup()
+      # %>%
+      # tidyr::complete(side,variable,group,fill=list(N=0, value="\u2014"))
+      
+      return(compare_count)
+    } else {
+      message("skipping comparison: ",rlang::as_label(comp)," value is a ",class(avoncap_variants %>% dplyr::pull(!!comp)))
+      return(tibble::tibble(side=character(),variable=character(),variable.original=character(),group=character(),N=integer(),value=character()))
+    }
+  })
+  
+  # levelList = comparisonList %>% sapply(function(.d) try(.d %>% dplyr::pull(group) %>% levels())) %>% unlist() %>% unname() %>% unique(fromLast=TRUE)
+  # # groupLevels = unlist(unname((sapply(levelList, function(.l) .l[.l != "<missing>"]))))
+  # groupLevels = c("(mean \u00B1 SD)",levelList)
+  # 
+  # comparisonLabels = readable_label_mapping(comparisonVars) %>% unique(fromLast=TRUE)
+  # 
+  # # Combine list of sub-analyses into one data-frame  
+  # out = comparisonList %>% lapply(function(.d) {
+  #   # convert factors to text
+  #   #if(is.null(.d)) return(tibble::tibble())
+  #   .d %>% dplyr::mutate(
+  #     group = as.character(group),
+  #     variable = as.character(variable)
+  #   )
+  # }) %>% 
+  #   # combine dataframes
+  #   dplyr::bind_rows() %>%
+  #   # convert text back to factors back
+  #   dplyr::mutate(
+  #     group = factor(group, levels = groupLevels),
+  #     variable = factor(variable, levels=unname(comparisonLabels))
+  #   )
+  
+  # sideList = avoncap_variants %>% dplyr::pull(!!populationVar) %>% forcats::fct_drop() %>% levels()
+  # TODO: figure out wher this is going wrong...
+  # levelList = comparisonList %>% sapply(function(.d) try(.d %>% dplyr::pull(group) %>% levels())) %>% unlist() %>% unname() %>% unique(fromLast=TRUE)
+  # groupLevels = unlist(unname((sapply(levelList, function(.l) .l[.l != "<missing>"]))))
+  # groupLevels = c("(mean \u00B1 SD)",levelList)
+  
+  comparisonLabels = readable_label_mapping(comparisonVars) %>% unique(fromLast=TRUE)
+  out = ggrrr::bind_rows_with_factors(!!!comparisonList)
+  out = out %>% dplyr::mutate(
+    group = forcats::fct_relevel(group, "<missing>", after = Inf),
+    variable = ordered(variable, levels=unname(comparisonLabels))
+  ) %>% 
+    dplyr::arrange(variable,group)
+  
+  
+  return(out)
+  
+}
+
+
+## Missing values ----
+
+compare_missingness = function(
+  avoncap_variants, 
+  populationVar = "genomic.variant", 
+  comparisonVars = dplyr::vars(demog.age,demog.gender,demog.ethnicity),
+  na.rm=FALSE
+) {
+  populationVar = rlang::ensym(populationVar)
+  tmp = avoncap_variants
+  for (comp in comparisonVars) {
+    tmp = tmp %>% dplyr::mutate(!!comp := ifelse(is.na(!!comp),"missing","not missing") %>% ordered(c("not missing","missing")))
+  }
+  out = compare_population(tmp,populationVar=!!populationVar,comparisonVars = comparisonVars,na.rm = TRUE, p.value=TRUE)
+  out %>% tidyr::complete(side,tidyr::nesting(variable,variable.original),group, fill=list(N=0,p.value="\u2014")) %>% 
+    dplyr::select(-c(value, p.value,p.method,alt.value)) %>%
+    stats::filter(group %in% c("missing","not missing")) %>%
+    tidyr::pivot_wider(values_from = N, names_from= group) %>%
+    dplyr::arrange(variable) %>%
+    dplyr::rename(p.missing_at_random=p.including_missing) %>%
+    return()
+}
+
+missing_comparison_table = function(comparison) {
+  grps = comparison %>% dplyr::groups()
+  tmp2 = comparison %>%
+    dplyr::select(!tidyselect::any_of(c("p.including_missing","p.excluding_missing","variable.original"))) %>%
+    dplyr::mutate(p.missing = missing/(missing+`not missing`)) %>%
+    dplyr::group_by(!!!grps, variable) %>%
+    dplyr::mutate(p.missing_overall = sum(missing)/sum(missing+`not missing`)) %>%
+    dplyr::mutate(
+      N = missing+`not missing`,
+      p.value = ifelse(is.na(p.missing_at_random),"\u2014",scales::pvalue(p.missing_at_random)),
+      `% missing`=sprintf("%1.1f%%",p.missing*100),
+      `% missing (total)`=sprintf("%1.1f%%",p.missing_overall*100)
+    ) %>%
+    dplyr::select(-c(p.missing,p.missing_overall, p.missing_at_random,`not missing`,N)) %>%
+    #dplyr::relocate(`% missing (total)`,p.value,.after=last_col()) %>%
+    ggrrr::hux_tidy(rowGroupVars = dplyr::vars(!!!grps,variable,`% missing (total)`,p.value),colGroupVars = dplyr::vars(side))
+  # tmp2
+  tmp2 %>% dplyr::relocate(`% missing (total)`,p.value,.after=last_col())
+}
+
+## Plotting functions ----
+
+plot_population = function(
+  avoncap_variants, 
+  populationVar = "genomic.variant", 
+  comparisonVars = dplyr::vars(demog.age,demog.gender,demog.ethnicity),
+  na.rm=FALSE
+) {
+  populationVar = rlang::ensym(populationVar)
+  avoncap_variants = avoncap_variants %>% dplyr::ungroup()
+  
+  lapply(comparisonVars, function(comp) {
+    
+    if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.numeric()) {
+      
+      ggplot2::ggplot(avoncap_variants, ggplot2::aes(x=!!comp, color=!!populationVar,fill=!!populationVar))+
+        ggplot2::geom_density(alpha=0.2)+
+        ggplot2::scale_color_brewer(palette = "Dark2",name="",aesthetics = c("fill","colour"))+
+        ggplot2::xlab(readable_label(!!comp))
+      
+    } else if (avoncap_variants %>% dplyr::pull(!!comp) %>% is.factor()) {
+      
+      if (na.rm) {
+        avoncap_variants = avoncap_variants %>% stats::filter(!is.na(!!comp))
+      } else {
+        avoncap_variants = avoncap_variants %>% dplyr::mutate(!!comp := forcats::fct_explicit_na(!!comp, "<missing>"))
+      }
+      
+      avoncap_variants = avoncap_variants %>% dplyr::mutate(
+        !!populationVar := forcats::fct_drop(!!populationVar), 
+        !!comp := forcats::fct_drop(!!comp) 
+      ) 
+      
+      compare_count = avoncap_variants %>%
+        dplyr::group_by(!!populationVar, !!comp) %>%
+        dplyr::summarise(N = n(), .groups = "drop") %>%
+        dplyr::ungroup() %>%
+        tidyr::complete(!!populationVar,!!comp,fill=list(N=0)) %>%
+        dplyr::group_by(!!populationVar) %>%
+        dplyr::mutate(binom::binom.confint(x=N,n=sum(N),method="wilson"))
+      
+      ggplot2::ggplot(compare_count, ggplot2::aes(x=!!comp, color=!!populationVar,fill=!!populationVar, y=mean, ymin=lower, ymax=upper))+
+        ggplot2::geom_bar(stat="identity",alpha=0.2,width=0.8,position="dodge")+
+        ggplot2::geom_errorbar(width=0.3, position = ggplot2::position_dodge(width = 0.8), colour="black")+
+        ggplot2::scale_color_brewer(palette = "Dark2",name="",aesthetics = c("fill","colour"))+
+        ggplot2::ylab("proportion")+
+        ggplot2::xlab(readable_label(!!comp))
+      
+    }
+    
+  })
+  
+}
+
+# generate a time series of factor proportions
+plot_rolling = function(avoncap_variants, factorVar, window=15) {
+  grps = avoncap_variants %>% dplyr::groups()
+  factorVar = rlang::ensym(factorVar)
+  rolling_genomics = avoncap_variants %>% stats::filter(!is.na(!!factorVar)) %>% dplyr::ungroup() %>% 
+    dplyr::mutate(!!factorVar := forcats::fct_drop(!!factorVar)) %>% 
+    dplyr::group_by(!!!grps, !!factorVar, admission.date) %>% dplyr::summarise(count = n(),.groups = "drop") %>%
+    dplyr::ungroup() %>% 
+    tidyr::complete(tidyr::nesting(!!!grps),!!factorVar, admission.date = dates, fill=list(count=0)) %>%
+    dplyr::group_by(!!!grps, !!factorVar) %>% 
+    dplyr::arrange(admission.date) %>% 
+    dplyr::mutate(roll.count = stats::filter(count,rep(1,window)/window)) %>%
+    dplyr::group_by(!!!grps, admission.date) %>% dplyr::mutate(roll.proportion = roll.count/sum(roll.count))
+  
+  p = ggplot2::ggplot(rolling_genomics, ggplot2::aes(x=admission.date, y=roll.proportion, fill=!!factorVar,colour=!!factorVar))+ggplot2::geom_area(alpha=0.2)+
+    ggplot2::ylab("proportion")+
+    ggplot2::xlab("admission date")+
+    ggplot2::scale_x_date(date_breaks = "2 weeks", limits = range(dates))
+  if (length(grps)>0) {
+    p=p+ggplot2::facet_wrap(grps)
+  }
+  p
+}
+
+# binomial outcome plot
+plot_outcome = function(avoncap_variants, outcomeExpr, label, colour="genomic.variant_inferred", stratifyBy = "vaccination.vaccination") {
+  outcomeExpr = rlang::enexpr(outcomeExpr)
+  stratifyBy = rlang::ensym(stratifyBy)
+  colour = rlang::ensym(colour)
+  avoncap_variant_count = avoncap_variants %>%
+    dplyr::group_by(!!colour, !!stratifyBy) %>%
+    dplyr::summarise(binom::binom.confint(x=sum(stats::na.omit(!!outcomeExpr)),n=n(),method="wilson"),.groups = "drop")
+  
+  ggplot2::ggplot(avoncap_variant_count, ggplot2::aes(colour=!!colour, x=!!stratifyBy, y=mean*100, ymin=lower*100, ymax=upper*100))+
+    ggplot2::geom_point(position=ggplot2::position_dodge(width=0.5))+
+    ggplot2::geom_errorbar(width=0.3,position=ggplot2::position_dodge(width=0.5))+
+    ggplot2::ylab(label)+ggplot2::xlab(NULL)+ggplot2::scale_color_brewer(palette = "Dark2",name="")
+} 
+
+plot_rolling_quantiles = function(data, decileVar, orderVar, quantiles = c(0.025,0.25,0.5,0.75,0.975), colours=c("red","blue"), linetypes=c("solid","solid"), window=15) {
+  
+  quantiles = unique(c(quantiles,0.5))
+  decileVar = rlang::ensym(decileVar)
+  orderVar = rlang::ensym(orderVar)
+  grps = data %>% dplyr::groups()
+  
+  summaryLag = data %>% dplyr::arrange(!!orderVar) %>% 
+    dplyr::mutate(rollingQuant = slider::slide_index(!!decileVar, !!orderVar, .before=window %/% 2,.after=window %/% 2,.complete = TRUE,.f = ~ tibble::enframe(stats::quantile(.x, seq(0.1,0.9,length.out = 5), na.rm=TRUE)))) %>%
+    dplyr::select(!!!grps, !!orderVar, rollingQuant) %>%
+    tidyr::unnest(rollingQuant) %>%
+    dplyr::distinct()
+  
+  ggplot2::ggplot(data = data, mapping=(ggplot2::aes(x=!!orderVar, y=!!decileVar)))+
+    ggplot2::geom_line(data = summaryLag %>% stats::filter(name != "50%"), mapping=ggplot2::aes(x=!!orderVar,y=value, group=name), linetype=linetypes[2], colour=colours[2] )+
+    ggplot2::geom_line(data = summaryLag %>% stats::filter(name == "50%"), mapping=ggplot2::aes(x=!!orderVar,y=value, group=name), linetype=linetypes[1], colour=colours[1] )
+  
+}
+
+# plotRollingProportion = function(data, binomialExpr, orderVar = "date", colours=c("red","blue"), window=14) {
+#   binomialExpr = rlang::enexpr(binomialExpr)
+#   orderVar = rlang::ensym(orderVar)
+#   grps = data %>% dplyr::groups()
+#   
+#   overallLag = data %>% dplyr::summarise(p = sum(!!binomialExpr,na.rm = TRUE)/length(stats::na.omit(!!binomialExpr)))
+#   
+#   summaryLag = data %>% dplyr::arrange(!!orderVar) %>% 
+#     dplyr::mutate(
+#       x = slider::slide_index_dbl(!!binomialExpr, !!orderVar, .before=window,.after=window,.f = ~ sum(.x,na.rm = TRUE)),
+#       n = slider::slide_index_dbl(!!binomialExpr, !!orderVar, .before=window,.after=window,.f = ~ length(stats::na.omit(.x))),
+#     ) %>%
+#     dplyr::select(!!!grps, !!orderVar, x, n) %>%
+#     dplyr::distinct() 
+#   
+#   # browser()
+#   
+#   summaryLag = summaryLag %>%
+#     stats::filter(!is.na(x) & !is.na(n)) %>%
+#     dplyr::mutate(binom::binom.confint(x,n,methods="wilson")) %>%
+#     dplyr::rename(lower.0.025 = lower,upper.0.975 = upper) %>% dplyr::select(-mean) %>%
+#     dplyr::mutate(binom::binom.confint(x,n,methods="wilson",conf.level=0.5)) %>%
+#     dplyr::rename(lower.0.25 = lower,upper.0.75 = upper)
+#   
+#   list(
+#     ggplot2::geom_line(data = summaryLag, mapping=ggplot2::aes(x=!!orderVar,y=lower.0.025), linetype="dotted", colour=colours[1] ),
+#     ggplot2::geom_line(data = summaryLag, mapping=ggplot2::aes(x=!!orderVar,y=upper.0.975), linetype="dotted", colour=colours[1] ),
+#     ggplot2::geom_line(data = summaryLag, mapping=ggplot2::aes(x=!!orderVar,y=lower.0.25), linetype="dashed", colour=colours[1] ),
+#     ggplot2::geom_line(data = summaryLag, mapping=ggplot2::aes(x=!!orderVar,y=upper.0.75), linetype="dashed", colour=colours[1] ),
+#     ggplot2::geom_line(data = summaryLag, mapping=ggplot2::aes(x=!!orderVar,y=mean), linetype="solid", colour=colours[1] ),
+#     ggplot2::geom_hline(data = overallLag, mapping = ggplot2::aes(yintercept = p), colour=colours[2])
+#   )
+# }
+
+
+# plotRollingDensity = function(data, observationVar, n=50, orderVar = "date", colours=c("red","blue"), window=14) {
+#   observationVar = rlang::ensym(observationVar)
+#   orderVar = rlang::ensym(orderVar)
+#   grps = data %>% dplyr::groups()
+#   obs = data %>% dplyr::pull(!!observationVar)
+#   breaks = seq(min(obs,na.rm = TRUE),max(obs,na.rm = TRUE),length.out = n+1)
+#   miBreak = stats::na.omit(breaks+stats::lag(breaks))/2
+#   summaryLag = data %>% dplyr::select(!!!grps,!!orderVar,!!observationVar) %>% tidyr::nest(observations = !!observationVar) %>% dplyr::arrange(!!orderVar) 
+#   summaryLag = summaryLag %>% dplyr::mutate(bins = slider::slide(observations, .before=14, .after=14, .f = ~dplyr::bind_rows(.x) %>% 
+#                                                             dplyr::mutate(bin = cut(!!observationVar,breaks = breaks,labels = miBreak)) %>% 
+#                                                             dplyr::group_by(bin) %>% 
+#                                                             dplyr::summarise(count=n()) %>% 
+#                                                             dplyr::mutate(prop = count/sum(count)) %>% 
+#                                                             dplyr::ungroup() %>% 
+#                                                             tidyr::complete(bin, fill=list(count=0,prop=0)) ))
+#   summaryLag = summaryLag %>% dplyr::select(!!!grps,!!orderVar,bins) %>% tidyr::unnest(bins)
+#   
+#   list(
+#     ggplot2::geom_tile(data = summaryLag,  mapping=ggplot2::aes(x=!!orderVar, y=as.numeric(as.character(bin)), fill=prop))
+#   )
+# }
+
+## Odds Ratios / VE ----
+
+# tidy_linelist_to_count = function(groupedDf, dateVar=date, ...) {
+#   dots = rlang::list2(...)
+#   grps = groupedDf %>% dplyr::groups()
+#   dateVar = rlang::ensym(dateVar)
+#   out = groupedDf %>% dplyr::group_by(!!!grps) %>% dplyr::group_modify(function(d,g,..) {
+#     minMax = range(d %>% dplyr::pull(!!dateVar), finite = TRUE)
+#     return(tibble::tibble(!!dateVar := seq(minMax[[1]], minMax[[2]])))
+#   })
+#   if (length(dots)==0) dots = list(n ~ TRUE)
+#   summaries = dplyr::map(dots, ~ sprintf("%s = sum(%s)", as.character(rlang::f_lhs(.x)), as.character(rlang::f_rhs(.x))) %>% as.expression())
+#   tmp = groupedDf %>% dplyr::group_by(!!!grps, !!dateVar) %>% dplyr::summarise(!!!summaries)
+#   
+# }
+
+linelist_to_ts = function(df, dateVar= "date", ...) {
+  
+  dots = rlang::list2(...)
+  dateVar = rlang::ensym(dateVar)
+  
+  if (dplyr::is_grouped_df(df)) return(df %>% dplyr::group_modify(function(d,g,...) { linelist_to_ts(d, !!dateVar, !!!dots)  }))
+  
+  minMax = range(df %>% dplyr::pull(!!dateVar), finite = TRUE)
+  dateRange = seq(from = minMax[[1]], to = minMax[[2]],by = 1)
+  
+  newCols = unlist(dplyr::map(dots, ~ rlang::f_lhs(.x)))
+  
+  summaries = dplyr::map(dots, ~ rlang::expr(sum(rlang::!!(rlang::f_rhs(.x)),na.rm=TRUE)))
+  names(summaries) = sapply(newCols,as_label)
+  
+  newColFill = rep(0,length(newCols))
+  names(newColFill) = sapply(newCols,as_label)
+  newColFill = as.list(newColFill)
+  newColFill$n = 0
+  
+  tmp = df %>% dplyr::group_by(!!dateVar) %>% dplyr::summarise(!!!summaries, n=n(),.groups = "drop") %>% dplyr::rename(.d := !!dateVar)
+  tmp = tmp %>% dplyr::ungroup() %>% tidyr::complete(.d = dateRange, fill=newColFill) %>% dplyr::arrange(.d) %>% dplyr::rename(!!dateVar := .d)
+  
+  return(tmp)
+}
+
+# tmp = avoncap_original %>% 
+#   linelist_to_ts(admission.date,
+#     delta_vacc ~ genomic.variant == "Delta" & vaccination.covid_vaccination == v$vaccination.covid_vaccination$Received,
+#     delta_novacc ~ genomic.variant == "Delta" & vaccination.covid_vaccination != v$vaccination.covid_vaccination$Received,
+#     omicron_vacc ~ genomic.variant == "Omicron" & vaccination.covid_vaccination == v$vaccination.covid_vaccination$Received,
+#     omicron_novacc ~ genomic.variant == "Omicron" & vaccination.covid_vaccination != v$vaccination.covid_vaccination$Received,
+#   ) %>%
+#   dplyr::mutate(across(.cols=-admission.date,.fns = function(x) slider::slide_dbl(x, sum, .before=56),.names = "roll_{col}")) %>%
+#   dplyr::mutate(odds_ratio_ve(vaccinatedCase = roll_delta_vacc,unvaccinatedCase = roll_delta_novacc,vaccinatedControl = roll_omicron_vacc,unvaccinatedControl = roll_omicron_novacc))
+
+odds_ratio_ve = function(vaccinatedCase, unvaccinatedCase, vaccinatedControl, unvaccinatedControl, p=c(0.025,0.975)) {
+  
+  odds = vaccinatedCase*unvaccinatedControl / (vaccinatedControl*unvaccinatedCase)
+  logOdds = log(odds)
+  logOddsSD = sqrt(1/vaccinatedCase+1/unvaccinatedCase+1/vaccinatedControl+1/unvaccinatedControl)
+  oddsQ = dplyr::map(p, ~ exp(stats::qnorm(.x,logOdds, logOddsSD)))
+  names(oddsQ) = paste0("OR.q.",p)
+  veQ = dplyr::map(rev(p), ~ 1 - exp(stats::qnorm(.x,logOdds, logOddsSD)))
+  names(veQ) = paste0("VE.q.",p)
+  cbind(tibble::tibble(OR = odds),as.data.frame(oddsQ),tibble::tibble(VE = 1-odds),as.data.frame(veQ))
+  
+}
+
+# test=tibble::tribble(
+#   ~vaccinatedCase, ~unvaccinatedCase, ~vaccinatedControl, ~unvaccinatedControl, ~VE.test,
+#   5,29,43,11,0.956,
+#   20,43,39,7,0.917,
+#   15,13,20,22,-0.269
+# )
+# 
+# test %>% dplyr::mutate(odds_ratio_ve(vaccinatedCase, unvaccinatedCase, vaccinatedControl, unvaccinatedControl))
