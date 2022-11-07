@@ -1,0 +1,128 @@
+﻿"Variable / Field Name","Form Name","Section Header","Field Type","Field Label","Choices, Calculations, OR Slider Labels","Field Note","Text Validation Type OR Show Slider Number","Text Validation Min","Text Validation Max",Identifier?,"Branching Logic (Show field only if...)","Required Field?","Custom Alignment","Question Number (surveys only)","Matrix Group Name","Matrix Ranking?","Field Annotation"
+study_number,screening,,text,"Record  Number",,,,,,,,y,,,,,
+enrollment_date,screening,,text,"<div class=""rich-text-field-label""><p>Enrollment Date</p></div>",,,date_dmy,,,,,y,,,,,
+hosp,screening,,radio,Hospital,"1, Southmead|2, BRI|3, RUH",,,,,,,y,,,,,
+ip_op,screening,,radio,"Inpatient versus Outpatient","1, Inpatient|2, Day Case|3, Outpatient|4, Other volunteer",,,,,,,y,,,,,
+speciality,screening,,text,Department/Speciality,,,alpha_only,,,,"[ip_op]=1 OR  [ip_op]=2  OR [ip_op]=3",y,,,,,
+part_details,screening,,descriptive,"<div class=""blue""> <h5><strong>Participant Details</strong></h5> <h5><span style=""font-weight: normal;"">",,,,,,,,,,,,,
+gender,screening,,radio,Gender,"1, Male|2, Female",,,,,,,y,,,,,
+care_home,screening,,yesno,"Care home resident",,,,,,,,y,,,,,
+ethnicity,screening,,radio,Ethnicity,"1, White British<br><em><font size=""1"">(e.g. Welsh, Irish, English, Scottish, Gypsy or Irish Traveller, etc.)</font></em>|2, White other<br><em><font size=""1"">(e.g. Italian, Polish, Spanish, German, French, Russian etc.)</font></em>|3, Mixed origin<br><em><font size=""1"">(e.g. White and Asian, Asian and Black, White and Black/Caribbean/African etc.)</font></em>|4, Black or African American<br><em><font size=""1"">(e.g. African American, Caribbean, Black British, Jamaican, Haitian, Nigerian, Ethiopian, Somalian, etc)</font></em>|5, Asian<br><em><font size=""1"">(e.g. Chinese, Filipino, Asian Indian, Pakistani, Bangladeshi, Vietnamese, Korean, Japanese, Asian British, etc)</font></em>|6, Some other race, ethnicity or origin|7, Unknown",,,,,y,,y,,,,,
+smoking,screening,,radio,"Smoking status","1, Current smoker|2, Ex-smoker|3, Non-smoker|4, Unknown",,,,,,,y,,,,,
+vaping,screening,,radio,"Vaping (in last 30 days)","1, Yes|2, No|3, Unknown",,,,,,,y,,,,,
+part_details_2,screening,,descriptive,"<div class=""blue""> <h5><strong>Inclusion Criteria</strong></h5> <h5><span style=""font-weight: normal;"">",,,,,,,,,,,,,
+age_at_admission,screening,,text,"Age at enrollment",,,,,,,,y,,,,,
+age_group_2,screening,,radio,"Age Group","1, 18-30 | 2, 31-40 | 3, 41-50 | 4, 51-60 | 5, 61-70 | 6, 71-100+",,,,,,,y,,,,,
+meets_eligibility_2,screening,,descriptive,"<div class=""green"";><i><span style=""font-weight:normal;font-color:green;font-size:120%"">Patient meets eligibility criteria for AvonCAP study - please check exclusion criteria",,,,,,,[age_at_admission]>'18',,,,,,
+part_details_3,screening,,descriptive,"<div class=""blue""> <h5><strong>Exclusion Criteria</strong></h5> <h5><span style=""font-weight: normal;"">",,,,,,,,,,,,,
+infection,screening,,yesno,"Does this patient have an acute, recent (under 28 days) or chronic infection?",,,,,,,,,,,,,
+disease_exclusion,screening,,yesno,"<p>Does this patient have any respiratory conditions which necessitate them being excluded as a control?<br /><span style=""font-weight: normal;"">(e.g. COPD, bronchiectasis, CF, etc)</span></p> <p><span style=""font-weight: normal;"">*COPD is permissible, provided there has not been an exacerbation within 3 months prior to enrolment. </span></p>",,,,,,,,y,,,,,
+lung_cancer,screening,,yesno,"Does this patient have lung cancer or any malignancy metastatic to the lungs? ",,,,,,,,y,,,,,
+temp,screening,,yesno,"Does this participant have fever (Temp ≥38.0°C)? ",,,,,,,,y,,,,,
+imm_disease,screening,,yesno,"Does the participant have any immunosuppressive disease (e.g. Leukaemia)? ",,,,,,,,y,,,,,
+pneumo_vaccine,screening,,yesno,"Does this participant have a Pneumococcal conjugate vaccine (PCV) or Pneumococal Polysacharide Vaccine (PPV) within the past 30 days? ",,,,,,,,y,,,,,
+fails_control_elig,screening,,descriptive,"<div class=""red"";><i><span style=""font-weight:normal;font-color:red;font-size:120%"">Patient does not fulfil enrolment criteria - do not enter further data",,,,,,,"[infection]='1' OR [disease_exclusion]='1' OR [age_at_admission]< '18' OR [care_home]= 1 OR [pneumo_vaccine]=1 OR [lung_cancer]=1 OR [temp]=1 OR [imm_disease]=1",,,,,,
+eligibility_3,screening,,descriptive,"<div class=""green"";><i><span style=""font-weight:normal;font-color:green;font-size:120%"">Patient meets eligibility criteria for AvonCAP study ",,,,,,,"[age_at_admission]< '18' AND [infection]='1' AND [disease_exclusion]='1' AND [care_home]= 1 AND [pneumo_vaccine]=1 AND [lung_cancer]=1 AND [temp]=1 AND [imm_disease]=1",,,,,,
+staffdoingscreening,screening,,dropdown,"Study Staff Member completing form","1, Catherine Hyams | 2, Jade King | 3, Kelly Turner | 4, Oliver Griffiths | 5, Julie Cloake | 6, Anabella Turner | 7, Kaz Fox | 8, Robyn Heath | 101, Catherine Hyams | 102, Zandile Maseko | 103, Lana Ward | 104, Zsolt Friedrich | 105, Elena Bellavia | 106, Kate Helliker | 107, Marianne Vasquez | 109, Leigh Morrison | 110, Anna Morley | 111, Gabriella Ruffino | 112, Johanna Kellett Wright",,,,,,,y,,,,,
+study_details,study_and_sample_details,,descriptive,"<div class=""blue""> <h5><strong>Study Details</strong></h5> <h5><span style=""font-weight: normal;"">",,,,,,,,,,,,,
+aconvap_number,study_and_sample_details,,text,"Avon CAP Study Number",,,,,,,,y,,,,,
+consent_nurse,study_and_sample_details,,dropdown,"<div class=""rich-text-field-label""><p>Name of person obtaining consent</p></div>","1, Catherine Hyams | 2, Jade King | 3, Kelly Turner | 4, Anabella Turner | 5, Oliver Griffiths | 6, Julie Cloake | 7, Kaz Fox | 8, Robyn Heath | 101, Catherine Hyams | 102, Zandile Maseko | 103, Lana Ward | 104, Zsolt Friedrich | 105, Elena Bellavia | 106, Kate Helliker | 107, Marianne Vasquez | 109, Leigh Morrison | 110, Anna Morley | 111, Gabriella Ruffino | 112, Johanna Kellett Wright",,,,,,,y,RH,,,,
+pis_version,study_and_sample_details,,dropdown,"Which version of PIS has been given? ","1, v1.1 date 05/06/2020",,,,,,,y,,,,,
+gp_practice,study_and_sample_details,,text,"<p>Registered GP practice<p>",,,,,,,,y,,,,," @hidden"
+resp_header,study_and_sample_details,,descriptive,"<div class=""blue""> <h5><strong>Nose/Throat Swabs</strong></h5> <h5><span style=""font-weight: normal;"">",,,,,,,,,,,,,
+pt_ad_np,study_and_sample_details,,yesno,"Should this patient have a control nose/throat swab?",,,,,,,,y,,,,,
+np_swab,study_and_sample_details,,radio,"Nose/Throat swab taken","1, Yes|2, No",,,,,,"[pt_ad_np] = '1'",y,,,,,
+adm_np_type,study_and_sample_details,,radio,"Site taken from","1, Nose|2, Throat|3, Midturbinate",,,,,,"[np_swab] = '1'",,,,,,
+np_date,study_and_sample_details,,text,"Date and time of Nose/Throat swab",,,datetime_dmy,,,,"[pt_ad_np] = '1'",,,,,,
+np_date_2,study_and_sample_details,,text,"Date of Nose/Throat swab",,,date_dmy,,,,"[pt_ad_np] = '1'",,,,,,
+study_staff_member_swab,study_and_sample_details,,dropdown,"Study staff member taking the Nose/Throat swab (initials)","1, Catherine Hyams | 2, Jade King | 3, Kelly Turner | 4, Anabella Turner | 5, Oliver Griffiths | 6, Julie Cloake | 7, Kaz Fox | 8, Robyn Heath | 101, Catherine Hyams | 102, Zandile Maseko | 103, Lana Ward | 104, Zsolt Friedrich | 105, Elena Bellavia | 106, Kate Helliker | 107, Marianne Vasquez | 109, Leigh Morrison | 110, Anna Morley | 111, Gabriella Ruffino | 112, Johanna Kellett Wright",,,,,,"[np_swab] = '1'",y,,,,,
+urine_header,study_and_sample_details,,descriptive,"<div class=""blue""> <h5><strong>Urine Samples</strong></h5> <h5><span style=""font-weight: normal;"">",,,,,,,,,,,,,
+pt_control_ur,study_and_sample_details,,yesno,"Should this patient have a control urine sample?",,,,,,,,y,,,,,
+adm_ur_taken,study_and_sample_details,,radio,"Urine sample obtained?","1, Yes|2, No",,,,,,"[pt_control_ur] = '1'",,,,,,
+adm_ur_date,study_and_sample_details,,text,"Date and time of urine sample",,,datetime_dmy,,,,"[pt_control_ur] = '1'",,,,,,
+adm_ur_date_2,study_and_sample_details,,text,"Date of urine sample",,,date_dmy,,,,"[pt_control_ur] = '1'",,,,,,
+freezer,study_and_sample_details,,text,"Date and time Frozen",,,datetime_dmy,,,,,y,,,,,
+study_staff_member_urine,study_and_sample_details,,dropdown,"Study staff member taking the urine sample (initials)","1, Catherine Hyams | 2, Jade King | 3, Kelly Turner | 4, Anabella Turner | 5, Oliver Griffiths | 6, Julie Cloake | 7, Kaz Fox | 8, Robyn Heath | 101, Catherine Hyams | 102, Zandile Maseko | 103, Lana Ward | 104, Zsolt Friedrich | 105, Elena Bellavia | 106, Kate Helliker | 107, Marianne Vasquez | 109, Leigh Morrison | 110, Anna Morley | 111, Gabriella Ruffino | 112, Johanna Kellett Wright",,,,,,"[adm_ur_taken] = '1'",y,,,,,
+serum_header,study_and_sample_details,,descriptive,"<div class=""blue""> <h5><strong>Serum Samples</strong></h5> <h5><span style=""font-weight: normal;"">",,,,,,,,,,,,,
+adm_ser,study_and_sample_details,,yesno,"Should this patient have a control serum sample?",,,,,,,,y,,,,,
+adm_serum_tak,study_and_sample_details,,yesno,"Serum sample obtained?",,,,,,,"[adm_ser] = '1'",y,,,,,
+adm_seru_date,study_and_sample_details,,text,"Date and time of Serum sample",,,datetime_dmy,,,,"[adm_ser] = '1'",,,,,,
+adm_seru_date_2,study_and_sample_details,,text,"Date of Serum sample",,,date_dmy,,,,"[adm_ser] = '1'",,,,,,
+study_staff_member_serum,study_and_sample_details,,dropdown,"Study staff member taking the Serum sample (initials)","1, Catherine Hyams | 2, Jade King | 3, Kelly Turner | 4, Anabella Turner | 5, Oliver Griffiths | 6, Julie Cloake | 7, Kaz Fox | 8, Robyn Heath | 101, Catherine Hyams | 102, Zandile Maseko | 103, Lana Ward | 104, Zsolt Friedrich | 105, Elena Bellavia | 106, Kate Helliker | 107, Marianne Vasquez | 109, Leigh Morrison | 110, Anna Morley | 111, Gabriella Ruffino | 112, Johanna Kellett Wright",,,,,,"[adm_serum_tak] = '1'",y,,,,,
+nhs_number_descr,comorbidities,"<div class=""rich-text-field-label""> <h3>Co-Morbidities</h3> </div> </div>",descriptive,"<div class=""blue"";><span style=""font-weight:normal;font-color:blue;font-size:140%"">Enrollment date: [enrollment_date], Name: [first_name], [surname], NHS number: [nhs_number]</span></div>",,,,,,,,,,,,,
+resp_disease,comorbidities,,checkbox,"Respiratory Disease","1, None|2, COPD (Chronic Obstructive Pulmonary Disease/Emphysema)|3, Asthma|4, Other Respiratory Disease",,,,,,,y,,,,," @NONEOFTHEABOVE=1"
+other_respiratory_disease,comorbidities,,checkbox,"Specify Other Respiratory Disease","1, Bronchiectasis|2, Interstitial lung disease/pulmonary fibrosis|3, Cystic Fibrosis|4, Pulmonary Hypertension|5, Chronic pleural disease|6, Other chronic respiratory disease",,,,,,"[resp_disease(4)] = 1",y,,,,,
+spec_other_resp,comorbidities,,text,"Please specify other respiratory disease",,,,,,,"[other_respiratory_disease(6)] = '1'",y,,,,,
+chd,comorbidities,,checkbox,"Chronic Heart Disease","1, None|2, Congestive heart failure|3, Ischaemic heart disease (coronary artery disease)|4, Hypertension (only if causing cardiac complications)|5, Other",,,,,,,y,,,,," @NONEOFTHEABOVE=1"
+mi,comorbidities,,yesno,"Has the patient had a documented MI (unstable angina, NSTEMI or STEMI)?",,,,,,,"[chd(3)] = 1",y,,,,,
+other_chd,comorbidities,,checkbox,"Other Chronic Heart Disease","1, Congenital heart disease|2, Atrial Fibrillation|3, Other arrhythmia|4, PPM or ICD in situ|5, Valvular heart disease|6, Other cardiac pathology",,,,,,"[chd(5)] = 1",y,,,,,
+spec_other_cardiac,comorbidities,,text,"Please specify other cardiac pathology",,,,,,,"[other_chd(6)] = '1'",y,,,,,
+ckd,comorbidities,,radio,"<div class=""rich-text-field-label""><p>Chronic Kidney Disease (CKD)</p> <p><span style=""font-weight: normal;"">Mod-Severe =eGFR< 30, Cr>265 umol/L, dialysis, transplantation, uremic syndrome</span></p></div>","1, No|2, Mild (CKD 1-3)|3, Moderate or Severe CKD (CKD 4-5, ESRF, Dialysis)",,,,,,,y,,,,,
+liver_disease,comorbidities,,radio,"<div class=""rich-text-field-label""><p>Liver Disease</p> <p> </p></div>","1, None|2, Liver disease without hepatic failure (no portal hypertension)|3, Liver disease with hepatic failure (including portal hypertension, variceal bleeding)",,,,,,,y,,,,,
+diabetes,comorbidities,,radio,Diabetes,"1, No|2, Type 1 DM - no complications|3, Type 1 DM - complications|4, Type 2 DM - no complications|5, Type 2 DM - complications",,,,,,,y,,,,,
+dm_meds,comorbidities,,radio,"Diabetes medication","1, Oral medication only|2, S/C insulin (or insulin pump)",,,,,,"[diabetes] = '2' or [diabetes] = '3' or [diabetes] = '4' or [diabetes] = '5'",y,,,,,
+dementia,comorbidities,,checkbox,"Cognitive Impairment/Dementia","1, None|2, Dementia|3, Cognitive Impairment",,,,,,,y,,,,," @NONEOFTHEABOVE=1"
+neurological_disease,comorbidities,,checkbox,"Neurological Disease","1, Chronic neurological disease (excluding CVA and TIA)|2, CVA (stroke)|3, TIA (mini-stroke)|4, Hemiplegia|5, Paraplegia|6, None",,,,,,,y,,,,," @NONEOFTHEABOVE=6"
+gastric_ulcers,comorbidities,,yesno,"<div class=""rich-text-field-label""><p>Gastric/Duodenal Ulcer Disease</p> <p><span style=""font-weight: normal;"">Patients who have required treatment for PUD </span></p></div>",,,,,,,,y,,,,,
+pvd,comorbidities,,yesno,"<div class=""rich-text-field-label""><p>Peripheral Vascular Disease</p> <p><span style=""font-weight: normal;"">Intermittent claudication, periph. arterial bypass for insufficiency, gangrene, acute arterial insufficiency, untreated aneurysm (>=6cm) </span></p></div>",,,,,,,,y,,,,,
+ctd,comorbidities,,yesno,"<div class=""rich-text-field-label""><p>Connective Tissue Disease</p> <p><span style=""font-weight: normal;"">(SLE, polymyositis, mixed Connective Tissue Disease, polymyalgia rheumatica, moderate to severe Rheumatoid Arthritis)</span></p></div>",,,,,,,,y,,,,,
+immsup,comorbidities,,yesno,"<div class=""rich-text-field-label""><p>Immunosuppressive Medication<br /><span style=""font-weight: normal;"">(includes oral steroids, biologics, chemotherapy)</span></p></div>",,,,,,,,y,,,,,
+immunodeficiency,comorbidities,,yesno,"<div class=""rich-text-field-label""><p>Immunodeficiency<br /><span style=""font-weight: normal;"">(eg SCID, hypogammaglobulinaemia, splenectomy)</span></p></div>",,,,,,,,y,,,,,
+other_pn_disease,comorbidities,,yesno,"<div class=""rich-text-field-label""><p>Other pneumococcal disease risk factors?</p> <p><span style=""font-weight: normal;"">(eg CSF leak, cochlear implant, asplenia)</span></p></div>",,,,,,,,,,,,,
+hiv,comorbidities,,checkbox,"<div class=""rich-text-field-label""><p>HIV status</p></div>","1, Negative (no HIV), or not tested|2, HIV|3, AIDS",,,,,,,y,,,,,
+cancer,comorbidities,,radio,"<div class=""rich-text-field-label""><p>Solid Organ Cancer/Malignancy</p> <p><span style=""font-weight: normal;"">Initially treated in the last 5 years exclude non-melanomatous skin cancers and in situ cervical carcinoma</span></p></div>","1, None|2, Solid Organ Cancer - no mets|3, Solid Organ Cancer - Metastatic Disease",,,,,,,y,,,,,
+haem_malig,comorbidities,,checkbox,"<div class=""rich-text-field-label""><p>Haematological Malignancy</p> <p><span style=""font-weight: normal;"">Leukaemia = CML, CLL, AML, ALL, Polycythaemia Vera</span></p> <p><span style=""font-weight: normal;"">Lymphoma = NHL, Hodgkin's, Waldenström, multiple myeloma </span></p></div>","1, None|2, Leukaemia|3, Lymphoma",,,,,,,y,,,,," @NONEOFTHEABOVE=1"
+transplant,comorbidities,,yesno,"<div class=""rich-text-field-label""><p>Organ Transplantation<br /><span style=""font-weight: normal;"">(includes bone marrow stem cells etc)</span></p></div>",,,,,,,,y,,,,,
+pregnancy,comorbidities,,radio,"Pregnancy/Post partum","1, Not pregnant|2, First Trimester|3, Second Trimester|4, Third Trimester|5, Pregnant, unsure of trimester|6, Post-partum",,,,,,"[gender]= 2",y,,,,,
+flu_vaccine,comorbidities,"<div class=""rich-text-field-label""><p>Vaccination and Antibiotics</p></div>",radio,"<div class=""rich-text-field-label""><p>Seasonal Influenza Vaccination</p> <p><span style=""font-weight: normal;"">(in last 12 months)</span></p></div>","1, Received Seasonal Flu vaccine|2, Not received|3, Unknown",,,,,,,y,,,,,
+flu_date,comorbidities,,text,"Date of Last Flu Vaccination",,,date_dmy,,,,"[flu_vaccine] = 1",,,,,,
+ppv23,comorbidities,,radio,"PneumoVax (PPV23)","1, Received PneumoVax|2, Not received|3, Unknown",,,,,,,y,,,,,
+ppv23_date,comorbidities,,text,"Date of PneumoVax Vaccination",,,date_dmy,,,,"[ppv23] = 1",y,,,,,
+covid19_vax,comorbidities,,radio,"COVID-19 Vaccination","1, Received COVID19 vaccine|2, Not received|3, Unknown",,,,,,,y,,,,,
+covidvax_date,comorbidities,,text,"Date of COVID19 Vaccination",,,date_dmy,,,,"[covid19_vax] = 1",y,,,,,
+brand_of_covid19_vaccinati,comorbidities,,text,"Brand of COVID19 vaccination",,,,,,,"[covid19_vax] = 1",y,,,,,
+abx_14d_prior,comorbidities,,radio,"Used Antibiotics in 14 days prior to Hospitalisation","1, Yes|2, No|3, Unknown",,,,,,,y,,,,,
+antibiotic_used,comorbidities,,checkbox,"Antibiotic Used","1, Amoxicillin|2, Co-amoxiclav (Augmentin)|3, Doxycycline|4, Trimethoprim|5, Nitrofurantoin|6, Clarithromycin/Erythromycin|7, Metronidazole|8, Septrin (Co-trimoxazole)|9, Penicillin V|10, Benzylpenicillin (BenPen)|11, Tazocin|12, Meropenem|13, Other",,,,,,"[abx_14d_prior] = '1'",y,,,,,
+antibiotic_other,comorbidities,,text,"Please specify other antibiotic",,,,,,,"[antibiotic_used(13)] = '1'",y,,,,,
+cci_age_score,comorbidities,"Charlson Co-Morbidity Index",calc,"<div class=""rich-text-field-label""><p>Age at admission: [age_at_admission]</p></div>","if([age_at_admission]>'79',4,if([age_at_admission]>'69',3,if([age_at_admission]>'59',2,if([age_at_admission]>'49',1,0))))",,,,,,,,,,,," @HIDDEN-FORM"
+mi_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Myocardial infarction: [mi]</p></div>","if([mi]='1',1,0)",,,,,,,,,,,," @HIDDEN-FORM"
+chf_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>CHF: [chd(2)]</p></div>","if([chd(2)]='1',1,0)",,,,,,,,,,,," @HIDDEN-FORM"
+pvd_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Peripheral Vascular disease: [pvd]</p></div>","if([pvd]='1',1,0)",,,,,,,,,,,," @HIDDEN-FORM"
+neuro_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>CVA: [neurological_disease(2)]</p> <p>or</p> <p>TIA: [neurological_disease(3)]</p></div>","if([neurological_disease(2)]='1',1,if ([neurological_disease(3)]='1',1,0))",,,,,,,,,,,," @HIDDEN-FORM"
+dementia_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Dementia: [dementia(2)]</p></div>","if([dementia(2)]='1',1,0)",,,,,,,,,,,," @HIDDEN-FORM"
+copd_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p> COPD: [resp_disease(2)]</p></div>","if([resp_disease(2)]='1',1,0)",,,,,,,,,,,," @HIDDEN-FORM"
+peptic_ulcer_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Peptic ulcer disease: [gastric_ulcers]</p></div>","if([gastric_ulcers]='1',1,0)",,,,,,,,,,,," @HIDDEN-FORM"
+ctd_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Connective tissue disease: [ctd]</p></div>","if([ctd]='1',1,0)",,,,,,,,,,,," @HIDDEN-FORM"
+liver_disease_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Liver disease: [liver_disease]</p></div>","if([liver_disease]='3',3,if([liver_disease]='2',1,0))",,,,,,,,,,,," @HIDDEN-FORM"
+diabetes_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Diabetes mellitus: [diabetes]</p></div>","if([diabetes]='5',2,if([diabetes]='3',2,if([diabetes]='4',1,if([diabetes]='2',1,0))))",,,,,,,,,,,," @HIDDEN-FORM"
+neuro_disease_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Hemiplegia: [neurological_disease(4)]</p> <p>or</p> <p>Paraplegia: [neurological_disease(5)]</p></div>","if([neurological_disease(5)]='1',2,if([neurological_disease(4)]='1',2,0))",,,,,,,,,,,," @HIDDEN-FORM"
+ckd_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Moderate to severe CKD: [ckd]</p></div>","if([ckd]='3',2,0)",,,,,,,,,,,," @HIDDEN-FORM"
+cancer_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Solid tumor: [cancer]</p></div>","if([cancer]='3',6,if([cancer]='2',2,0))",,,,,,,,,,,," @HIDDEN-FORM"
+leukemia_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Leukemia: [haem_malig(2)]</p></div>","if([haem_malig(2)]='1',2,0)",,,,,,,,,,,," @HIDDEN-FORM"
+lymphoma_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>Lymphoma: [haem_malig(3)]</p></div>","if([haem_malig(3)]='1',2,0)",,,,,,,,,,,," @HIDDEN-FORM"
+hiv_score,comorbidities,,calc,"<div class=""rich-text-field-label""><p>AIDS: [hiv(3)]</p></div>","if([hiv(3)]='1',6,0)",,,,,,,,,,,," @HIDDEN-FORM"
+cci_total_score,comorbidities,,calc,"Total score:","sum([cci_age_score],[mi_score],[chf_score],[pvd_score],[neuro_score],[dementia_score],[copd_score],[ctd_score],[peptic_ulcer_score],[liver_disease_score],[diabetes_score],[neuro_disease_score],[ckd_score],[cancer_score],[leukemia_score],[lymphoma_score],[hiv_score])",,,,,,,,,,,,
+newaf,cvs_events,,yesno,"In the 2 months before enrolment, has the participant had new episode of atrial fibrillation (AF)",,,,,,,,y,,,,,
+newarrhythmia,cvs_events,,yesno,"In the 2 months before enrolment, has the participant had new episode of arrhythmia other than AF?",,,,,,,,y,,,,,
+newnstemi,cvs_events,,yesno,"In the 2 months before enrolment, as the participant had new NSTEMI?",,,,,,,,y,,,,,
+newstemi,cvs_events,,yesno,"In the 2 months before enrolment, has the participant had new STEMI?",,,,,,,,y,,,,,
+new_hf,cvs_events,,yesno,"In the 2 months before enrolment, has the participant had new or worsening heart failure?",,,,,,,,y,,,,,
+new_cva,cvs_events,,yesno,"In the 2 months before enrolment, has the participant had a new CVA, TIA or stroke?",,,,,,,,y,,,,,
+new_pe,cvs_events,,yesno,"In the 2 months before enrolment, has the participant had a new PE (pulmonary embolism)?",,,,,,,,y,,,,,
+new_dvt,cvs_events,,yesno,"In the 2 months before enrolment, has the participant had a new DVT (deep vein thrombosis)?",,,,,,,,y,,,,,
+date_of_withdrawal,withdrawal,,text,"Date of Withdrawal",,,date_dmy,,,,,,,,,,
+reason_for_withdrawal,withdrawal,,text,"Reason for withdrawal ",,,,,,,,,,,,,
+does_participant_want_the,withdrawal,,yesno,"Does participant want the samples to be destroyed? ",,,,,,,,,,,,,
+sae_v2_v2,aes,,yesno,"Were there any AE as a result of the study? ",,,,,,,,y,,,,,
+what_was_the_adverse_event_v2,aes,,text,"What was the Adverse Event? ",,,,,,,"[sae_v2_v2] = '1'",y,,,,,
+date_of_sae_v2_v2,aes,,text,"Date of AE",,,date_dmy,,,,"[sae_v2_v2] = '1'",y,RH,,,,
+severity_v2,aes,,dropdown,"Severity ","1, Mild|2, Moderate|3, Severe",,,,,,"[sae_v2_v2] = '1'",y,,,,,
+study_intervention_relatio_v2,aes,,dropdown,"Study Intervention Relationship","1, Definetly related|2, Possibly related|3, Not related",,,,,,"[sae_v2_v2] = '1'",y,,,,,
+action_taken_v2,aes,,text,"Action taken ",,,,,,,"[sae_v2_v2] = '1'",,,,,,
+diagnosis_v2_v2,aes,,text,"Outcome of AE ",,,,,,,"[sae_v2_v2] = '1'",y,RH,,,,
+expected_v2,aes,,yesno,"Expected ",,,,,,,"[sae_v2_v2] = '1'",y,RH,,,,
+serious_adverse_event_v2,aes,,yesno,"Serious Adverse Event? ",,,,,,,"[sae_v2_v2] = '1'",y,RH,,,,
+site_aware_date_of_sae_v2_v2,aes,,text,"When the site became aware of the AE? ",,,date_dmy,,,,"[sae_v2_v2] = '1'",y,RH,,,,
+reported_to_chief_investig_v2_v2,aes,,text,"Reported to Chief Investigator Date",,,date_dmy,,,,"[sae_v2_v2] = '1'",y,RH,,,,
+date_of_resolution_v2_v2,aes,,text,"Date of Resolution ",,,date_dmy,,,,"[sae_v2_v2] = '1'",y,RH,,,,
+comments_v2_v2,aes,,text,"Comments ",,,,,,,"[sae_v2_v2] = '1'",,RH,,,,

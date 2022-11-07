@@ -1,7 +1,21 @@
+#' Calculate a QCOVID2 score from AvonCap data source
+#'
+#' uses inbuilt imd_to_townsend map. This implements a cut down version of the
+#' QCovid2 score depending on what data is available.
+#'
+#' @param avoncap_df a normalised augmented avoncap data source
+#'
+#' @return the same dataframe with additional columns,
+#' - qcovid2.log_hazard, covid2.hazard_ratio: a log hazard rate for the QCOVID2
+#' score where missing data is substituted with the reference value for the QCOVID2
+#' population.
+#' - qcovid2.log_comorbid_hazard, qcovid2.comorbid_hazard_ratio: a log hazard
+#' rate for the comorbid conditions and not including age and BMI.
+#' @export
 avoncap_calculate_qcovid = function(avoncap_df) {
-  
+
   v = avoncap_df %>% get_value_sets()
-  
+
   mapperBase = expression(
     b2_82 = admission.on_immunosuppression == v$admission.on_immunosuppression$yes,
     b2_leukolaba = FALSE,
@@ -32,9 +46,9 @@ avoncap_calculate_qcovid = function(avoncap_df) {
     b_sicklecelldisease = FALSE,# integer
     b_stroke = comorbid.cva == v$comorbid.cva$yes,# integer
     b_vte = FALSE, # thromboembolism
-    
+
     chemocat = 1, #rep(1,length(admission.BMI)), # integer ?chemotherapy
-    ethrisk = case_when(
+    ethrisk = dplyr::case_when(
       # 1 Unknown
       # 2 White
       demog.ethnicity == v$demog.ethnicity$`White British` | demog.ethnicity == v$demog.ethnicity$`White other` ~ 2,
@@ -51,43 +65,43 @@ avoncap_calculate_qcovid = function(avoncap_df) {
       # default to Unknown (1)
       TRUE ~ 1
     ),# integer ?ethnicity
-    homecat = case_when(
+    homecat = dplyr::case_when(
       demog.care_home_resident == v$demog.care_home_resident$yes ~ 2,
       TRUE ~ 1
     ),# integer ?carehome
-    learncat = case_when(
+    learncat = dplyr::case_when(
       comorbid.cognitive_impairment == v$comorbid.cognitive_impairment ~ 2,
       TRUE ~ 1
     ),# integer ? learning diasbility
-    p_marrow6 = 
-      comorbid.transplant_recipient == v$comorbid.transplant_recipient & 
+    p_marrow6 =
+      comorbid.transplant_recipient == v$comorbid.transplant_recipient &
       comorbid.no_haemotological_cancer == v$comorbid.no_haemotological_cancer$no,
     p_radio6 = FALSE, # integer - radiotherapy in last 6 months
     p_solidtransplant =
-      comorbid.transplant_recipient == v$comorbid.transplant_recipient & 
+      comorbid.transplant_recipient == v$comorbid.transplant_recipient &
       comorbid.no_haemotological_cancer == v$comorbid.no_haemotological_cancer$yes,
-    
-    renalcat = case_when(
+
+    renalcat = dplyr::case_when(
       comorbid.ckd == v$comorbid.ckd$`Mild (CKD 1-3)` ~ 3,
       comorbid.ckd == v$comorbid.ckd$`Moderate or Severe CKD (CKD 4+)` ~ 4,
       TRUE ~ 1
     ),
-    
+
     town = demog.townsend_score,# double
-    
-    typeonecat = case_when(
+
+    typeonecat = dplyr::case_when(
       comorbid.diabetes == v$comorbid.diabetes$`Type 1 - no complications` ~ 2,
       comorbid.diabetes == v$comorbid.diabetes$`Type 1 - complications` ~ 3,
       TRUE ~ 1
     ),
-    
-    typetwocat = case_when(
+
+    typetwocat = dplyr::case_when(
       comorbid.diabetes == v$comorbid.diabetes$`Type 2 - no complications` ~ 2,
       comorbid.diabetes == v$comorbid.diabetes$`Type 2 - complications` ~ 3,
       TRUE ~ 1
     )
   )
-  
+
   mapperFull = c(
     expression(
       age = demog.age,
@@ -95,7 +109,7 @@ avoncap_calculate_qcovid = function(avoncap_df) {
     ),
     mapperBase
   )
-  
+
   mapperNormalised = c(
     expression(
       age = NA_real_,
@@ -103,16 +117,16 @@ avoncap_calculate_qcovid = function(avoncap_df) {
     ),
     mapperBase
   )
-  
+
   # integrate townsend scores for deprivation
   # needed for the QCovid2 score
-  imd2townsend = readr::read_csv(here::here("reference-data/imd-to-townsend-map.csv")) %>% 
-    rename(demog.imd_decile = imd_decile, demog.townsend_score = mean_townsend)
-  
-  avoncap_df = avoncap_df %>%  
-    left_join(imd2townsend, by="demog.imd_decile",.messages=NULL, .headline=NULL) 
-  
-  out = avoncap_df %>% mutate(
+  imd2townsend = avoncap::imd_to_townsend %>%
+    dplyr::rename(demog.imd_decile = imd_decile, demog.townsend_score = mean_townsend)
+
+  avoncap_df = avoncap_df %>%
+    dplyr::left_join(imd2townsend, by="demog.imd_decile",.messages=NULL, .headline=NULL)
+
+  out = avoncap_df %>% dplyr::mutate(
     qcovid2.log_hazard = ifelse(
         demog.gender == v$demog.gender$Female,
         # Female
@@ -128,12 +142,12 @@ avoncap_calculate_qcovid = function(avoncap_df) {
       .positive_death_male(!!!as.list(mapperNormalised))
     )
   )
-  
-  out = out %>% mutate(
+
+  out = out %>% dplyr::mutate(
     qcovid2.hazard_ratio = exp(qcovid2.log_hazard),
     qcovid2.comorbid_hazard_ratio = exp(qcovid2.log_comorbid_hazard)
   )
-  
+
 }
 
 
@@ -156,7 +170,7 @@ avoncap_calculate_qcovid = function(avoncap_df) {
 # QCOVID © Copyright, Oxford University 2021.
 # All Rights Reserved. The author, being Professor Julia Hippsley-Cox, has asserted their moral right.
 
-# This model is described in 
+# This model is described in
 # Hippisley-Cox J, Coupland CA, Mehta N, et al. Risk prediction of covid-19 related death and hospital admission in adults after covid-19 vaccination: national prospective cohort study. BMJ 2021;374:n2244. doi:10.1136/bmj.n2244
 # Supplementary Figure 9 QCOVID2 Adjusted cause specific hazard ratios (95% CI) for risk of COVID-19
 # death in unvaccinated men and women during the second wave in England, mutually adjusted and also
@@ -200,14 +214,14 @@ avoncap_calculate_qcovid = function(avoncap_df) {
     learncat,# integer ? learning diasbility
     p_marrow6,# integer - bone marrow transplant in last 6 months
     p_radio6,# integer - radiotherapy in last 6 months
-    p_solidtransplant,# integer - solid organ transplant 
+    p_solidtransplant,# integer - solid organ transplant
     renalcat,# integer
     town,# double
     typeonecat,# integer
     typetwocat# integer
   )
 {
-  
+
   Ichemocat = c(
     0, # No Chemotherapy
     0.7739043918776356001387740, # Chemotherapy grade A (2.17)
@@ -255,7 +269,7 @@ avoncap_calculate_qcovid = function(avoncap_df) {
     0.2086233438989026078846933, # Type 2 HBA1C >= 59% (1.23)
     0.4197276534832414807141276 # Type 2 HBA1C >= 59% (1.52)
   );
-  
+
   dage = age;
   dage = dage/10;
   age_2 = dage^3*log(dage);
@@ -264,19 +278,19 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   dbmi = dbmi/10;
   bmi_2 = log(dbmi)^2;
   bmi_1 = log(dbmi);
-  
+
   mage_1 = 111.719131469726562;
   mage_2 = 175.622024536132812;
   mbmi_1 = 0.980837404727936;
   mbmi_2 = 0.962042033672333;
   mtown = 0.272704988718033;
-  
+
   age_1 = age_1 - mage_1;
   age_2 = age_2 - mage_2;
   bmi_1 = bmi_1 - mbmi_1;
   bmi_2 = bmi_2 - mbmi_2;
   town = .na.default(town,-0.17) - mtown;
-  
+
   a = rep(0,length(chemocat));
   a = a + .naz(Ichemocat[.na1(chemocat)]);
   a = a + .naz(Iethrisk[.na1(ethrisk)]);
@@ -285,19 +299,19 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   a = a + .naz(Irenalcat[.na1(renalcat)]);
   a = a + .naz(Itypeonecat[.na1(typeonecat)]);
   a = a + .naz(Itypetwocat[.na1(typetwocat)]);
-  
+
   cage_1 = 0.0788990689213801693613348;
   cage_2 = -0.0305211927153145011482049;
   cbmi_1 = -10.4862948374280477992215310;
   cbmi_2 = 5.8034416018720360597171748;
   ctown = 0.0120903926083225157772638;
-  
+
   a = a + .naz(age_1 * cage_1);
   a = a + .naz(age_2 * cage_2);
   a = a + .naz(bmi_1 * cbmi_1);
   a = a + .naz(bmi_2 * cbmi_2);
   a = a + .naz(town * ctown);
-  
+
   cb2_82 = 0.4086911314144368034817489;
   cb2_leukolaba = 0.2459549851861309033296266;
   cb2_prednisolone = 0.4935190578667876248886159;
@@ -330,7 +344,7 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   cp_marrow6 = 1.1996239395564705088048640;
   cp_radio6 = 0.7221364731255899283013377;
   cp_solidtransplant = 1.3064986170312842261864716;
-  
+
   a = a + .naz(b2_82 * cb2_82);
   a = a + .naz(b2_leukolaba * cb2_leukolaba);
   a = a + .naz(b2_prednisolone * cb2_prednisolone);
@@ -363,17 +377,17 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   a = a + .naz(p_marrow6 * cp_marrow6);
   a = a + .naz(p_radio6 * cp_radio6);
   a = a + .naz(p_solidtransplant * cp_solidtransplant);
-  
+
   cage_1_bmi_1 = 0.0881011501841798549961027;
   cage_1_bmi_2 = -0.0469360832786057877163977;
   cage_2_bmi_1 = -0.0321592497178678216052106;
   cage_2_bmi_2 = 0.0168967404194000046790958;
-  
+
   a = a + .naz(age_1 * bmi_1 * cage_1_bmi_1);
   a = a + .naz(age_1 * bmi_2 * cage_1_bmi_2);
   a = a + .naz(age_2 * bmi_1 * cage_2_bmi_1);
   a = a + .naz(age_2 * bmi_2 * cage_2_bmi_2);
-  
+
   return(a)
 }
 
@@ -437,7 +451,7 @@ avoncap_calculate_qcovid = function(avoncap_df) {
     0.1699624442157874337766543,
     0.3444945069393105518962273
   );
-  
+
   dage = age;
   dage=dage/10;
   age_2 = (dage^3)*log(dage);
@@ -446,19 +460,19 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   dbmi=dbmi/10;
   bmi_2 = dbmi^(-.5);
   bmi_1 = dbmi^(-1);
-  
+
   mage_1 = 105.356376647949219;
   mage_2 = 163.560455322265625;
   mbmi_1 = 0.376875340938568;
   mbmi_2 = 0.613901734352112;
   mtown = 0.381615489721298;
-  
+
   age_1 = age_1 - mage_1;
   age_2 = age_2 - mage_2;
   bmi_1 = bmi_1 - mbmi_1;
   bmi_2 = bmi_2 - mbmi_2;
   town = .na.default(town,-0.17) - mtown;
-  
+
   a = rep(0,length(chemocat));
   a = a + .naz(Ichemocat[.na1(chemocat)]);
   a = a + .naz(Iethrisk[.na1(ethrisk)]);
@@ -467,19 +481,19 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   a = a + .naz(Irenalcat[.na1(renalcat)]);
   a = a + .naz(Itypeonecat[.na1(typeonecat)]);
   a = a + .naz(Itypetwocat[.na1(typetwocat)]);
-  
+
   cage_1 = 0.0751693532213748571990664;
   cage_2 = -0.0290210713474857440186128;
   cbmi_1 = 70.0834183217586854652836337;
   cbmi_2 = -90.3008773718579789147042902;
   ctown = 0.0103933885412884514931608;
-  
+
   a = a + .naz(age_1 * cage_1);
   a = a + .naz(age_2 * cage_2);
   a = a + .naz(bmi_1 * cbmi_1);
   a = a + .naz(bmi_2 * cbmi_2);
   a = a + .naz(town * ctown);
-  
+
   cb2_82 = 0.3004078585711824622705990;
   cb2_leukolaba = 0.1842407594964516059921067;
   cb2_prednisolone = 0.2966906134055413701844373;
@@ -512,7 +526,7 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   cp_marrow6 = 0.0173109573323377251286015;
   cp_radio6 = 0.5885030571210743133292453;
   cp_solidtransplant = 0.3497252314688003571596653;
-  
+
   a = a + .naz(b2_82 * cb2_82);
   a = a + .naz(b2_leukolaba * cb2_leukolaba);
   a = a + .naz(b2_prednisolone * cb2_prednisolone);
@@ -545,23 +559,23 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   a = a + .naz(p_marrow6 * cp_marrow6);
   a = a + .naz(p_radio6 * cp_radio6);
   a = a + .naz(p_solidtransplant * cp_solidtransplant);
-  
+
   cage_1_bmi_1 = -0.3503898360120490940161631;
   cage_1_bmi_2 = 0.4838244063059173871721441;
   cage_2_bmi_1 = 0.1012775205039646020388489;
   cage_2_bmi_2 = -0.1438807402406489244217624;
-  
+
   a = a + .naz(age_1 * bmi_1 * cage_1_bmi_1);
   a = a + .naz(age_1 * bmi_2 * cage_1_bmi_2);
   a = a + .naz(age_2 * bmi_1 * cage_2_bmi_1);
   a = a + .naz(age_2 * bmi_2 * cage_2_bmi_2);
-  
+
   return(a)
 }
 
 
 .test_qcovid= function() {
-  
-  
-  
+
+
+
 }

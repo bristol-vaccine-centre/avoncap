@@ -8,28 +8,31 @@ Description: A set of functions allowing data load, wrangling, visualisation, ta
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Imports: 
-    devtools,
     dplyr,
     dtrackr,
-    ggplot2,
-    lmtest,
-    logbin,
     lubridate,
     magrittr,
-    MASS,
-    mice,
-    patchwork,
-    performance,
-    report,
     rlang,
-    sandwich,
-    stats,
     tibble,
     tidyr,
-    utils
+    utils,
+    fs,
+    readr,
+    digest,
+    forcats,
+    methods,
+    purrr,
+    stringr,
+    tidyselect (>= 1.2.0),
+    yaml
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    tidyverse,
+    testthat
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
+LazyData: true

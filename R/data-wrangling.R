@@ -1,184 +1,78 @@
-# Import AVONCAP data and cleanse into a tidy data format
-# assuming there will be changes to the format we would like to be able to make
-# the import reverse compatible to previous versions of the data.
-
-#' Locate the input directory
-#'
-#' @param path the sub path(s) within the input directory
-#'
-#' @return a path to the input directory and sub path(s) if provided
-#' @export
-#'
-#' @examples
-#' opt = options("avoncap.input"=tempdir())
-#' # options("avoncap.input" = "~/Git/avoncap-analysis/input")
-#' input()
-#' options(opt)
-input = function(path = "") {
-  dir = getOption("avoncap.input")
-  if(is.null(dir)) stop("The data input directory must be defined by setting option('avoncap.input'='~/path/to/input')")
-  dir = normalizePath(dir)
-  if (!fs::dir_exists(dir)) stop ("The input directory must exist: ",dir)
-  return(fs::path(dir,path))
-}
-
-# Read in secrets file from input directory.
-.secrets = function(path = input("avoncap.yaml")) {
-  out = yaml::read_yaml(path)
-  return(out)
-}
-
-## File handling functions ----
-
-#' Scans the input directory and returns csv or xlsx files in that directory
-#'
-#' Extracting metadata from the filename where present - particularly hospital, and year number
-#'
-#' @return a dataframe containing filename, path, date, hospital, and study_year fields
-#' @export
-#'
-#' @examples
-#' all_files()
-all_files = function() {
-  files = fs::dir_ls(input(),recurse = TRUE) %>% stringr::str_subset(".+\\.(csv)")
-  info = fs::file_info(files) %>% mutate(
-    filename = path %>% fs::path_ext_remove() %>% fs::path_file() %>% stringr::str_extract("[a-zA-Z\\s]+") %>% trimws(),
-    directory = path %>% fs::path_rel(input()) %>% fs::path_split() %>% purrr::map(~ .[[1]]) %>% unlist()
-  )
-  info %>%
-    mutate(
-      modification_date = as.Date(modification_time),
-      filename_date = path %>% fs::path_file() %>% fs::path_ext_remove() %>% stringr::str_extract("\\d+") %>% stringr::str_replace("^(\\d{4})(\\d{2})$","\\120\\2") %>% as.Date(format="%d%m%Y"),
-      filetype = fs::path_ext(path),
-      hospital = case_when(
-        stringr::str_detect(path,"NBT") ~ "NBT",
-        stringr::str_detect(path,"BRI") ~ "BRI",
-        TRUE ~ NA_character_
-      ),
-      study_year = (path %>% fs::path_file() %>% fs::path_ext_remove() %>% stringr::str_match("_y([1-9])"))[,2],
-      study_year2 = (path %>% fs::path_file() %>% fs::path_ext_remove() %>% stringr::str_match("2[0-9]-2([0-9])"))[,2],
-      date = pmin(modification_date,filename_date,na.rm = TRUE),
-      study_year = ifelse(is.na(study_year) & !is.na(study_year2), study_year2, study_year)
-    ) %>%
-    select(filename, directory, path, date, hospital, study_year, filetype)
-}
-
-
-#' find most recent files of a specific type
-#'
-#' @param type - see valid_types() for current list of supported types in input directory
-#' @param reproduce_at after this date new files are ignored. This enforces a specific version of the data.
-#'
-#' @return a list of the file paths to the most up to date files of the given type relevant to each site and study year
-#' @export
-#'
-#' @examples
-#' # exact match on filename column of all_data()
-#' most_recent_files("AvonCAPLRTDCentralDa")
-#' # or matches by lower case startWith on directory
-#' most_recent_files("nhs-extract")
-most_recent_files = function(type, reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date()))) {
-  all_files() %>%
-    filter(
-      (startsWith(tolower(directory), tolower(type))
-        | filename == type) & date <= reproduce_at) %>%
-    group_by(hospital,study_year) %>%
-    # given a particular hospital or study year combo find he most recent file
-    filter(date == suppressWarnings(max(date))) %>%
-    arrange(filetype) %>%
-    filter(row_number() == suppressWarnings(max(row_number()))) %>%
-    # this will give us versioned and unversioned
-    # is this file a single file on a particular date with no version, or a versioned set of files (originally this was trust specific but also happens when it is year specific?
-    mutate(
-      byTrust = !is.na(hospital),
-      byYear = !is.na(study_year)
-    ) %>%
-    # get the most recent file or set of files if it is versioned.
-    group_by(byTrust,byYear) %>%
-    mutate(latest_date = suppressWarnings(max(date))) %>% ungroup() %>%
-    filter(latest_date == suppressWarnings(max(latest_date))) %>%
-    ungroup() %>%
-    select(-byTrust,-byYear)
-}
 
 # detecting errors when merging dataframes ----
 
 # extract parse issues
 .detect_parse_issues = function(listOfDf) {
-  suppressWarnings(purrr::map(listOfDf, ~ problems(.x)))
+  suppressWarnings(purrr::map(listOfDf, ~ readr::problems(.x)))
 }
 
 # parse the list of dataframes for columns and emptiness
 # (list(iris,mtcars)) %>% .detect_structure()
 .detect_structure =  function(listOfDf) {
-  purrr::map(listOfDf, ~ inner_join(
-    .x %>% lapply(class) %>% unlist() %>% enframe() %>% rename(type = value),
-    .x %>% lapply(function(c) all(is.na(c))) %>% unlist() %>% enframe() %>% rename(empty = value),
+  purrr::map(listOfDf, ~ dplyr::inner_join(
+    .x %>% lapply(class) %>% unlist() %>% tibble::enframe() %>% dplyr::rename(type = value),
+    .x %>% lapply(function(c) all(is.na(c))) %>% unlist() %>% tibble::enframe() %>% dplyr::rename(empty = value),
     by = "name"
   ))
 }
 
 # figure out which columns are empty
-# (list(iris,mtcars %>% mutate(carb=NA))) %>% .detect_structure() %>% .detect_empty()
+# (list(iris,mtcars %>% dplyr::mutate(carb=NA))) %>% .detect_structure() %>% .detect_empty()
 .detect_empty = function(structure) {
-  structure %>% purrr::map(~ .x %>% filter(empty) %>% pull(name))
+  structure %>% purrr::map(~ .x %>% dplyr::filter(empty) %>% dplyr::pull(name))
 }
 
-# (list(iris %>% mutate(mpg="wrong type"),mtcars %>% mutate(carb=NA))) %>% .detect_structure() %>% .detect_mismatch()
+# (list(iris %>% dplyr::mutate(mpg="wrong type"),mtcars %>% dplyr::mutate(carb=NA))) %>% .detect_structure() %>% .detect_mismatch()
 .detect_mismatch = function(structure) {
-  data = tibble(index = 1:length(structure), structure = structure) %>% unnest(structure)
-  # majority = data %>% filter(!empty) %>% group_by(name,type) %>% count() %>% group_by(name) %>% filter(n == n())
+  data = tibble::tibble(index = 1:length(structure), structure = structure) %>% tidyr::unnest(structure)
+  # majority = data %>% dplyr::filter(!empty) %>% dplyr::group_by(name,type) %>% dplyr::count() %>% dplyr::group_by(name) %>% dplyr::filter(n == dplyr::n())
   minority = data %>%
     # ignore empty columns as they are generally incorrectly typed as a logical(NA)
-    filter(!empty) %>%
-    group_by(name,type) %>% mutate(n=n()) %>%
-    group_by(name) %>% mutate(N = n()) %>%
+    dplyr::filter(!empty) %>%
+    dplyr::group_by(name,type) %>% dplyr::mutate(n=dplyr::n()) %>%
+    dplyr::group_by(name) %>% dplyr::mutate(N = dplyr::n()) %>%
     # Check that there is only one type for each of the column names.
-    filter(n!=N)
-  structure %>% purrr::map(~ .x %>% filter(!empty) %>% semi_join(minority, by=c("name","type")) %>% pull(name))
+    dplyr::filter(n!=N)
+  structure %>% purrr::map(~ .x %>% dplyr::filter(!empty) %>% dplyr::semi_join(minority, by=c("name","type")) %>% dplyr::pull(name))
 }
 
-#' A valid set of types of file that can be loaded by `load_data(...)`
-#'
-#' @return nothing.
-#' @export
-#'
-#' @examples
-#' valid_types()
-valid_types = function() {
-  t = all_files()
-  cat("By exact match on file name:\n")
-  cat(paste0(sort(unique(t$filename)),collapse = ", "))
-  cat("\nOr by file category:\n")
-  cat(paste0(sort(unique(t$directory)),collapse = ", "))
-  cat("\n")
-}
 
 #' Load data and check structure
 #'
-#' Loads the AvonCap data from a set of files, which may optionally be qualified by site ('BRI' or 'NBT') and database year ('20-21','21-22','22-23', or 'y1', 'y2', 'y3')
+#' Loads the AvonCap data from a set of csv files, which may optionally be qualified by site `('BRI' or 'NBT')` and
+#' database year `('20-21','21-22','22-23', or 'y1', 'y2', 'y3')` as part of the file name. This selects the most
+#' recent files earlier than the `reproduce_at` date and detects whether they are in a set of files.
 #'
+#' The files are loaded as csv as checked that files have (A) the same columns, (B) the same type (or are empty) (C)
+#' have any major parse issues. It then merges the files into a single dataframe, if possible, otherwise it will
+#' return the individually loaded files as a list of dataframes.
 #'
-#' @param type - see valid_types() for current list in input directory
+#' @param type see valid_inputs() for current list in input directory
+#' @param file see valid_inputs() for current list in input directory
 #' @param reproduce_at - the date at which to cut off newer data files
-#' @param merge - should multiple files be mreged into a single data frame if possible.
+#' @param merge - setting to `TRUE` forces multiple files be merged into a single data frame by losing mismatching columns.
+#' @param ... - passed to `cached` may specifically want to use `nocache=TRUE``
 #'
 #' @return either a list of dataframes or a single merged dataframe
 #' @export
 #'
 #' @examples
 #' load_data("nhs-extract")
-load_data = function(type, reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date())), merge = TRUE) {
+load_data = function(type, file=NULL, reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date())), merge = NA, ...) {
   if(reproduce_at != Sys.Date()) warning("REPRODUCING RESULTS FROM: ",reproduce_at, ", to disable this set options(reproduce.at=NULL)")
   tmp = type
-  # decide whether files are trust by trust or a single combined file
-  tmp_files = most_recent_files(type, reproduce_at)
-  if(nrow(tmp_files) == 0) stop("No suitable files matching ",type,", before date: ",reproduce_at)
-  tmp2 = ggrrr::cached({
-    files = tmp_files %>% pull(path)
+  tmp_files = most_recent_files(type, file, reproduce_at)
+  if(nrow(tmp_files) == 0) {
+    cat("No suitable files matching \"",type,"\", before date: ",format(reproduce_at), ". Try one of: \n", sep="")
+    avoncap::valid_inputs()
+    cat("as an input to 'type'\n")
+    stop("aborting.")
+  }
+  tmp2 = .cached({
+    files = tmp_files %>% dplyr::pull(path)
     if (length(files)>1 & length(unique(tmp_files$date)) > 1) {
-      warning("The most recent versions of the inputs have different effective dates: ",type," i.e. ", paste0(files,collapse = ";"))
-      warning("This could mean the files are out of sync.")
+      message("The most recent versions of the inputs have different effective dates: ",type," i.e. ", paste0(files,collapse = ";"))
+      message("This could mean the files are out of sync.")
     }
 
     # TODO: This is super slow because it checks all the data types of everything
@@ -187,365 +81,89 @@ load_data = function(type, reproduce_at = as.Date(getOption("reproduce.at",defau
     # This would need a rethink on the way in which structural issues are dealt with.
 
     data = tmp_files %>%
-      mutate(
+      dplyr::mutate(
         csv = purrr::map(path, ~ suppressWarnings(readr::read_csv(.x, na = c("","NA","Na","na","N/A","UNK"), show_col_types = FALSE))),
         entries = purrr::map_dbl(csv, ~ nrow(.))
       )
     data2 = data %>%
-      mutate(file = fs::path_file(path)) %>%
-      mutate(parse_issues = .detect_parse_issues(csv)) %>%
+      dplyr::mutate(file = fs::path_file(path)) %>%
+      dplyr::mutate(parse_issues = .detect_parse_issues(csv)) %>%
       # get rid of all parsing metadata
-      mutate(csv = purrr::map(csv, ~ as_tibble(.x))) %>%
-      mutate(structure = .detect_structure(csv)) %>%
-      mutate(empty = .detect_empty(structure)) %>%
-      mutate(mismatches = .detect_mismatch(structure)) %>%
-      select(-path,-filename)
+      dplyr::mutate(csv = purrr::map(csv, ~ tibble::as_tibble(.x))) %>%
+      dplyr::mutate(structure = .detect_structure(csv)) %>%
+      dplyr::mutate(empty = .detect_empty(structure)) %>%
+      dplyr::mutate(mismatches = .detect_mismatch(structure)) %>%
+      dplyr::select(-path,-filename)
     col_suppress = unique(c(unlist(data2$mismatches)))
 
     if(length(col_suppress) > 0) {
-      warning("INCONSISTENT COLUMN(S) IN FILES: ",paste0(col_suppress,collapse=";"))
-      warning("NOT MERGING FILES")
-      merge = FALSE
+      message("INCONSISTENT COLUMN(S) IN FILES: ",paste0(col_suppress,collapse=";"))
+      if (is.na(merge)) {
+        message("NOT MERGING FILES")
+        merge = FALSE
+      }
+    } else {
+      merge = TRUE
     }
 
-    if (nrow(bind_rows(data2$parse_issues))>0) {
-      message(nrow(bind_rows(data2$parse_issues))," parse issues in raw files. Check the parse_issues attrbute.")
+    if (nrow(dplyr::bind_rows(data2$parse_issues))>0) {
+      message(nrow(dplyr::bind_rows(data2$parse_issues))," parse issues in raw files. Check the parse_issues attrbute.")
     }
 
     if (!merge) {
-      return(data2 %>% select(hospital,study_year,file,csv, entries, mismatches, empty, structure, parse_issues))
+      return(data2 %>% dplyr::select(hospital,study_year,file,csv, entries, mismatches, empty, structure, parse_issues))
     }
 
     total = sum(data2$entries)
 
     tmp = data2 %>%
       # Lose empty columns which will have been assigned incorrect type
-      mutate(csv = purrr::map2(csv, empty, ~ .x %>% select(-any_of(.y)))) %>%
+      dplyr::mutate(csv = purrr::map2(csv, empty, ~ .x %>% dplyr::select(-any_of(.y)))) %>%
       # Lose conflicting data type columns
-      mutate(csv = purrr::map2(csv, mismatches, ~ .x %>% select(-any_of(.y)))) %>%
+      dplyr::mutate(csv = purrr::map2(csv, mismatches, ~ .x %>% dplyr::select(-any_of(.y)))) %>%
       # force merge the files together
-      select(hospital,study_year,file,csv) %>%
-      unnest(csv)
+      dplyr::select(hospital,study_year,file,csv) %>%
+      tidyr::unnest(csv)
 
     message("Loaded ",nrow(tmp)," rows from ",nrow(data2)," files, (", paste0(data2$entries,collapse="+"),"=",total,")")
     if (nrow(tmp) != total) stop("The row numbers of the merged files", nrow(tmp)," do not add up to expected, ",total)
 
-    attr(tmp,"parse_issues") = bind_rows(data2$parse_issues)
+    attr(tmp,"parse_issues") = dplyr::bind_rows(data2$parse_issues)
     attr(tmp,"file") = paste0(fs::path_file(files), collapse="; ")
-    attr(tmp,"date") = unique(tmp_files$latest_date)
+    attr(tmp,"paths") = files
+    attr(tmp,"date") = unique(tmp_files$date)
     tmp
-  },filename, reproduce_at, merge, tmp_files, .cache = input("cache"))
+  }, merge, tmp_files, .cache = input("cache"), ...)
   return(tmp2)
 }
 
 #' Write file source information out to a text files
 #'
-#' @param rawDataDf The result of a `load_data(...)` call
-#' @param out the `ggrrr::outputter`
+#' @param ... A list of data frames loaded with the `load_data(...)` call
+#' @param .file the output file location
 #'
-#' @return nothing
+#' @return the filename written to invisibly
 #' @export
-save_data_source_info = function(rawDataDf, out) {
-  readr::write_lines(x = c(
-    attr(rawDataDf,"file"),
-    digest::digest(rawDataDf, algo="md5")), file = out("data_sources.txt"))
+save_data_source_info = function(..., .file) {
+  dfs = rlang::list2(...)
+  files = sapply(dfs, function(x) attr(x,"paths"))
+  md5s= sapply(unlist(files), digest::digest, file=TRUE, USE.NAMES = FALSE)
+  df=tibble::tibble(
+    path = unlist(files),
+    md5 = md5s)
+  readr::write_csv(x = df, file = .file)
+  return(df)
 }
 
 
-## Data normalisation infrastructure ----
 
-
-normalise_data = function(
-    rawData,
-    ethnicityFiles = most_recent_files("ethnicity",reproduce_at=Sys.Date()),
-    remove_mapped = TRUE,
-    remove_unmapped = TRUE,
-    mappings=.mappings,
-    messages = c("files: {files}","{.total} rows","analysis from: {reproduce_at}","files from: {date}"),
-    reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date())),
-    ...
-) {
-
-  reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date()))
-  files = attr(rawData,"file")
-  date = attr(rawData,"date")
-
-  try({
-    ethn = bind_rows(lapply(ethnicityFiles$path, readr::read_csv))
-    rawData = rawData %>% left_join(ethn, by="record_number", suffix = c("",".ethn"))
-  })
-
-  ggrrr::cached({
-    tmp = rawData
-    if ("admission_date" %in% colnames(tmp)) {
-      # the NHS data set has and admission date
-      tmp = tmp %>%
-        mutate(
-          year = lubridate::year(admission_date),
-          week_number = lubridate::epiweek(admission_date),
-          study_week = study_week(admission_date),
-          study_year = year-2019+ifelse(week_number>30,0,1)
-        )
-    } else if (all(c("study_year","week_number") %in% colnames(tmp))) {
-      tmp = tmp %>%
-        # the Bristol data set has week_number which is a week number from start of the study in that year.
-        # The study starts on week 31. Therefore for the 20-21 database (i.e. study_year 1) weeks 31-52 are in 2020 and 0-30 are in 2021
-        # we get the year from the file-name itself (which assumes it was correctly named)
-        mutate(
-          year = case_when(
-            is.numeric(year) & !is.na(year) ~ year,
-            study_year == 1 & week_number>30 ~ 2020,
-            study_year == 1 & week_number<=30 ~ 2021,
-            study_year == 2 & week_number>30 ~ 2021,
-            study_year == 2 & week_number<=30 ~ 2022,
-            study_year == 3 & week_number>30 ~ 2022,
-            study_year == 3 & week_number<=30 ~ 2023,
-            study_year == 4 & week_number>30 ~ 2023,
-            study_year == 4 & week_number<=30 ~ 2024,
-            TRUE ~ NA_real_
-          )) %>%
-        mutate(
-          study_week = (year-2020)*52+week_number-1,
-          admission_date = start_date_of_week(study_week)
-          # week_number = lubridate::epiweek(admission_date)
-        )
-    }
-
-    if (!"hospital" %in% colnames(tmp)) {
-      # The hospital may be known from the file the data came from. If not we can work it out from
-      # the record number
-      tmp = tmp %>% mutate(hospital = case_when(
-        tolower(substr(record_number,1,1)) == "b" ~ "BRI",
-        tolower(substr(record_number,1,1)) == "n" ~ "NBT",
-        TRUE ~ NA_character_
-      ))
-    }
-
-    originalColnames = colnames(tmp)
-    # prefix all the original columns with a single "."
-    tmp = tmp %>% rename_with(.fn= ~ paste0(".",.x))
-
-    # mutate field values into new values
-    for(i in 1:length(mappings)) {
-      mappingName = names(mappings)[[i]]
-
-      .fn = mappings[[i]]
-      tomap = paste0(".",mappingName)
-      if (tomap %in% colnames(tmp)) {
-      # add in the "."
-        tryCatch({
-          tmp = tmp %>% .fn(paste0(".",mappingName))
-        }, error = function(e) {
-          warning("could not process column or column set ",mappingName," due to ",e$message)
-        })
-      } else {
-        warning("the input data set does not have a ",mappingName," column")
-      }
-
-    }
-
-    fileName = files
-
-    message("mapped ",tmp %>% select(starts_with("..")) %>% colnames() %>% length()," columns")
-    if(remove_mapped) {
-      tmp = tmp %>% select(-starts_with(".."))
-    } else {
-      message("renamed original columns as: ",tmp %>% select(starts_with("..")) %>% colnames() %>% paste0(collapse="; "))
-    }
-
-    unmappedCols = tmp %>% select(c(starts_with("."), -starts_with(".."))) %>% colnames()
-
-    message("Did not map ", unmappedCols %>% length()," columns")
-
-    # detect multiple admission episodes based on nhs_number, if present
-    tryCatch({
-      tmp = tmp %>% group_by(.nhs_number) %>% arrange(admission.date) %>%
-        mutate(
-          admission.episode = row_number(),
-          admission.interval = as.integer(admission.date-lag(admission.date))
-        ) %>% ungroup()
-    }, error = function(e) warning("could not identify duplicates by NHS number"))
-
-    if (!"admission.episode" %in% colnames(tmp)) tmp = tmp %>% mutate(admission.episode = NA_real_)
-
-    if(remove_unmapped) {
-      tmp = tmp %>% select(!(c(starts_with("."), -starts_with(".."))))
-    } else {
-      message("renamed unmapped columns as: ",unmappedCols %>% paste0(collapse="; "))
-    }
-
-    tmp %>% dtrackr::track(.messages = messages) %>% dtrackr::capture_exclusions()
-
-  }, rawData, mappings, remove_mapped, remove_unmapped, .cache = here::here("input/cache"), ...)
-  # return(tmp2)
-}
-
-# Allows a
-.normalise_variant = function(renameTo) {
-  renameTo = ensym(renameTo)
-  return(function(df, valueCol) {
-    valueCol = as.symbol(valueCol)
-    message("mapping ",valueCol," to ",renameTo)
-    df %>% mutate(!!renameTo := case_when(
-        !!valueCol %>% stringr::str_detect("(P|p).*(R|r)") ~ "Delta",
-        !!valueCol %>% stringr::str_detect("(K|k).*(N|n)") ~ "Omicron",
-        is.na(!!valueCol) ~ NA_character_,
-        TRUE ~ "unknown"
-      ) %>% factor(levels = c("unknown","Delta","Omicron"))) %>%
-      mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueCol)) %>%
-      rename(!!(paste0(".",valueCol)) := (!!valueCol))
-  })
-}
-
-# TODO: use labelled:: for column names
-
-.normalise_list = function(renameTo, values, ordered = FALSE, zeroValue=FALSE, codes=(1:length(values))-zeroValue) {
-  renameTo=ensym(renameTo)
-  return(function(df, valueCol) {
-    valueCol = as.symbol(valueCol)
-    message("mapping ",valueCol," to ",renameTo)
-    df %>%
-      mutate(!!renameTo := !!valueCol %>% factor(levels=codes, labels=values, ordered = ordered)) %>%
-      mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueCol)) %>%
-      rename(!!(paste0(".",valueCol)) := (!!valueCol))
-  })
-}
-
-.normalise_yesno = function(renameTo) {
-  #TODO: error checking
-  .normalise_list({{renameTo}}, c("no","yes"), zeroValue=TRUE)
-}
-
-.normalise_name = function(renameTo) {
-  renameTo=ensym(renameTo)
-  return(function(df, valueCol) {
-    message("mapping ",valueCol," to ",renameTo)
-    #TODO: error checking
-    valueCol = as.symbol(valueCol)
-    df %>%
-      mutate(!!renameTo := !!valueCol) %>%
-      mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueCol)) %>%
-      rename(!!(paste0(".",valueCol)) := (!!valueCol))
-  })
-}
-
-.normalise_double = function(renameTo, limits=c(-Inf,Inf)) {
-  renameTo=ensym(renameTo)
-  return(function(df, valueCol) {
-    message("mapping ",valueCol," to ",renameTo)
-    #TODO: error checking
-    valueCol = as.symbol(valueCol)
-    df %>%
-      mutate(!!renameTo :=  suppressWarnings(as.numeric(!!valueCol))) %>%
-      mutate(!!renameTo :=  if_else(!!renameTo < limits[1] | !!renameTo > limits[2],NA_real_,!!renameTo)) %>%
-      mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueCol)) %>%
-      rename(!!(paste0(".",valueCol)) := (!!valueCol))
-  })
-}
-
-.normalise_text_to_factor = function(renameTo, levels) {
-  renameTo=ensym(renameTo)
-  return(function(df, valueCol) {
-    message("mapping ",valueCol," to ",renameTo)
-    #TODO: error checking
-    valueCol = as.symbol(valueCol)
-    df %>%
-      mutate(!!renameTo := suppressWarnings(factor(tolower(!!valueCol), levels=tolower(levels), labels=levels))) %>%
-      mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueCol)) %>%
-      rename(!!(paste0(".",valueCol)) := (!!valueCol))
-  })
-}
-
-.normalise_date = function(renameTo, limits=as.Date(c("2020-01-01","2030-01-01")), tryFormats="%d/%m/%Y") {
-  renameTo=ensym(renameTo)
-  return(function(df, valueCol) {
-    message("mapping ",valueCol," to ",renameTo)
-    #TODO: error checking
-    valueCol = as.symbol(valueCol)
-    df %>%
-      mutate(!!renameTo :=  suppressWarnings(as.Date(!!valueCol, tryFormats = tryFormats))) %>%
-      mutate(!!renameTo :=  if_else(!!renameTo < limits[1] | !!renameTo > limits[2],as.Date(NA),!!renameTo)) %>%
-      mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueCol)) %>%
-      rename(!!(paste0(".",valueCol)) := (!!valueCol))
-  })
-}
-
-.normalise_checkboxes = function(renameToVars) {
-  return(function(df, valueColPrefix) {
-
-    i=1
-    naCol = as.symbol(paste0(valueColPrefix,"___na"))
-    hasNa = as_label(naCol) %in% colnames(df)
-    for(renameTo in renameToVars) {
-      # figure out the name in the data of the column
-      valueCol = as.symbol(paste0(valueColPrefix,"___",i))
-      message("mapping ",valueCol," to ",renameTo)
-      # rename original ___1, ___2, etc to something meaningful and convert to ordered factor
-      df = df %>% mutate(!!renameTo := !!valueCol)
-      if(hasNa) {
-        # deal with ___na columns etc, by making the renamed checkbox variables have an NA in them for the values where NA has been checked
-        df = df %>% mutate(!!renameTo := if_else(!!naCol == 1, NA_real_, !!renameTo))
-      }
-      df = df %>% mutate(!!renameTo := !!renameTo %>% factor(levels=c(0,1), labels=c("no","yes")))
-      # hide original ___1, ___2, etc columns
-      df = df %>% rename(!!(paste0(".",valueCol)) := (!!valueCol))
-      #TODO: validation checking?
-      i=i+1
-    }
-    # hide original ___na columns
-    if(hasNa) df = df %>% rename(!!(paste0(".",naCol)) := (!!naCol))
-
-    df = df %>% mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueColPrefix))
-    return(df)
-
-
-  })
-}
-
-.normalise_checkboxes_to_list = function(renameTo, values, ordered = FALSE, zeroValue=FALSE, codes=(1:length(values))-zeroValue) {
-  renameTo=ensym(renameTo)
-  # return(function(df, valueCol) {
-  #   valueCol = as.symbol(valueCol)
-  #   message("mapping ",valueCol," to ",renameTo)
-  #   df %>%
-  #     mutate(!!renameTo := !!valueCol %>% factor(levels=codes, labels=values, ordered = ordered)) %>%
-  #     rename(!!(paste0(".",valueCol)) := (!!valueCol))
-  # })
-
-  return(function(df, valueColPrefix) {
-
-    naCol = as.symbol(paste0(valueColPrefix,"___na"))
-    hasNa = as_label(naCol) %in% colnames(df)
-
-    df = df %>% mutate(!!renameTo := as(NA,class(values)))
-
-    for(i in 1:length(values)) {
-      value = values[i]
-      code = codes[i]
-      # figure out the name in the data of the column
-      valueCol = as.symbol(paste0(valueColPrefix,"___",code))
-      message("mapping ",valueCol," to ",renameTo,", value ",value)
-      df = df %>% mutate(!!renameTo := ifelse(!!valueCol == 1 & is.na(!!renameTo),value,!!renameTo))
-      # no need to deal with ___na columns etc as columns start with NA. no way to tell missing from present but NA.
-      # hide original ___1, ___2, etc columns
-      df = df %>% rename(!!(paste0(".",valueCol)) := (!!valueCol))
-      #TODO: validation checking?
-    }
-
-    # hide original ___na columns
-    if(hasNa) df = df %>% rename(!!(paste0(".",naCol)) := (!!naCol))
-    df = df %>% mutate(!!renameTo := !!renameTo %>% magrittr::set_attr("src",valueColPrefix))
-    return(df)
-
-  })
-}
 
 # lrtd_normalise = function(lrtd_data = load_data("AvonCAPLRTDCentralDa")) {
-#   ethn = readr::read_csv(here::here("input/Ethnicity Data.csv"))
+#   ethn = readr::read_csv(input("Ethnicity Data.csv"))
 #   # With the data from bristol the year and
-#   lrtd_data2 = lrtd_data %>% left_join(ethn, by="record_number") %>%
+#   lrtd_data2 = lrtd_data %>% dplyr::left_join(ethn, by="record_number") %>%
 #     # the years are sometimes missing when
-#     mutate(year = case_when(
+#     dplyr::mutate(year = dplyr::case_when(
 #       !is.na(year) ~ year,
 #       year == "y1" & week_number>30 ~ 2020,
 #       year == "y1" & week_number<=30 ~ 2021,
@@ -555,13 +173,13 @@ normalise_data = function(
 #       year == "y3" & week_number<=30 ~ 2023,
 #       TRUE ~ NA_real_
 #     )) %>%
-#     mutate(study_week = (year-2020)*52+week_number)
+#     dplyr::mutate(study_week = (year-2020)*52+week_number)
 #   # These variables get picked up by the additional mappings in lrtd_mappings:
 #   lrtd_norm = lrtd_data2 %>% normalise_data()
 #
 #   v = lrtd_norm %>% get_value_sets()
 #
-#   lrtd_norm = lrtd_norm %>% mutate(
+#   lrtd_norm = lrtd_norm %>% dplyr::mutate(
 #     # this is a study specific variable.
 #     admission.study_week_start_date = start_date_of_week(admission.study_week)
 #   )
@@ -571,63 +189,164 @@ normalise_data = function(
 
 ## Column naming ----
 
-.column_names = list(
-  demog.imd_decile = "IMD (decile)",
-  genomic.variant_inferred = "Variant",
-  admission.curb_65_severity_score = "CURB65 score",
-  demog.age = "Age",
-  admission.news2_score = "NEWS2 score",
-  qcovid2.hazard_ratio = "QCovid2 HR",
-  qcovid2.log_hazard = "QCovid2 log hazard",
-  admission.charlson_comorbidity_index = "CCI",
-  admission.cci_category = "CCI category",
-  admission.covid_pcr_result = "PCR result",
-  day_7.WHO_clinical_progression = "WHO Outcome score",
-  day_7.max_o2_level = "Max FiO2",
-  day_7.length_of_stay = "Length of Stay",
-  demog.pcr_positive_by_age = "PCR positives (by age)",
-  demog.age_eligible = "Age eligible for PneumoVax",
-  admission.presentation_3_class = "aLTRD presentation"
-)
+#' default column naming mappings
+#'
+#' @param ... additional named items to add
+#' @return a set of mappings
+#' @export
+default_column_names = function(...) {
+  list(
+    ...,
+    demog.imd_decile = "IMD (decile)",
+    genomic.variant_inferred = "Variant",
+    admission.curb_65_severity_score = "CURB65 Score",
+    demog.age = "Age",
+    admission.news2_score = "NEWS2 Score",
+    qcovid2.hazard_ratio = "QCovid2 HR",
+    qcovid2.log_hazard = "QCovid2 log hazard",
+    admission.charlson_comorbidity_index = "CCI",
+    admission.cci_category = "CCI Category",
+    admission.covid_pcr_result = "PCR Result",
+    day_7.WHO_clinical_progression = "WHO Outcome Score",
+    day_7.max_o2_level = "Max FiO2",
+    day_7.length_of_stay = "Length of Stay",
+    demog.pcr_positive_by_age = "PCR Positives (by age)",
+    demog.age_eligible = "Age Eligible for PneumoVax",
+    admission.presentation_3_class = "aLTRD presentation",
+    admission.category = "Aetiology"
+  )
+}
 
-# just a mapping function to get a readable label from the named variable.
-# TODO: might be better to use the labelled package for this.
-readable_label = function(columnVar, colNames = .column_names) {
-  columnVar = ensym(columnVar)
-  tmp = as_label(columnVar)
+#' Get a label for a column
+#'
+#' @param columnVar the column name as a string
+#' @param colNames bespoke column names mapping (see `default_column_names(...)`)
+#'
+#' @return a mapped column name
+#' @export
+readable_label = function(columnVar, colNames = default_column_names()) {
+  columnVar = rlang::ensym(columnVar)
+  if (length(columnVar) > 1) return(lapply(columnVar, readable_label, colNames = colNames))
+  if (rlang::is_symbol(columnVar)) columnVar = rlang::as_label(columnVar)
+  tmp = columnVar
   if (!is.null(colNames[[tmp]])) {
     return(colNames[[tmp]])
   }
   tmp = tmp %>% stringr::str_remove("[a-zA-Z0-9_]+\\.") %>% stringr::str_replace_all("_"," ")
-  if (tmp == toupper(tmp)) return(tmp)
-  if (stringr::str_length(tmp)<=4) return(toupper(tmp))
-  return(tmp %>% stringr::str_to_sentence())
+  return(tmp %>% stringr::str_to_title() %>% .fix_acronyms() %>% .fix_symbols())
 }
 
-#
-readable_label_mapping = function(columnVars, colNames = .column_names) {
-  tmp = unname(columnVars) %>% sapply(readable_label, colNames=colNames)
+.fix_acronyms = function(strings, acronyms = c("CCI","CKD","ICU","BMI","NEWS2","COVID","LRTI","aLRTI","IMD","CURB65","MI","FiO2","PEEP","BP","HIV","AIDS","AF","PE","STEMI","NSTEMI","LOS","WHO","IHD","CCF","TIA","CVA","DVT","CXR","COPD","ARF","ACS","VTE")) {
+  out = strings
+  for(acronym in acronyms) {
+    r = sprintf("\\b%s\\b",acronym)
+    out = out %>% stringr::str_replace_all(stringr::regex(r,ignore_case=TRUE),acronym)
+  }
+  return(out)
+}
+
+.fix_symbols = function(strings, symbols = c(" gt "=">"," gte "="\u2265"," lt "="<"," lte "="\u2264")) {
+  out = strings
+  for(symbol in names(symbols)) {
+    out = out %>% stringr::str_replace_all(stringr::fixed(symbol,ignore_case=TRUE),symbols[[symbol]])
+  }
+  return(out)
+}
+
+#' Get a readable label for the AvonCap data as a named list (for ggplot)
+#'
+#' @param x either the column names as strings, or a dataframe
+#' @param colNames a specific mapping of names (as symbols) to Strings to override the default heuristics
+#' @param ... ignored
+#'
+#' @return a named list of the labels for the columns
+#' @export
+readable_label_mapping = function(x,...) {
+  UseMethod("readable_label_mapping",x)
+}
+
+#' @describeIn readable_label_mapping for data frames
+#' @param colNames a mapping to convert a column name (as a string) to a readable label
+#' @export
+readable_label_mapping.data.frame = function(x, colNames = default_column_names(...), ...) {
+  columnVars = colnames(x)
+  readable_label_mapping.default(columnVars, colNames = colNames, ...)
+}
+
+#' @describeIn readable_label_mapping for lists
+#' @export
+readable_label_mapping.list = function(x, colNames = default_column_names(...), ...) {
+  columnVars = x
+  tmp = columnVars %>% sapply(readable_label, colNames=colNames)
+  names(tmp) = unname(columnVars) %>% sapply(rlang::as_label)
+  return(tmp)
+}
+
+#' @describeIn readable_label_mapping for character vectors
+#' @export
+readable_label_mapping.character = function(x, colNames = default_column_names(...), ...) {
+  columnVars = as.list(x)
+  tmp = columnVars %>% sapply(readable_label, colNames=colNames)
+  names(tmp) = unname(columnVars) %>% sapply(rlang::as_label)
+  return(tmp)
+}
+
+#' @describeIn readable_label_mapping defaults
+#' @export
+readable_label_mapping.default = function(x, colNames = default_column_names(...), ...) {
+  columnVars = as.list(as.character(x))
+  tmp = columnVars %>% sapply(readable_label, colNames=colNames)
   if(is.list(columnVars)) {
-    names(tmp) = unname(columnVars) %>% sapply(as_label)
+    names(tmp) = unname(columnVars) %>% sapply(rlang::as_label)
   } else {
     names(tmp) = unname(columnVars)
   }
   return(tmp)
 }
 
+
+
+#' Get the mapping of transformed columns back to original
+#'
+#' @param data the transformed data set.
+#'
+#' @return a named list mapping original to new columns
+#' @export
+original_field_names = function(data) {
+  tmp = sapply(colnames(data), function(x) attr(data[[x]],"src"))
+  tmp2 = names(tmp)
+  names(tmp2) = substr(tmp,2,1000)
+  return(tmp2)
+}
+
 ## Study dates and weeks ----
 
+#' Convert a date to a study week
+#'
+#' @param dates a list of date objects
+#'
+#' @return an integer number of weeks since 2019-12-30
+#' @export
 study_week = function(dates) {
   return(as.integer(as.Date(dates)-as.Date("2019-12-30")) %/% 7)
 }
 
+
+#' Convert a study week back into a date
+#'
+#' This is poorly named as only give the start date is the input is an integer
+#'
+#' @param study_week does accept decimals and returns the nearest whole date to the value
+#'
+#' @return a vector of sudy_week numbers
+#' @export
 start_date_of_week = function(study_week) {
-  return(as.Date("2019-12-30")+study_week*7)
+  return(as.Date("2019-12-30")+floor(study_week*7))
 }
 
 ## Exclusions ----
 
-standard_exclusions = function(avoncap_df) {
+standard_exclusions = function(avoncap_df, censoring=7) {
   tmp3 = avoncap_df
   v = tmp3 %>% get_value_sets()
   reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date()))
@@ -640,7 +359,7 @@ standard_exclusions = function(avoncap_df) {
       vaccination.first_dose_brand == v$vaccination.first_dose_brand$Pfizer & vaccination.first_dose_date < "2020-12-08" ~ "{.excluded} with first pfizer before 8/12/2020",
       vaccination.first_dose_brand == v$vaccination.first_dose_brand$AZ & vaccination.first_dose_date < "2021-01-04" ~ "{.excluded} with first AZ before 4/1/2021",
       admission.duration_symptoms > 10 ~ "{.excluded} symptomatic >10 days before admission",
-      admission.date > reproduce_at-7 ~ "{.excluded} with admission after {format(reproduce_at-7, '%d/%m/%Y')}",
+      admission.date > reproduce_at-censoring ~ "{.excluded} with admission after {format(reproduce_at-censoring, '%d/%m/%Y')}",
       admission.episode > 1 ~ "{.excluded} repeat admissions",
       .stage = "standard exclusions"
     )

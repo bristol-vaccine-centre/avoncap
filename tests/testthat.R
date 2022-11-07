@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(avoncap-analysis)
+library(avoncap)
 
-test_check("avoncap-analysis")
+test_check("avoncap")

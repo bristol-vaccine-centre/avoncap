@@ -5,6 +5,8 @@
   # 2) change this to deal with explicit NA options in the drop downs otherwise we are missing explicit missing values
   # in the dropdowns.
   "record_number" = .normalise_name(admin.record_number),
+  "ac_study_number" = .normalise_name(admin.consented_record_number),
+  "nhs_number" = .normalise_ppi(admin.patient_identifier),
   "duplicate" = .normalise_yesno(admin.duplicate),
   "enrollment_date" = .normalise_date(
     admin.enrollment_date
@@ -23,7 +25,7 @@
   "clinical_radio_diagnosis" = .normalise_yesno(
     diagnosis.clinical_or_radiological_LRTI_or_pneumonia
   ),
-  # "c19_adm_swab" = .normalise_checkboxes(vars(
+  # "c19_adm_swab" = .normalise_checkboxes(dplyr::vars(
   #   diagnosis.COVID_positive,
   #   diagnosis.COVID_negative,
   #   diagnosis.no_COVID_test,
@@ -34,7 +36,7 @@
     values = c("COVID-19 positive","COVID-19 negative","Indeterminate","Known community/recent positive","Not performed")
   ),
 
-  # "c19_adm_status" = .normalise_checkboxes(vars(
+  # "c19_adm_status" = .normalise_checkboxes(dplyr::vars(
   #   diagnosis.COVID_laboratory_confirmed,
   #   diagnosis.COVID_patient_reported_test,
   #   diagnosis.COVID_clinical_diagnosis,
@@ -63,6 +65,8 @@
     demog.gender, c("Male","Female")),
   "age_at_admission" = .normalise_double(
     demog.age, limits=c(0,120)),
+  "age_march" = .normalise_double(
+    demog.age_in_march_2021, limits=c(0,120)),
   "imd" = .normalise_name(
     demog.imd_decile),
 
@@ -80,21 +84,21 @@
       "Unknown"
     )),
   # sometimes this column is names ethnicity sometimes ethnicity2
-  "ethnicity" = .normalise_list(
-    demog.ethnicity, c(
-      "White British",
-      "White other",
-      "Mixed origin",
-      "Black",
-      "Asian",
-      "Other race",
-      "Unknown"
-    )),
+  # "ethnicity" = .normalise_list(
+  #   demog.ethnicity, c(
+  #     "White British",
+  #     "White other",
+  #     "Mixed origin",
+  #     "Black",
+  #     "Asian",
+  #     "Other race",
+  #     "Unknown"
+  #   )),
 
 
   "care_home" = .normalise_yesno(
     demog.care_home_resident),
-  "drugs" = .normalise_checkboxes(vars(
+  "drugs" = .normalise_checkboxes(dplyr::vars(
     demog.no_drug_abuse,
     demog.alcohol_abuse,
     demog.ivdu_abuse,
@@ -110,6 +114,7 @@
 
   #### Vaccination fields: ----
   # TODO: Third dose brand is currently messed up with inconsistently transposed brand and date information.
+  "contraindication" = .normalise_yesno(vaccination.covid_vaccine_contraindicated),
   "covid19_vax" = .normalise_list(
     vaccination.covid_vaccination, c("Not received","Received","Unknown"), codes=c(2,1,3)
   ),
@@ -118,13 +123,17 @@
   "covidvax_dose_2" = .normalise_date(
     vaccination.second_dose_date),
   "covidvax_dose_3" = .normalise_date(
-    vaccination.second_dose_date),
+    vaccination.third_dose_date),
+  "covidvax_dose_4" = .normalise_date(
+    vaccination.fourth_dose_date),
   "brand_of_covid19_vaccinati" = .normalise_list(
     vaccination.first_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
   "covid19vax_brand_2" = .normalise_list(
     vaccination.second_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
   "covid19vax_brand_3" =  .normalise_list(
     vaccination.third_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
+  "covid19vax_brand_4" =  .normalise_list(
+    vaccination.fourth_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
 
   # Time since vaccination
   "c19vaxd1_adm" = .normalise_name(
@@ -133,6 +142,15 @@
     admission.time_since_second_vaccine_dose),
   "c19vaxd3_adm" = .normalise_name(
     admission.time_since_third_vaccine_dose),
+  "c19vaxd4_adm" = .normalise_name(
+    admission.time_since_fourth_vaccine_dose),
+
+  # Flu vaccination
+  "flu_date" = .normalise_date(vaccination.last_flu_dose_date),
+  "fluvax_adm_d1" = .normalise_name(admission.time_since_last_flu_vaccine_dose),
+  "ppv23_date" = .normalise_date(vaccination.last_pneumococcal_dose_date),
+  "ppv23vax_adm_d" = .normalise_name(admission.time_since_last_pneumococcal_vaccine_dose),
+
 
   #### Genomics ----
 
@@ -174,7 +192,7 @@
   "hr" = .normalise_name(
     admission.heart_rate),
   "temperature" = .normalise_list(
-    admission.temperature, c("Normal","Fever (T>38.0°C)","Hypothermia (T< 35.5°C)","Not recorded"), codes = c(3,1,2,4)),
+    admission.temperature, c("Normal","Fever (T>38.0\u00B0C)","Hypothermia (T< 35.5\u00B0C)","Not recorded"), codes = c(3,1,2,4)),
   "symptom_days_preadmit" = .normalise_name(
     admission.duration_symptoms),
   "previous_infection" = .normalise_list(
@@ -194,7 +212,7 @@
     admission.weight),
   "bmi" = .normalise_double(
     admission.BMI, limits=c(15,45)),
-  "first_radio" = .normalise_checkboxes(vars(
+  "first_radio" = .normalise_checkboxes(dplyr::vars(
     admission.cxr_normal,
     admission.cxr_pneumonia,
     admission.cxr_heart_failure,
@@ -222,7 +240,7 @@
     day_7.max_o2_level, c("room air","24-28%","30-35%","40%","50%","60%","80%","Over 80%"),ordered=TRUE),
   "c19_ionotropes" = .normalise_yesno(
     day_7.ionotropes_needed),
-  "c19_complication" = .normalise_checkboxes(vars(
+  "c19_complication" = .normalise_checkboxes(dplyr::vars(
     day_7.PE,
     day_7.DVT,
     day_7.ARF,
@@ -237,13 +255,14 @@
   )),
   "c19_death7d" = .normalise_yesno(
     day_7.death),
-  "c19_meds" = .normalise_checkboxes(vars(
+  "c19_meds" = .normalise_checkboxes(dplyr::vars(
     treatment.dexamethasone,
     treatment.remdesevir,
     treatment.tocilizumab,
     treatment.sarilumab,
     treatment.in_drug_trial,
-    treatment.no_drug_treatment
+    treatment.no_drug_treatment,
+    treatment.sotrovimab
   )),
 
   #### Long term follow up ----
@@ -251,11 +270,11 @@
     outcome.length_of_stay),
   "survival_days" = .normalise_name(
     outcome.survival_duration),
-  "ip_death" = .normalise_name(
-    outcome.inpatient_death_days),
+  "ip_death" = .normalise_yesno(
+    outcome.inpatient_death),
   "days_in_icu" = .normalise_name(
     outcome.icu_duration),
-  "did_the_patient_have_respi" = .normalise_name(
+  "did_the_patient_have_respi" = .normalise_yesno(
     outcome.respiratory_support_needed),
   "number_of_days_of_ventilat" = .normalise_name(
     outcome.ventilator_duration),
@@ -263,14 +282,14 @@
     outcome.endotracheal_tube_duration),
   "renal_replacement_therapy" = .normalise_name(
     outcome.renal_support_duration),
-  "complications" = .normalise_checkboxes(vars(
+  "complications" = .normalise_checkboxes(dplyr::vars(
     outcome.acute_renal_failure,
     outcome.liver_dysfunction,
     outcome.hospital_acquired_infection,
     outcome.acute_respiratory_distress_syndrome,
     outcome.NSTEMI,
     outcome.STEMI,
-    outcome.new_af,
+    outcome.new_AF,
     outcome.new_other_arrhthmia,
     outcome.stroke,
     outcome.DVT,
@@ -284,16 +303,48 @@
   "ventilatory_support" = .normalise_list(
     outcome.highest_level_ventilatory_support, c("Intubation","BiPAP","CPAP","High-Flow Nasal Cannulae","None"),ordered=TRUE
   ),
+  "did_the_patient_receive_ec" = .normalise_yesno(outcome.recieved_ecmo),
+  "inotropic_support_required" = .normalise_yesno(outcome.recieved_ionotropes),
+  "lrtd_30d_outcome" = .normalise_list(
+    outcome.functional_status,c(
+      "Deceased",
+      "Recovered",
+      "Recovered with long term sequelae",
+      "Ongoing recovery",
+      "Not recovered",
+      "Unknown"
+    )
+  ),
 
+  #### Symptoms ----
+  "fever2" = .normalise_yesno_unknown(symptom.abnormal_temperature),
+  "pleurtic_cp" = .normalise_yesno_unknown(symptom.pleuritic_chest_pain),
+  "cough2" = .normalise_yesno_unknown(symptom.cough),
+  "sput_prod" = .normalise_yesno_unknown(symptom.productive_sputum),
+  "dyspnoea" = .normalise_yesno_unknown(symptom.dyspnoea),
+  "tachypnoea2" = .normalise_yesno_unknown(symptom.tachypnoea),
+  "anosmia" = .normalise_yesno_unknown(symptom.anosmia),
+  "ageusia" = .normalise_yesno_unknown(symptom.ageusia),
+  "dysgeusia" = .normalise_yesno_unknown(symptom.dysguesia),
+  "fever" = .normalise_yesno_unknown(symptom.fever),
+  "hypothermia" = .normalise_yesno_unknown(symptom.hypothermia),
+  "chills" = .normalise_yesno_unknown(symptom.chills),
+  "headache" = .normalise_yesno_unknown(symptom.headache),
+  "malaise" = .normalise_yesno_unknown(symptom.malaise),
+  "wheeze" = .normalise_yesno_unknown(symptom.wheeze),
+  "myalgia" = .normalise_yesno_unknown(symptom.myalgia),
+  "worse_confusion" = .normalise_yesno_unknown(symptom.worsening_confusion),
+  "general_det" = .normalise_yesno_unknown(symptom.general_deterioration),
+  "ox_on_admission" = .normalise_yesno_unknown(symptom.oxygen_required_on_admission),
 
   #### Comorbidities ----
-  "resp_disease" = .normalise_checkboxes(vars(
+  "resp_disease" = .normalise_checkboxes(dplyr::vars(
     comorbid.no_resp_dx,
     comorbid.copd,
     comorbid.asthma,
     comorbid.resp_other,
   )),
-  "other_respiratory_disease" = .normalise_checkboxes(vars(
+  "other_respiratory_disease" = .normalise_checkboxes(dplyr::vars(
     comorbid.bronchiectasis,
     comorbid.interstitial_lung_dx,
     comorbid.cystic_fibrosis,
@@ -301,7 +352,7 @@
     comorbid.chronic_pleural_dx,
     comorbid.other_chronic_resp_dx,
   )),
-  "chd" = .normalise_checkboxes(vars(
+  "chd" = .normalise_checkboxes(dplyr::vars(
     comorbid.no_heart_dx,
     comorbid.ccf,
     comorbid.ihd,
@@ -311,7 +362,7 @@
   "mi" = .normalise_yesno(
     comorbid.previous_mi
   ),
-  "other_chd" = .normalise_checkboxes(vars(
+  "other_chd" = .normalise_checkboxes(dplyr::vars(
     comorbid.congenital_heart_dx,
     comorbid.af,
     comorbid.other_arrythmia,
@@ -328,7 +379,7 @@
     comorbid.diabetes_medications, c(
       "Oral","Insulin"
     )),
-  "neurological_disease" = .normalise_checkboxes(vars(
+  "neurological_disease" = .normalise_checkboxes(dplyr::vars(
     comorbid.neuro_other,
     comorbid.cva,
     comorbid.tia,
@@ -336,7 +387,7 @@
     comorbid.paraplegia,
     comorbid.no_neuro_dx
   )),
-  "dementia" = .normalise_checkboxes(vars(
+  "dementia" = .normalise_checkboxes(dplyr::vars(
     comorbid.no_dementia,
     comorbid.dementia,
     comorbid.cognitive_impairment
@@ -345,7 +396,7 @@
     comorbid.solid_cancer, c(
       "None", "Solid Organ Cancer - no mets", "Solid Organ Cancer - Metastatic Disease"
     )),
-  "haem_malig" = .normalise_checkboxes(vars(
+  "haem_malig" = .normalise_checkboxes(dplyr::vars(
     comorbid.no_haemotological_cancer,
     comorbid.leukaemia,
     comorbid.lymphoma
@@ -369,13 +420,13 @@
   "pregnancy" = .normalise_list(
     comorbid.pregnancy, c("Not pregnant","First Trimester","Second Trimester",
                           "Third Trimester","unsure of trimester","Post-partum")),
-  "hiv" = .normalise_checkboxes(vars(
+  "hiv" = .normalise_checkboxes(dplyr::vars(
     comorbid.no_HIV,
     comorbid.HIV,
     comorbid.AIDS
   )),
   ## NHS data set only mappings ----
-  "final_soc_lrtd_diagnosis" = .normalise_checkboxes(renameToVars = vars(
+  "final_soc_lrtd_diagnosis" = .normalise_checkboxes(renameToVars = dplyr::vars(
     diagnosis.SOC_CAP_radiologically_confirmed,
     diagnosis.SOC_CAP_clinically_confirmed,
     diagnosis.SOC_CAP_no_radiology,

@@ -12,15 +12,94 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(tidyverse)
+library(avoncap)
 ```
 
 ```{r setup}
-#library(avoncap)
-devtools::load_all()
 
-# This works on my development machine but will need to be modified for use
+# library(avoncap)
+# devtools::load_all()
+
+```
+
+# Input data location
+
+* first level directories.
+* Filenames need some indication of database year (either as 20-21,21-22,... or as y1,y2,...)
+
+```{r}
+# The data input directory on my development machine:
 options("avoncap.input" = "~/Git/avoncap-analysis/input")
 
-fs::dir_tree(getOption("avoncap.input"))
+# The directory structure:
+fs::dir_tree(path = avoncap::input(),glob="*/cache/*",invert=TRUE)
+```
 
+
+```{r}
+# get the most recent files
+avoncap::most_recent_files("ethnicity")
+```
+
+
+```{r}
+devtools::load_all()
+try(avoncap::load_data("missing"))
+```
+
+# Load data sources and recording provenance
+
+```{r}
+ethn = avoncap::load_data("ethnicity")
+rawData = avoncap::load_data("nhs-extract")
+avoncap::save_data_source_info(ethn, rawData, .file = tempfile("file-info",fileext = ".txt"))
+```
+
+# Normalising data 
+
+```{r}
+devtools::load_all()
+data = rawData %>% avoncap::normalise_data()
+```
+
+# Mapping columns
+
+```{r}
+# Successfully mapped columns
+# attr(data,"mapped")
+
+# Columns that are present in the data but not mapped
+attr(data,"unmapped")
+
+# Columns not present in the data for which mapping rules were supplied
+attr(data,"missing")
+```
+
+# Original field names, and labels.
+
+```{r}
+# devtools::load_all()
+
+# generate a set of readable label mappings from column to printable name for the whole data set
+readable_label_mapping(data, demog.age="TEST")
+
+# Map a single column to a readable label
+readable_label_mapping("comorbid.previous_MI")
+readable_label("comorbid.previous_MI")
+
+# get mapping from original field names pre-normalisation
+original_field_names(data)
+
+```
+
+# Augmenting the data
+
+```{r}
+# devtools::load_all()
+augmented = data %>% avoncap::augment_data()
+```
+
+```{r}
+unname(readable_label_mapping(augmented))
 ```
