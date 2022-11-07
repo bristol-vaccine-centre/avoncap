@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Rob", "Challen", , "rob.challen@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5504-7768"))
-Description: A set of functions allowing data load, wrangling, visualisation, tabulation of the AvonCap data set.
+Description: A WIP set of functions allowing data load, wrangling of the AvonCap data set.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
