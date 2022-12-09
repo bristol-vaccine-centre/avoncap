@@ -1,0 +1,124 @@
+---
+title: "Pneomococcus urinary antigen data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Urinary antigen data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+devtools::load_all()
+
+library(tidyverse)
+library(avoncap)
+```
+
+```{r setup}
+
+# The data input directory on my development machine:
+options("avoncap.input" = "~/Data/avoncap/")
+
+```
+
+# Data loading
+
+The raw data is expected to be in the `urine-antigens` subfolder
+
+```{r}
+fs::dir_tree(path = avoncap::input("urine-antigens"))
+```
+
+The data is distributed as a single file with both cases and controls together
+without distinguishing features. There are BinaxNOW and serotype specific UAD
+tests and their results. Not all tests are run for every person.
+
+```{r}
+most_recent_files("urine-antigens")
+rawUA = load_data("urine-antigens")
+```
+
+# Data normalisation
+
+The data can be subdivided into `serotype` versus `binax` groups and normalisation
+handles processing the serotype to be in the format `^[0-9]+[A-Z]$`, aligning
+format of the patient identifier to match `[0-9]{4}-[0-9]+`. And processing test
+dates (which are supplied in the `%e-%b-%y` format).
+
+```{r}
+
+normUA = rawUA %>% normalise_data(instrument = "serotype", .nocache=TRUE)
+normBinax = rawUA %>% normalise_data(instrument = "binax", .nocache=TRUE)
+
+```
+
+The normalised UAD data has the individual serotype specific tests and results
+in a nested column. The single BinaxNOW result is not nested. Results are keyed
+off a surveillance number (admission episode identifier) and test data.
+
+UAD format:
+
+`r avoncap:::.document_data_format(normUA)`
+
+BinaxNOW format:
+
+`r avoncap:::.document_data_format(normBinax)`
+
+# Data augmentation
+
+For the UAD results we commonly want to know the following:
+
+* was the serotype testing complete for all serotypes?
+* was the whole UAD panel positive for any serotype, if so how many?
+* was the UAD1 panel positive? UAD2?
+* was the UAD positive for a PCV vaccine covered serotype?
+
+For the BINAX results there is no real addition qeustions that are relevant
+
+
+```{r}
+
+augUA = normUA %>% augment_data()
+
+
+augUA %>% filter(pneumo.serotype_results_complete) %>% 
+  group_by(pneumo.serotype_summary_result) %>% 
+  count()
+
+augUA %>% unnest(pneumo.pcv_group) %>% with(table(group,result))
+
+ggplot(augUA %>% unnest(pneumo.pcv_group) %>% filter(result == "Positive"), aes(x=group))+geom_histogram(stat="count")
+
+
+
+```
+
+# Common operations
+
+```{r}
+
+# normUA %>% unnest(pneumo.urine_antigen) %>% group_by(result) %>% count()
+# ggplot(normUA %>% unnest(pneumo.urine_antigen) %>% filter(result == "Positive"), aes(x=test))+geom_histogram(stat="count")
+# normBinax %>% group_by(pneumo.binax_result) %>% count()
+
+```
+
+Find all the 
+
+```{r}
+custom = bind_rows(
+  tibble(group = "PCV7", serotype = uad_groups$pcv7),
+  uad_groups$pcv7 %>% .serotype_levels() %>% tibble(group = ., serotype = .),
+  tibble(group = "PCV13 (on PCV 7)", serotype = uad_groups$pcv13on7),
+  uad_groups$pcv13on7 %>% .serotype_levels() %>% tibble(group = ., serotype = .)
+)
+
+tmp = augUA %>% derive_pcv_groupings(pcv_map = custom, col_name = pcv_custom) %>% glimpse()
+tmp %>% unnest(pcv_custom) %>% with(table(group,result))
+
+```

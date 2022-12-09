@@ -4,3 +4,5 @@
 ^doRelease$
 ^data-raw$
 ^docs$
+^_pkgdown\.yml$
+^pkgdown$

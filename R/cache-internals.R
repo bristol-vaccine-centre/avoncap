@@ -5,8 +5,6 @@
   as.character(digest::digest(obj, algo="md5"))
 }
 
-#.arear.cache <- new.env(parent=emptyenv())
-
 #' A simple pass-through cache for complex or long running operations
 #'
 #' executes expr and saves the output as an RDS file indexed by has of code in expr
@@ -24,12 +22,12 @@
   .expr,
   ...,
   .nocache = getOption("cache.disable", default=FALSE),
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = getOption("cache.dir", rappdirs::user_cache_dir(utils::packageName())),
   .prefix = "cached",
   .stale = Inf)
 {
 
-  # .expr2 = enquo(.expr)
+  # .expr2 = rlang::enquo(.expr)
   hash = rlang::list2(...)
   code = deparse(substitute(.expr))
   md5code = .md5obj(code)
@@ -81,7 +79,7 @@
 #'
 #' @return nothing. called for side effects.
 .cache_delete_stale = function(
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = getOption("cache.dir", rappdirs::user_cache_dir(utils::packageName())),
   .prefix = ".*",
   .stale = Inf
 ) {
@@ -119,7 +117,7 @@
 #'
 #' @return nothing. called for side effects
 .cache_clear = function (
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = getOption("cache.dir", rappdirs::user_cache_dir(utils::packageName())),
   .prefix = ".*",
   interactive = TRUE
 ) {
@@ -162,7 +160,7 @@
   url,
   ...,
   .nocache = getOption("cache.disable", default=FALSE),
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = getOption("cache.download", rappdirs::user_cache_dir(utils::packageName())),
   .stale = Inf,
   .extn = NULL
 ) {

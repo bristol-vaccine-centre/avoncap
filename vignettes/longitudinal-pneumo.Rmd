@@ -1,0 +1,58 @@
+---
+title: "Pneumococcus longitudinal serotype data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pneumococcus longitudinal serotype data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+devtools::load_all()
+
+library(tidyverse)
+library(avoncap)
+
+```
+
+
+```{r setup}
+
+# The data input directory on my development machine:
+options("avoncap.input" = "~/Data/avoncap/")
+
+```
+
+# Data loading
+
+The raw data is expected to be in the `urine-antigens` subfolder
+
+```{r}
+rawPn = avoncap::load_data("nhs-extract","pneumococcal")
+```
+
+# Data normalisation
+
+
+```{r}
+
+normPn = rawPn %>% normalise_data()
+
+
+```
+
+# Augment the data
+
+```{r}
+augPn = normPn %>% augment_data()
+```
+
+
+```{r}
+augPn %>% with(table(admission.infection_site, pneumo.test_type,useNA = "always"))
+```

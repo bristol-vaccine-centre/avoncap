@@ -30,7 +30,7 @@ library(avoncap)
 
 ```{r}
 # The data input directory on my development machine:
-options("avoncap.input" = "~/Git/avoncap-analysis/input")
+options("avoncap.input" = "~/Data/avoncap/")
 
 # The directory structure:
 fs::dir_tree(path = avoncap::input(),glob="*/cache/*",invert=TRUE)
@@ -44,7 +44,7 @@ avoncap::most_recent_files("ethnicity")
 
 
 ```{r}
-devtools::load_all()
+# devtools::load_all()
 try(avoncap::load_data("missing"))
 ```
 
@@ -52,28 +52,30 @@ try(avoncap::load_data("missing"))
 
 ```{r}
 ethn = avoncap::load_data("ethnicity")
-rawData = avoncap::load_data("nhs-extract")
+avoncap::most_recent_files("nhs-extract","deltave")
+rawData = avoncap::load_data("nhs-extract","deltave")
+# rawData = avoncap::load_data("nhs-extract","deltave",merge = FALSE)
 avoncap::save_data_source_info(ethn, rawData, .file = tempfile("file-info",fileext = ".txt"))
 ```
 
 # Normalising data 
 
 ```{r}
-devtools::load_all()
-data = rawData %>% avoncap::normalise_data()
+# devtools::load_all()
+normData = rawData %>% avoncap::normalise_data()
 ```
 
 # Mapping columns
 
 ```{r}
 # Successfully mapped columns
-# attr(data,"mapped")
+# attr(normData,"mapped")
 
-# Columns that are present in the data but not mapped
-attr(data,"unmapped")
+# Columns that are present in the normData but not mapped
+attr(normData,"unmapped")
 
-# Columns not present in the data for which mapping rules were supplied
-attr(data,"missing")
+# Columns not present in the normData for which mapping rules were supplied
+attr(normData,"missing")
 ```
 
 # Original field names, and labels.
@@ -81,25 +83,89 @@ attr(data,"missing")
 ```{r}
 # devtools::load_all()
 
-# generate a set of readable label mappings from column to printable name for the whole data set
-readable_label_mapping(data, demog.age="TEST")
+# generate a set of readable label mappings from column to printable name for the whole normData set
+# overriding a particular label
+# readable_label_mapping(normData, demog.age="TEST")
 
-# Map a single column to a readable label
-readable_label_mapping("comorbid.previous_MI")
+# Map a single column name as a string to a readable label
 readable_label("comorbid.previous_MI")
 
-# get mapping from original field names pre-normalisation
-original_field_names(data)
+# get mapping from original field names pre-normalisation to
+# post normalisation fields
+original_field_names(normData)
 
 ```
+
+
+
+```{r}
+# unname(readable_label_mapping(normData))
+```
+
+# loading and normalising the central database
+
+```{r}
+rawData2 = avoncap::load_data("avoncap-export","central", merge=TRUE)
+# without merge: currently: INCONSISTENT COLUMN(S) IN FILES: sars_cov2_antigen
+# due to the fact it is mostly a numeric but some values ">250"
+
+# devtools::load_all()
+normData2 = rawData2 %>% avoncap::normalise_data()
+```
+
+```{r}
+normMicro = rawData2 %>% normalise_data(instrument = "micro")
+
+normMicro %>% filter(micro.test_performed=="yes") %>% select(micro.pathogen) %>% unnest(micro.pathogen) %>% with(table(pathogen,detected,  useNA = "always"))
+normMicro %>% filter(micro.test_performed=="yes") %>% select(micro.test_type, micro.pathogen) %>% unnest(micro.pathogen) %>% filter(detected=="yes") %>% group_by(pathogen, micro.test_type) %>%
+  count() %>% arrange(desc(n))
+
+```
+
+
+```{r}
+normVirol = rawData2 %>% normalise_data(instrument = "virol")
+
+normVirol  %>% filter(virol.test_performed=="yes") %>% select(virol.pathogen) %>% unnest(virol.pathogen) %>% with(table(pathogen,detected,  useNA = "always"))
+normVirol %>% filter(virol.test_performed=="yes") %>% select(virol.test_type, virol.pathogen) %>% unnest(virol.pathogen) %>% filter(detected=="yes") %>% 
+  # with(table(pathogen, virol.test_type,  useNA = "always")) %>% 
+  group_by(pathogen, virol.test_type) %>%
+  count() %>% arrange(desc(n))
+  
+
+```
+
+
+```{r}
+normRadio = rawData2 %>% normalise_data(instrument = "radio")
+
+# old format tmp3  %>% filter(radio.test_performed=="yes") %>% with(table(radio.test_type, radio.lung_malignancy))
+normRadio %>% filter(radio.test_performed=="yes") %>% select(radio.alrtd_finding) %>% unnest(radio.alrtd_finding) %>% with(table(finding,present,  useNA = "always"))
+normRadio %>% filter(radio.test_performed=="yes") %>% select(radio.test_type, radio.non_alrtd_finding) %>% unnest(radio.non_alrtd_finding) %>% filter(present=="yes") %>% with(table(finding, radio.test_type,  useNA = "always"))
+
+```
+
+```{r}
+normHaem = rawData2 %>% normalise_data(instrument = "haem")
+
+x = normHaem %>% summary()
+t(x)
+```
+
 
 # Augmenting the data
 
 ```{r}
 # devtools::load_all()
-augmented = data %>% avoncap::augment_data()
+augData = normData %>% avoncap::augment_data()
 ```
 
+
 ```{r}
-unname(readable_label_mapping(augmented))
+# devtools::load_all()
+augData2 = normData2 %>% avoncap::augment_data()
 ```
+
+
+
+

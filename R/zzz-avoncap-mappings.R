@@ -1,16 +1,44 @@
-.mappings = list(
+# These mappings work for the
+# avoncap-extract, central
+# nhs-extract, deltave
+# and with some renaming
+# avoncap-extract, uad-controls
+
+# they are a good starting point for the
+# nhs_extract, pneumococcal
+
+
+keys_avoncap_central = function() list(
+  "admit" = "{admin.record_number}",
+  "consent" = "{admin.consent_record_number}"
+)
+
+#' Core avoncap normalisation
+#'
+#' `r .document_mapping(map_avoncap_central)`
+#'
+#' @concept map
+#' @return a list
+#' @export
+map_avoncap_central = function() list(
 
   # TODO:
   # 1) "did_the_patient_have_respi" = .normalise_yesno, actually 4 options, not clear what they are
   # 2) change this to deal with explicit NA options in the drop downs otherwise we are missing explicit missing values
   # in the dropdowns.
   "record_number" = .normalise_name(admin.record_number),
-  "ac_study_number" = .normalise_name(admin.consented_record_number),
+  "what_was_the_first_surveil" = .normalise_name(admin.first_record_number),
+
+  "ac_study_number" = .normalise_study_id(admin.consented_record_number),
   "nhs_number" = .normalise_ppi(admin.patient_identifier),
   "duplicate" = .normalise_yesno(admin.duplicate),
   "enrollment_date" = .normalise_date(
     admin.enrollment_date
   ),
+  "study_year" = .normalise_name(admin.study_year),
+  "file" = .normalise_name(admin.data_file),
+  "week_number" = .normalise_name(admin.week_number),
+
   "c19_diagnosis" = .normalise_list(
     diagnosis.standard_of_care_COVID_diagnosis, c("Pneumonia","LRTI","HF","other resp symptoms")),
   # "acute_illness" = .normalise_yesno(
@@ -126,14 +154,23 @@
     vaccination.third_dose_date),
   "covidvax_dose_4" = .normalise_date(
     vaccination.fourth_dose_date),
+  "covidvax_dose_5" = .normalise_date(
+    vaccination.fifth_dose_date),
+  "covidvax_dose_6" = .normalise_date(
+    vaccination.sixth_dose_date),
+
   "brand_of_covid19_vaccinati" = .normalise_list(
-    vaccination.first_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
+    vaccination.first_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen","Novovax","Bivalent Pfizer","Bivalent Moderna")),
   "covid19vax_brand_2" = .normalise_list(
-    vaccination.second_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
+    vaccination.second_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen","Novovax","Bivalent Pfizer","Bivalent Moderna")),
   "covid19vax_brand_3" =  .normalise_list(
-    vaccination.third_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
+    vaccination.third_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen","Novovax","Bivalent Pfizer","Bivalent Moderna")),
   "covid19vax_brand_4" =  .normalise_list(
-    vaccination.fourth_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen")),
+    vaccination.fourth_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen","Novovax","Bivalent Pfizer","Bivalent Moderna")),
+  "covid19vax_brand_5" =  .normalise_list(
+    vaccination.fifth_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen","Novovax","Bivalent Pfizer","Bivalent Moderna")),
+  "covid19vax_brand_6" =  .normalise_list(
+    vaccination.sixth_dose_brand, c("Pfizer","AZ","unknown","Moderna","Janssen","Novovax","Bivalent Pfizer","Bivalent Moderna")),
 
   # Time since vaccination
   "c19vaxd1_adm" = .normalise_name(
@@ -144,6 +181,10 @@
     admission.time_since_third_vaccine_dose),
   "c19vaxd4_adm" = .normalise_name(
     admission.time_since_fourth_vaccine_dose),
+  "c19vax5_adm" = .normalise_name(
+    admission.time_since_fifth_vaccine_dose),
+  "c19vax6_adm" = .normalise_name(
+    admission.time_since_sixth_vaccine_dose),
 
   # Flu vaccination
   "flu_date" = .normalise_date(vaccination.last_flu_dose_date),
@@ -159,13 +200,13 @@
 
   #### Admission dates: ----
   "year" = .normalise_double(
-    admission.year, limits = c(2019,2023)),
+    admission.year, limits = c(2019,2025)),
   # "week_number" = .normalise_double(admission.week, limits = c(1,53)),
   "study_week" = .normalise_double(
     admission.study_week),
   "admission_date" = .normalise_date(
     admission.date),
-  "hospital" = .normalise_text_to_factor(admin.hospital,c("NBT","BRI")),
+  "hospital" = .normalise_text_to_factor(admin.hospital, preprocess = toupper, levels = c("NBT","BRI")),
 
   #### Admission symptoms signs: ----
   ## TODO: range and data quality checks
@@ -303,8 +344,8 @@
   "ventilatory_support" = .normalise_list(
     outcome.highest_level_ventilatory_support, c("Intubation","BiPAP","CPAP","High-Flow Nasal Cannulae","None"),ordered=TRUE
   ),
-  "did_the_patient_receive_ec" = .normalise_yesno(outcome.recieved_ecmo),
-  "inotropic_support_required" = .normalise_yesno(outcome.recieved_ionotropes),
+  "did_the_patient_receive_ec" = .normalise_yesno(outcome.received_ecmo),
+  "inotropic_support_required" = .normalise_yesno(outcome.received_ionotropes),
   "lrtd_30d_outcome" = .normalise_list(
     outcome.functional_status,c(
       "Deceased",
@@ -444,10 +485,11 @@
       "COVID-19 - negative test, unlikely COVID-19 disease","No test performed" )
   ),
 
-  "c19_adm_swab" = .normalise_checkboxes_to_list(
-    diagnosis.admission_swab_old,
-    values = c("COVID-19 positive","COVID-19 negative","Indeterminate","Known community/recent positive","Not performed")
-  ),
+  # This has AFAIK become irrelevant.
+  # "c19_adm_swab" = .normalise_checkboxes_to_list(
+  #   diagnosis.admission_swab_old,
+  #   values = c("COVID-19 positive","COVID-19 negative","Indeterminate","Known community/recent positive","Not performed")
+  # ),
   "ppv23" = .normalise_list(
     vaccination.pneumovax,
     c("Not received","Received","Unknown"), codes=c(2,1,3)

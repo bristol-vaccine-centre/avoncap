@@ -1,0 +1,20 @@
+url: ~
+template:
+  bootstrap: 5
+
+reference:
+- title: "Raw data mappings"
+  desc: >
+    Mappings converting raw data to normalised
+  contents:
+  - has_concept("map")
+- title: "Derived data"
+  desc: >
+    Functions deriving new fields from normalised data
+  contents:
+  - has_concept("derived")
+- title: "Other"
+  desc: >
+    Other functions
+  contents:
+  - lacks_concepts(c("map", "derived"))

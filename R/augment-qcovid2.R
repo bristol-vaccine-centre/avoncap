@@ -5,6 +5,7 @@
 #'
 #' @param avoncap_df a normalised augmented avoncap data source
 #'
+#' @concept derived
 #' @return the same dataframe with additional columns,
 #' - qcovid2.log_hazard, covid2.hazard_ratio: a log hazard rate for the QCOVID2
 #' score where missing data is substituted with the reference value for the QCOVID2
@@ -12,9 +13,9 @@
 #' - qcovid2.log_comorbid_hazard, qcovid2.comorbid_hazard_ratio: a log hazard
 #' rate for the comorbid conditions and not including age and BMI.
 #' @export
-avoncap_calculate_qcovid = function(avoncap_df) {
+derive_qcovid = function(df, v = avoncap_df %>% get_value_sets()) {
 
-  v = avoncap_df %>% get_value_sets()
+  avoncap_df = df
 
   mapperBase = expression(
     b2_82 = admission.on_immunosuppression == v$admission.on_immunosuppression$yes,
@@ -150,8 +151,11 @@ avoncap_calculate_qcovid = function(avoncap_df) {
 
 }
 
-
-
+# alias this function
+avoncap_calculate_qcovid = function(df) {
+  v=get_value_sets(df)
+  derive_qcovid(df,v)
+}
 
 .naz = function(x) {
   ifelse(is.na(x),0,x)
@@ -573,9 +577,3 @@ avoncap_calculate_qcovid = function(avoncap_df) {
   return(a)
 }
 
-
-.test_qcovid= function() {
-
-
-
-}

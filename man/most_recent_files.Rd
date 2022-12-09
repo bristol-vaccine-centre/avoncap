@@ -6,14 +6,14 @@
 \usage{
 most_recent_files(
   type = "",
-  file = NULL,
+  subtype = NULL,
   reproduce_at = as.Date(getOption("reproduce.at", default = Sys.Date()))
 )
 }
 \arguments{
 \item{type}{see valid_inputs() for current list of supported types in input directory}
 
-\item{file}{see valid_inputs() for list of supported filenames}
+\item{subtype}{see valid_inputs() for list of supported filenames}
 
 \item{reproduce_at}{after this date new files are ignored. This enforces a specific version of the data.}
 }
@@ -38,7 +38,7 @@ avoncap::most_recent_files("AvonCAPLRTDCentralDa")
 
 
 # or matches by lower case startWith on directory
-avoncap::most_recent_files("nhs-extract")
+avoncap::most_recent_files("nhs-extract","deltave")
 
 
 avoncap::most_recent_files("metadata")

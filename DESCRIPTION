@@ -26,12 +26,13 @@ Imports:
     purrr,
     stringr,
     tidyselect (>= 1.2.0),
-    yaml
+    yaml,
+    testthat,
+    ggplot2
 Suggests: 
     knitr,
     rmarkdown,
-    tidyverse,
-    testthat
+    tidyverse
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

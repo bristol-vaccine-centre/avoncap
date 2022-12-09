@@ -3,7 +3,7 @@
 metadata_mapping = function(db = "uad-controls") {
   # set_input("~/Data/avoncap")
   metadata = suppressMessages(load_data("metadata",db, nocache=TRUE))
-  meta = metadata %>% select(
+  meta = metadata %>% dplyr::select(
     variable = `Variable / Field Name`,
     form = `Form Name`,
     type = `Field Type`,
@@ -12,23 +12,23 @@ metadata_mapping = function(db = "uad-controls") {
     levels = `Choices, Calculations, OR Slider Labels`,
     required = `Required Field?`
   )
-  meta = meta %>% mutate(
+  meta = meta %>% dplyr::mutate(
     label = label %>% stringr::str_replace_all("<[^>]+>"," ") %>% stringr::str_replace_all("\\s+"," ") %>% trimws(),
     levels = levels %>% stringr::str_replace_all("<[^>]+>"," ") %>% stringr::str_replace_all("\\s+"," ") %>% trimws(),
     type = ifelse(!is.na(subtype),subtype,type)
-  ) %>% mutate(
-    levels= if_else(type %in% c("radio","dropdown","checkbox"), levels, NA_character_)
-  ) %>% select(-subtype)
-  meta = meta %>% mutate(
+  ) %>% dplyr::mutate(
+    levels= dplyr::if_else(type %in% c("radio","dropdown","checkbox"), levels, NA_character_)
+  ) %>% dplyr::select(-subtype)
+  meta = meta %>% dplyr::mutate(
     required = !is.na(required) & required == "y",
 
-    level_df = levels %>% stringr::str_split(fixed("|")) %>%
-      purrr::map(~ tibble(opt = .x) %>% mutate(
+    level_df = levels %>% stringr::str_split(stringr::fixed("|")) %>%
+      purrr::map(~ tibble::tibble(opt = .x) %>% dplyr::mutate(
         key = stringr::str_extract(opt,"^\\s*[0-9]+") %>% trimws() %>% as.numeric(),
         value = stringr::str_remove(opt,"^\\s*[0-9]+,\\s*") %>% trimws(),
-      ) %>% select(-opt)),
-    level_dp = level_df %>% purrr::map(~ .x %>% pull(value) %>% deparse() %>% paste0(collapse = "")),
-    level_code = level_df %>% purrr::map(~ .x %>% pull(key) %>% deparse() %>% paste0(collapse = "")),
+      ) %>% dplyr::select(-opt)),
+    level_dp = level_df %>% purrr::map(~ .x %>% dplyr::pull(value) %>% deparse() %>% paste0(collapse = "")),
+    level_code = level_df %>% purrr::map(~ .x %>% dplyr::pull(key) %>% deparse() %>% paste0(collapse = "")),
     level_size = level_df %>% purrr::map_dbl(~ .x %>% nrow())
   )
   return(meta)
@@ -68,25 +68,25 @@ generate_column_name_review_list = function() {
 
   files = most_recent_files("metadata")$filename
 
-  combined = bind_rows(
-    lapply(files, function(x) metadata_mapping(x) %>% mutate(source=x))
+  combined = dplyr::bind_rows(
+    lapply(files, function(x) metadata_mapping(x) %>% dplyr::mutate(source=x))
   )
 
-  duplicated = combined %>% select(variable, levels) %>%
-    mutate(levels = levels %>% stringr::str_remove_all("[^a-zA-Z0-9]") %>% tolower()) %>%
-    filter(!stringr::str_detect(variable,"staff|nurse")) %>%
-    distinct() %>%
-    group_by(variable) %>%
-    filter(n() > 1) %>%
-    select(variable) %>%
-    distinct()
+  duplicated = combined %>% dplyr::select(variable, levels) %>%
+    dplyr::mutate(levels = levels %>% stringr::str_remove_all("[^a-zA-Z0-9]") %>% tolower()) %>%
+    dplyr::filter(!stringr::str_detect(variable,"staff|nurse")) %>%
+    dplyr::distinct() %>%
+    dplyr::group_by(variable) %>%
+    dplyr::filter(n() > 1) %>%
+    dplyr::select(variable) %>%
+    dplyr::distinct()
 
-  duplicated = combined %>% semi_join(duplicated, by="variable")
+  duplicated = combined %>% dplyr::semi_join(duplicated, by="variable")
   # TODO:
 
   # non chekbox mappings
-  implied = combined %>% filter(type != "checkbox" & type !="descriptive") %>%
-    select(-levels, -level_df) %>% mutate(
+  implied = combined %>% dplyr::filter(type != "checkbox" & type !="descriptive") %>%
+    dplyr::select(-levels, -level_df) %>% dplyr::mutate(
       prefix = .forms_to_category[form],
       suffix = label %>%
         stringr::str_remove_all("\\s+\\([^\\)]+\\)") %>%
@@ -95,28 +95,28 @@ generate_column_name_review_list = function() {
         trimws() %>% stringr::str_replace_all("\\s+","_"),
       candidate = paste0(prefix,".",suffix)
     ) %>%
-    select(-prefix,-suffix) %>%
-    group_by(across(c(everything(),-source,-level_dp,-level_code,-level_size, -label))) %>%
-    summarise(
+    dplyr::select(-prefix,-suffix) %>%
+    dplyr::group_by(across(c(tidyselect::everything(),-source,-level_dp,-level_code,-level_size, -label))) %>%
+    dplyr::summarise(
       source = paste0(sort(source),collapse = "|"),
-      level_dp = last(level_dp, level_size),
-      level_code = last(level_code, level_size),
-      label = first(label),
+      level_dp = dplyr::last(level_dp, level_size),
+      level_code = dplyr::last(level_code, level_size),
+      label = dplyr::first(label),
       .groups = "drop")
 
-  code = read_file(system.file("R/zzz-avoncap-mappings.R", package = "avoncap"))
+  code = readr::read_file(system.file("R/zzz-avoncap-mappings.R", package = "avoncap"))
   asserted = code %>%
     stringr::str_remove_all("\\n") %>%
     stringr::str_match_all('"([a-zA-Z0-9_]+)"\\s*=\\s*\\.normalise[^\\(]*\\(\\s*([a-zA-Z0-9_\\.]+)') %>%
     as.data.frame() %>%
-    select(variable=X2,canonical=X3) %>%
-    filter(!canonical %in% c("dplyr","renameToVars"))
+    dplyr::select(variable=X2,canonical=X3) %>%
+    dplyr::filter(!canonical %in% c("dplyr","renameToVars"))
 
-  non_checkboxes = implied %>% full_join(asserted, by="variable")
+  non_checkboxes = implied %>% dplyr::full_join(asserted, by="variable")
 
   # checkbox mappings
-  implied2 = combined %>% filter(type == "checkbox") %>% unnest(level_df) %>%
-    mutate(
+  implied2 = combined %>% dplyr::filter(type == "checkbox") %>% tidyr::unnest(level_df) %>%
+    dplyr::mutate(
       prefix = .forms_to_category[form],
       suffix = value %>%
         stringr::str_remove_all("\\s+\\([^\\)]+\\)") %>%
@@ -125,15 +125,15 @@ generate_column_name_review_list = function() {
         trimws() %>% stringr::str_replace_all("\\s+","_"),
       candidate = paste0(prefix,".",suffix)
       ) %>%
-    select(-prefix,-suffix, -levels, -level_dp, -level_code, -level_size) %>%
-    group_by(across(c(everything(),-source, -label))) %>%
-    summarise(
+    dplyr::select(-prefix,-suffix, -levels, -level_dp, -level_code, -level_size) %>%
+    dplyr::group_by(across(c(tidyselect::everything(),-source, -label))) %>%
+    dplyr::summarise(
       source = paste0(sort(source),collapse = "|"),
-      label = first(label),
+      label = dplyr::first(label),
       .groups = "drop"
     )
-    # mutate(present = TRUE) %>%
-    # pivot_wider(names_from = source, values_from = present,values_fill = FALSE)
+    # dplyr::mutate(present = TRUE) %>%
+    # tidyr::pivot_wider(names_from = source, values_from = present,values_fill = FALSE)
 
 
   asserted2 = code %>%
@@ -142,24 +142,24 @@ generate_column_name_review_list = function() {
   asserted2 = asserted2[[1]]
   colnames(asserted2) = c("X","variable","opts")
   asserted2 = asserted2 %>%
-    as_tibble() %>%
-    select(variable,opts) %>%
-    mutate(opts = stringr::str_split(opts, ",\\s*")) %>%
-    mutate(opts = purrr::map(opts, ~ tibble(canonical = .x) %>% mutate(key=row_number()))) %>%
-    unnest(opts) %>%
-    filter(!canonical %in% c(" "))
+    tibble::as_tibble() %>%
+    dplyr::select(variable,opts) %>%
+    dplyr::mutate(opts = stringr::str_split(opts, ",\\s*")) %>%
+    dplyr::mutate(opts = purrr::map(opts, ~ tibble::tibble(canonical = .x) %>% dplyr::mutate(key=dplyr::row_number()))) %>%
+    tidyr::unnest(opts) %>%
+    dplyr::filter(!canonical %in% c(" "))
 
-  checkboxes = implied2 %>% full_join(asserted2, by=c("variable","key"))
+  checkboxes = implied2 %>% dplyr::full_join(asserted2, by=c("variable","key"))
 
-  bind_rows(checkboxes,non_checkboxes) %>% arrange(form,variable) %>%
-    mutate(best = ifelse(is.na(canonical),candidate,canonical)) %>%
+  dplyr::bind_rows(checkboxes,non_checkboxes) %>% dplyr::arrange(form,variable) %>%
+    dplyr::mutate(best = ifelse(is.na(canonical),candidate,canonical)) %>%
     readr::write_csv(input("metadata-review",Sys.Date(),"metadata_review.csv"))
 }
 
 generate_mapping_list = function() {
   # TODO: need column names
-  # meta = meta %>% rowwise() %>% mutate(
-  #   f = case_when(
+  # meta = meta %>% dplyr::rowwise() %>% dplyr::mutate(
+  #   f = dplyr::case_when(
   #     type == "radio" ~ .normalise_list( values = levels$value, codes = levels$key),
   #     type == "dropdown" ~  .normalise_list( values = levels$value, codes = levels$key),
   #     type == "checkbox" ~  .normalise_checkboxes(renameToVars = levels$value),

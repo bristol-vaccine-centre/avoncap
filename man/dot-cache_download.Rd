@@ -8,7 +8,7 @@
   url,
   ...,
   .nocache = getOption("cache.disable", default = FALSE),
-  .cache = rappdirs::user_cache_dir(packageName()),
+  .cache = getOption("cache.download", rappdirs::user_cache_dir(utils::packageName())),
   .stale = Inf,
   .extn = NULL
 )

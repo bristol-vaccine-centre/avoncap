@@ -30,7 +30,7 @@ avoncap::most_recent_files("AvonCAPLRTDCentralDa")
 
 
 # or matches by lower case startWith on directory
-avoncap::most_recent_files("nhs-extract")
+avoncap::most_recent_files("nhs-extract","deltave")
 
 
 avoncap::most_recent_files("metadata")
