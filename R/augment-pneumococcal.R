@@ -88,6 +88,7 @@ derive_pcv_groupings = function(df, ..., pcv_map = default_pcv_map, not_matched=
 #' @param df a pneumo serotype dataframe
 #' @param ... ignored
 #'
+#' @concept derived
 #' @return a dataframe with additional columns `pneumo.uad1_panel_result`,
 #' `pneumo.uad2_panel_result`, `pneumo.non_uad_panel_result`,
 #' `pneumo.serotype_summary_result`

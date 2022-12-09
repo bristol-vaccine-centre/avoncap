@@ -22,9 +22,9 @@
                         "Mycoplasma pneumoniae")
 
 
-keys_avoncap_radio  = function(instrument) {
+keys_avoncap_virol  = function(instrument) {
   list(
-    "radio" = sprintf("{admin.record_number}_radio_%d",instrument)
+    "virol" = sprintf("{admin.record_number}_virol_%d",instrument)
   )
 }
 

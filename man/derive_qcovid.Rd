@@ -23,3 +23,4 @@ rate for the comorbid conditions and not including age and BMI.
 uses inbuilt imd_to_townsend map. This implements a cut down version of the
 QCovid2 score depending on what data is available.
 }
+\concept{derived}

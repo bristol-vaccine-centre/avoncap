@@ -1,8 +1,8 @@
 ---
-title: "Pneomococcus urinary antigen data"
+title: "Pneumococcus urinary antigen data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Urinary antigen data}
+  %\VignetteIndexEntry{Pneumococcus urinary antigen data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

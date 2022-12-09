@@ -61,7 +61,7 @@ avoncap::save_data_source_info(ethn, rawData, .file = tempfile("file-info",filee
 # Normalising data 
 
 ```{r}
-# devtools::load_all()
+# devtools::install_local(force=TRUE)
 normData = rawData %>% avoncap::normalise_data()
 ```
 

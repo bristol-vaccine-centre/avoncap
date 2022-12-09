@@ -3,5 +3,7 @@ pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   avoncap: avoncap.html
-last_built: 2022-12-07T15:45Z
+  longitudinal-pneumo: longitudinal-pneumo.html
+  uad-data: uad-data.html
+last_built: 2022-12-09T17:35Z
 

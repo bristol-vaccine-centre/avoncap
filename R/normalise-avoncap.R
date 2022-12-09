@@ -135,7 +135,7 @@ normalise.nhs_extract.deltave = function(rawData, ...) {
   rawData %>%
     .merge_ethnicity(...) %>%
     .reconstruct_admission_times(...) %>%
-    normalise_generic(mappings=.mappings, ...) %>%
+    normalise_generic(mappings = map_avoncap_central(), ...) %>%
     create_keys(keys_avoncap_central())
 }
 

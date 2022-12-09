@@ -10,7 +10,7 @@
 
 keys_avoncap_central = function() list(
   "admit" = "{admin.record_number}",
-  "consent" = "{admin.consent_record_number}"
+  "consent" = "{admin.consented_record_number}"
 )
 
 #' Core avoncap normalisation
