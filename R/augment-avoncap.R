@@ -243,7 +243,7 @@ derive_covid_status = function(df,v,...) {
       TRUE ~ NA_character_
     )
   ) %>% dplyr::mutate(
-    admission.covid_pcr_result = ifelse(admin.consent_withheld == "yes", NA, as.character(admission.covid_pcr_result)) %>% factor(levels=levels(admission.covid_pcr_result))
+    admission.covid_pcr_result = ifelse(admin.consent_withheld == "yes", NA, as.character(admission.covid_pcr_result)) %>% factor(levels=c("SARS-CoV-2 PCR negative","SARS-CoV-2 PCR positive"))
   )
 }
 

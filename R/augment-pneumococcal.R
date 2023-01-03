@@ -22,7 +22,7 @@ derive_phe_pcv_group = function(df, ..., pcv_map = default_pcv_map, not_matched=
 
   df %>%
     dplyr::left_join(pcv_map, by=c("pneumo.phe_serotype"="serotype")) %>%
-    dplyr::mutate(group = ifelse(is.na(group),not_matched, group)) %>%
+    dplyr::mutate(group = forcats::fct_explicit_na(group,na_level=not_matched)) %>%
     dplyr::rename(!!col_name := group)
 }
 
@@ -58,7 +58,7 @@ derive_pcv_groupings = function(df, ..., pcv_map = default_pcv_map, not_matched=
     dplyr::select(key.sample, pneumo.urine_antigen) %>%
     tidyr::unnest(pneumo.urine_antigen) %>%
     dplyr::left_join(pcv_map, by=c("test"="serotype")) %>%
-    dplyr::mutate(group = ifelse(is.na(group),not_matched, group)) %>%
+    dplyr::mutate(group = forcats::fct_explicit_na(group,na_level=not_matched)) %>%
     dplyr::group_by(key.sample, group) %>%
     dplyr::summarise(
       result = case_when(
@@ -79,7 +79,26 @@ derive_pcv_groupings = function(df, ..., pcv_map = default_pcv_map, not_matched=
 
 }
 
-
+#' Calculate UAD panel for test
+#'
+#' The panels are UAD1 for PCV13 serotypes, UAD2 for PPV23 serotypes.
+#'
+#' @param df a pneumo serotype dataframe
+#' @param ... ignored
+#'
+#' @concept derived
+#' @return a dataframe with additional columns `pneumo.uad1_panel_result`,
+#' `pneumo.uad2_panel_result`, `pneumo.non_uad_panel_result`,
+#' `pneumo.serotype_summary_result`
+#' @export
+derive_pneumo_uad_panel = function(df, ...) {
+  df %>%
+    nplyr::nest_mutate(pneumo.urine_antigen, uad_panel = case_when(
+      test %in% uad_groups$uad1 ~ "uad1",
+      test %in% uad_groups$uad2 ~ "uad2",
+      TRUE ~ "non_uad"
+    ))
+}
 
 #' Calculate summary status from UAD (or other serotype) panel results
 #'

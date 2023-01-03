@@ -1,5 +1,6 @@
 library(tidyverse)
-
+usethis::proj_set("~/Git/avoncap/")
+devtools::load_all()
 ## code to prepare `uad_groups` dataset goes here
 
 {
@@ -27,7 +28,7 @@ library(tidyverse)
   uad_groups$pcv24_Vaxcyte_on20 = setdiff(uad_groups$pcv24_Vaxcyte, uad_groups$pcv20) %>% .serotype_levels()
   uad_groups$pcv24_Affinivax_on20=  setdiff(uad_groups$pcv24_Affinivax, uad_groups$pcv20) %>% .serotype_levels()
 
-  uad_groups$uad1 = c(uad_groups$pcv13)
+  uad_groups$uad1 = c(uad_groups$pcv13,"6C") %>% .serotype_levels()
   uad_groups$uad2 = setdiff(c(uad_groups$ppv23,"15C"), uad_groups$pcv13) %>% .serotype_levels()
 }
 
@@ -37,13 +38,38 @@ usethis::use_data(uad_groups, overwrite = TRUE)
 # The
 
 default_pcv_map = tibble::tribble(
-  ~group,                       ~serotype,
-  "PCV7",                       uad_groups$pcv7,
-  "PCV13+6C (over PCV7)",       c(uad_groups$pcv13on7,"6C") %>% .serotype_levels(),
-  "PCV15 (over PCV13)",         c(uad_groups$pcv15on13),
-  "PCV20+15C (over PCV15)",     c(uad_groups$pcv20on15,"15C") %>% .serotype_levels(),
-  "PPV23 (over PCV20)",         c(uad_groups$ppv23on20)
-) %>% tidyr::unnest(serotype)
+  ~panel,    ~group,                       ~serotype,
+  "UAD1",    "PCV7",                       uad_groups$pcv7,
+  "UAD1",    "PCV13+6C (over PCV7)",       c(uad_groups$pcv13on7,"6C") %>% .serotype_levels(),
+  "UAD2",    "PCV15 (over PCV13)",         c(uad_groups$pcv15on13),
+  "UAD2",    "PCV20+15C (over PCV15)",     c(uad_groups$pcv20on15,"15C") %>% .serotype_levels(),
+  "UAD2",    "PPV23 (over PCV20)",         c(uad_groups$ppv23on20)
+) %>% tidyr::unnest(serotype) %>%
+  dplyr::mutate(
+    group = factor(group,levels = c("PCV7","PCV13+6C (over PCV7)",
+                                         "PCV15 (over PCV13)",
+                                         "PCV20+15C (over PCV15)","PPV23 (over PCV20)")),
+    serotype_level = factor(serotype,levels = c(
+      uad_groups$pcv7,
+      c(uad_groups$pcv13on7,"6C") %>% .serotype_levels(),
+      c(uad_groups$pcv15on13),
+      c(uad_groups$pcv20on15,"15C") %>% .serotype_levels(),
+      c(uad_groups$ppv23on20)
+    )))
 
 
 usethis::use_data(default_pcv_map, overwrite = TRUE)
+
+
+# default_uad_map = tibble::tribble(
+#   ~group,                       ~serotype,
+#   "PCV7",                       uad_groups$pcv7,
+#   "PCV13+6C (over PCV7)",       c(uad_groups$pcv13on7,"6C") %>% .serotype_levels(),
+#   "PCV15 (over PCV13)",         c(uad_groups$pcv15on13),
+#   "PCV20+15C (over PCV15)",     c(uad_groups$pcv20on15,"15C") %>% .serotype_levels(),
+#   "PPV23 (over PCV20)",         c(uad_groups$ppv23on20)
+# ) %>% tidyr::unnest(serotype)
+#
+#
+# usethis::use_data(default_pcv_map, overwrite = TRUE)
+

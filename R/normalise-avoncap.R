@@ -106,7 +106,7 @@ normalise.avoncap_export.central.virol = function(rawData, ...) {
         # dplyr::mutate(virol.test_id = paste0(admin.record_number,"_virol_",i))
       tmp = tmp %>% dplyr::bind_rows(tmp2)
     }
-    tmp
+    tmp %>% create_keys(keys_avoncap_central())
   },rawData,..., .prefix="norm")
 }
 
