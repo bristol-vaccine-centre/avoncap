@@ -13,6 +13,20 @@ keys_avoncap_central = function() list(
   "consent" = "{admin.consented_record_number}"
 )
 
+map_avoncap_consent = function() list(
+  "consented" = .normalise_list(
+    admin.consented,
+    c("Not approached","Yes","Declined consent"), zeroValue = TRUE
+  ),
+  "ppc" = .normalise_list(
+    admin.pp_consented,
+    c("Not approached","Yes","Declined consent"), zeroValue = TRUE
+  ),
+  "withdrawal" = .normalise_yesno(
+    admin.withdrawal
+  )
+)
+
 #' Core avoncap normalisation
 #'
 #' `r .document_mapping(map_avoncap_central)`
@@ -497,17 +511,5 @@ map_avoncap_central = function() list(
   "flu_vaccine" = .normalise_list(
     vaccination.influenza_vaccination,
     c("Not received","Received","Unknown"), codes=c(2,1,3)
-  ),
-  "consented" = .normalise_list(
-    admin.consented,
-    c("Not approached","Yes","Declined consent"), zeroValue = TRUE
-  ),
-  "ppc" = .normalise_list(
-    admin.pp_consented,
-    c("Not approached","Yes","Declined consent"), zeroValue = TRUE
-  ),
-  "withdrawal" = .normalise_yesno(
-    admin.withdrawal
   )
-
 )

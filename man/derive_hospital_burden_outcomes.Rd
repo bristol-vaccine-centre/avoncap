@@ -19,7 +19,7 @@ a dataframe
 }
 \description{
 These outcomes were tested in the Delta vs Omicron severity paper and
-sensitiivyt analysis
+sensitivity analysis. These are only defined for COVID cases.
 }
 \details{
 \itemize{

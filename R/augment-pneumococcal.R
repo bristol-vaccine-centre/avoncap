@@ -16,13 +16,13 @@
 #' @concept derived
 #' @return an augmented data frame with an additional column defined by `col_name`
 #' @export
-derive_phe_pcv_group = function(df, ..., pcv_map = default_pcv_map, not_matched="Other", col_name = "pneumo.phe_pcv_group") {
+derive_phe_pcv_group = function(df, ..., pcv_map = serotype_pcv_map, not_matched="Other", col_name = "pneumo.phe_pcv_group") {
 
   col_name = rlang::ensym(col_name)
 
   df %>%
     dplyr::left_join(pcv_map, by=c("pneumo.phe_serotype"="serotype")) %>%
-    dplyr::mutate(group = forcats::fct_explicit_na(group,na_level=not_matched)) %>%
+    dplyr::mutate(group = forcats::fct_drop(forcats::fct_na_value_to_level( group, level=not_matched))) %>%
     dplyr::rename(!!col_name := group)
 }
 
@@ -41,7 +41,7 @@ derive_phe_pcv_group = function(df, ..., pcv_map = default_pcv_map, not_matched=
 #'
 #' @param df the normalised urine antigen data
 #' @param ... ignored
-#' @param pcv_map a 2 column data frame mapping `group` to `serotype`
+#' @param pcv_map a 2 column data frame mapping `group` to `uad_analysis`
 #' @param not_matched what to call the column of non-matched serotypes? Default is
 #' `Other`, but `Non vaccine type` might be preferred.
 #' @param col_name the target column name for the pcv grouping (defaults
@@ -50,15 +50,26 @@ derive_phe_pcv_group = function(df, ..., pcv_map = default_pcv_map, not_matched=
 #' @concept derived
 #' @return an augmented data frame with an additional column defined by `col_name`
 #' @export
-derive_pcv_groupings = function(df, ..., pcv_map = default_pcv_map, not_matched="Other", col_name = "pneumo.pcv_group") {
+derive_pcv_groupings = function(df, ..., pcv_map = uad_pcv_map, not_matched="Other", col_name = "pneumo.pcv_group") {
 
   col_name = rlang::ensym(col_name)
+
+  if (is.factor(pcv_map$group)) {
+    out_levels = c(as.character(levels(pcv_map$group)),not_matched)
+  } else {
+    out_levels = c(unique(pcv_map$group),not_matched)
+  }
 
   tmp = df %>%
     dplyr::select(key.sample, pneumo.urine_antigen) %>%
     tidyr::unnest(pneumo.urine_antigen) %>%
-    dplyr::left_join(pcv_map, by=c("test"="serotype")) %>%
-    dplyr::mutate(group = forcats::fct_explicit_na(group,na_level=not_matched)) %>%
+    dplyr::left_join(pcv_map, by=c("test"="uad_analysis")) %>%
+    {
+      if (!is.null(not_matched))
+        dplyr::mutate(., group = forcats::fct_drop(forcats::fct_na_value_to_level(group, level=not_matched)))
+      else
+        dplyr::filter(., !is.na(group))
+    } %>%
     dplyr::group_by(key.sample, group) %>%
     dplyr::summarise(
       result = case_when(
@@ -69,7 +80,7 @@ derive_pcv_groupings = function(df, ..., pcv_map = default_pcv_map, not_matched=
       )
     ) %>%
     dplyr::mutate(
-      group = factor(group, levels = c(unique(pcv_map$group),not_matched)),
+      group = factor(group, levels = out_levels),
       result = factor(result,levels = c("Negative","Positive","Other","Unknown"))
     ) %>%
     tidyr::nest(.tmp_col = c(group,result)) %>%

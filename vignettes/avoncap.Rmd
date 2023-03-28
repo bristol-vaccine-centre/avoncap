@@ -102,6 +102,13 @@ original_field_names(normData)
 # unname(readable_label_mapping(normData))
 ```
 
+# Augmenting the VE extract data
+
+```{r}
+# devtools::load_all()
+augData = normData %>% avoncap::augment_data()
+```
+
 # loading and normalising the central database
 
 ```{r}
@@ -153,17 +160,21 @@ t(x)
 ```
 
 
-# Augmenting the data
+# Augmenting the central database
 
-```{r}
-# devtools::load_all()
-augData = normData %>% avoncap::augment_data()
-```
 
 
 ```{r}
 # devtools::load_all()
 augData2 = normData2 %>% avoncap::augment_data()
+
+augData2 %>% xglimpse(admission.category,  admission.presentation_3_class)
+augData2 %>% xglimpse(admission.covid_pcr_result,  admission.presentation_3_class)
+augData2 %>% xglimpse(admission.infective_cause,  admission.presentation_3_class)
+augData2 %>% xglimpse(admission.infective_cause,  admission.is_covid)
+
+augData2 %>% xglimpse(admin.consent_withheld, admission.presentation_3_class)
+
 ```
 
 

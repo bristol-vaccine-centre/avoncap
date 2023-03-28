@@ -26,14 +26,18 @@ The 3 category classifications
 \itemize{
 \item Confirmed SARS-CoV-2 - implies Infective
 \item No evidence SARS-CoV-2 - implies Infective but not confirmed as SARS-CoV-2
-\item Non-infective
+\item Non-infective - presumed non infective
 }
 \item clinical presentation:
 \itemize{
 \item Pneumonia - implies Infective
 \item NP-LRTI - implies Infective
-\item Non-infective (include CRDE and HF)
+\item No signs LRTI (include CRDE and HF)
 }
 }
+
+Some cases do not get a clinical presentation in this. Typically they are people
+who have an infective cause, but LRTI and pneumonia have been excluded. These
+could be URTI and or incidental COVID cases.
 }
 \concept{derived}

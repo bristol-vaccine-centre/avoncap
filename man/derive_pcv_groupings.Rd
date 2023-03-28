@@ -7,7 +7,7 @@
 derive_pcv_groupings(
   df,
   ...,
-  pcv_map = default_pcv_map,
+  pcv_map = uad_pcv_map,
   not_matched = "Other",
   col_name = "pneumo.pcv_group"
 )
@@ -17,7 +17,7 @@ derive_pcv_groupings(
 
 \item{...}{ignored}
 
-\item{pcv_map}{a 2 column data frame mapping \code{group} to \code{serotype}}
+\item{pcv_map}{a 2 column data frame mapping \code{group} to \code{uad_analysis}}
 
 \item{not_matched}{what to call the column of non-matched serotypes? Default is
 \code{Other}, but \verb{Non vaccine type} might be preferred.}

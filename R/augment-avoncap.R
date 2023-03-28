@@ -1,5 +1,4 @@
 
-
 # TODO: ----
 # derive_variant_probability - list variants of interest. calculate probability
 # using multinomial (with other category) using COGUK data.
@@ -12,24 +11,6 @@
 
 # derive_force_of_infection - growth rates from case data matched to .
 
-# Admin ----
-
-#' Has a patient withheld consent or withdrawn
-#'
-#' If a patient has withdrawn consent there may still be data fields populated
-#'
-#' @inherit derive_template
-#' @concept derived
-#' @export
-derive_consent_flag = function(df,v) {
-  df %>% dplyr::mutate(
-    admin.consent_withheld = dplyr::case_when(
-      admin.consented == v$admin.consented$`Declined consent` ~ "yes",
-      admin.pp_consented == v$admin.pp_consented$`Declined consent` ~ "yes",
-      admin.withdrawal == v$admin.withdrawal$yes ~ "yes",
-      TRUE ~ "no") %>% factor(levels = c("no","yes"))
-  )
-}
 
 #' Categorical scores for continuous variables
 #'
@@ -141,6 +122,65 @@ derive_simpler_comorbidities = function(df,v,...) {
 
 # Diagnostic ----
 
+
+
+#' Determine if an admission is proven SARS-CoV-2 PCR positive
+#'
+#' SARS-CoV-2 PCR positive only lab confirmed diagnosis.
+#'
+#' admission.covid_pcr_result:
+#'
+#' based on fields: c19_adm_swab and covid_19_diagnosis
+#' Patient reported, clinical diagnoses are assumed PCR negative (although possible in
+#' some cases they may not have been done). Lateral flows done in hospital are
+#' counted as PCR negative. negative admission swabs are counted as negative
+#' NA signifies test not done.
+#'
+#' admission.is_covid:
+#' Binary confirmed or no-evidence.
+#' PCR results count as confirmed,
+#' LFT results count as confirmed,
+#' anything else is no evidence (includes negatives and test not done)
+#'
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_covid_status = function(df,v,...) {
+  # This part works in the UoB data set (lrti incidence)
+  df %>% dplyr::mutate(
+    admission.covid_pcr_result = dplyr::case_when(
+
+      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed` ~ "SARS-CoV-2 PCR positive",
+      diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` & diagnosis.test_type == v$diagnosis.test_type$`PCR Confirmed` ~ "SARS-CoV-2 PCR positive",
+
+      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - patient reported test` ~ "SARS-CoV-2 PCR negative",
+      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - clinical diagnosis (but negative test)` ~ "SARS-CoV-2 PCR negative",
+      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - negative test, unlikely COVID-19 disease` ~ "SARS-CoV-2 PCR negative",
+      diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 negative` ~ "SARS-CoV-2 PCR negative",
+
+      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`No test performed` ~ NA_character_,
+
+      TRUE ~ NA_character_
+    ),
+
+    admission.is_covid = dplyr::case_when(
+
+      admission.covid_pcr_result == "SARS-CoV-2 PCR positive" ~ "Confirmed SARS-CoV-2",
+      # admission swabs field includes LFT results
+      diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` ~ "Confirmed SARS-CoV-2",
+      TRUE ~ "No evidence SARS-CoV-2"
+
+
+    ) %>% factor(levels = c("Confirmed SARS-CoV-2","No evidence SARS-CoV-2"))
+
+  )
+
+
+}
+
+
+
 #' Create 4 non exclusive diagnostic categories
 #'
 #' Pneumonia if one of:
@@ -164,25 +204,30 @@ derive_simpler_comorbidities = function(df,v,...) {
 #' @export
 derive_diagnosis_categories = function(df,v) {
   df %>% dplyr::mutate(
-    diagnosis.pneumonia = ifelse(
-      diagnosis.SOC_CAP_clinically_confirmed == v$diagnosis.SOC_CAP_clinically_confirmed$yes |
-        diagnosis.SOC_CAP_radiologically_confirmed == v$diagnosis.SOC_CAP_radiologically_confirmed$yes |
-        diagnosis.SOC_CAP_no_radiology == v$diagnosis.SOC_CAP_no_radiology$yes |
-        diagnosis.SOC_Empyema_or_abscess == v$diagnosis.SOC_Empyema_or_abscess$yes |
-        (!is.na(admission.cxr_pneumonia) & admission.cxr_pneumonia == v$admission.cxr_pneumonia$yes),
-      "yes","no") %>% factor(levels = c("no","yes")),
-    diagnosis.LRTI = ifelse(
-      #TODO: clarify whether preventing overlap between pneumonia and LRTD is desirable here or should be explicit exclusion later (and tracked for data quality).
-      diagnosis.pneumonia == "no" &
-        diagnosis.SOC_LRTI == v$diagnosis.SOC_LRTI$yes,
-      "yes","no") %>% factor(levels = c("no","yes")),
-    diagnosis.exacerbation_of_chronic_respiratory_disease = ifelse(
-      diagnosis.SOC_exacerbation_COPD == v$diagnosis.SOC_exacerbation_COPD$yes |
-        diagnosis.SOC_exacerbation_non_COPD == v$diagnosis.SOC_exacerbation_non_COPD$yes,
-      "yes","no") %>% factor(levels = c("no","yes")),
-    diagnosis.heart_failure = ifelse(
-      diagnosis.SOC_congestive_heart_failure == v$diagnosis.SOC_congestive_heart_failure$yes,
-      "yes","no") %>% factor(levels = c("no","yes"))
+    diagnosis.pneumonia = case_when(
+      diagnosis.SOC_CAP_clinically_confirmed == v$diagnosis.SOC_CAP_clinically_confirmed$yes ~ "yes",
+      diagnosis.SOC_CAP_radiologically_confirmed == v$diagnosis.SOC_CAP_radiologically_confirmed$yes ~ "yes",
+      diagnosis.SOC_CAP_no_radiology == v$diagnosis.SOC_CAP_no_radiology$yes ~ "yes",
+      diagnosis.SOC_Empyema_or_abscess == v$diagnosis.SOC_Empyema_or_abscess$yes ~ "yes",
+      (!is.na(admission.cxr_pneumonia) & admission.cxr_pneumonia == v$admission.cxr_pneumonia$yes) ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(levels = c("no","yes")),
+    diagnosis.LRTI = case_when(
+      # preventing overlap between pneumonia and LRTD is desirable here
+      # TODO: we should have a test that looks for this in the source data
+      diagnosis.pneumonia == "yes" ~ "no",
+      diagnosis.SOC_LRTI == v$diagnosis.SOC_LRTI$yes ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(levels = c("no","yes")),
+    diagnosis.exacerbation_of_chronic_respiratory_disease = case_when(
+      diagnosis.SOC_exacerbation_COPD == v$diagnosis.SOC_exacerbation_COPD$yes ~ "yes",
+      diagnosis.SOC_exacerbation_non_COPD == v$diagnosis.SOC_exacerbation_non_COPD$yes ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(levels = c("no","yes")),
+    diagnosis.heart_failure = case_when(
+      diagnosis.SOC_congestive_heart_failure == v$diagnosis.SOC_congestive_heart_failure$yes ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(levels = c("no","yes"))
   )
 }
 
@@ -204,46 +249,16 @@ derive_diagnosis_categories = function(df,v) {
 #' @concept derived
 #' @export
 derive_infective_classification = function(df,v) {
-    df %>% dplyr::mutate(
-      admission.infective_cause = dplyr::case_when(
-        diagnosis.pneumonia == "yes" ~ "Infective",
-        diagnosis.LRTI == "yes" ~ "Infective",
-        .opt(diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed`) ~ "Infective",
-        diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` ~ "Infective",
-        diagnosis.SOC_non_infectious_process == v$diagnosis.SOC_non_infectious_process$yes ~ "Non-infective",
-        diagnosis.SOC_non_LRTI == v$diagnosis.SOC_non_LRTI$yes ~ "Non-infective",
-        TRUE ~ "Non-infective"
-      ) %>% factor(levels = c("Non-infective","Infective"))
-    ) %>% dplyr::mutate(
-      admission.infective_cause = ifelse(admin.consent_withheld == "yes", NA, as.character(admission.infective_cause)) %>% factor(levels=levels(admission.infective_cause))
-    )
-}
-
-#' Determine if an admission is proven SARS-CoV-2 PCR positive
-#'
-#' SARS-CoV-2 PCR positive only lab confirmed diagnosis.
-#'
-#' Patient reported, clinical diagnoses are assumed PCR negative (although possible in
-#' some cases they may not have been done).
-#'
-#' In general cases where the test was not done will be NA.
-#'
-#' @inherit derive_template
-#' @concept derived
-#' @export
-derive_covid_status = function(df,v,...) {
-  # This part works in the UoB data set (lrti incidence)
   df %>% dplyr::mutate(
-    admission.covid_pcr_result = dplyr::case_when(
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed` ~ "SARS-CoV-2 PCR positive",
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - patient reported test` ~ "SARS-CoV-2 PCR negative",
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - clinical diagnosis (but negative test)` ~ "SARS-CoV-2 PCR negative",
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - negative test, unlikely COVID-19 disease` ~ "SARS-CoV-2 PCR negative",
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`No test performed` ~ NA_character_,
-      TRUE ~ NA_character_
-    )
-  ) %>% dplyr::mutate(
-    admission.covid_pcr_result = ifelse(admin.consent_withheld == "yes", NA, as.character(admission.covid_pcr_result)) %>% factor(levels=c("SARS-CoV-2 PCR negative","SARS-CoV-2 PCR positive"))
+    admission.infective_cause = dplyr::case_when(
+      diagnosis.pneumonia == "yes" ~ "Infective",
+      diagnosis.LRTI == "yes" ~ "Infective",
+      admission.is_covid == "Confirmed SARS-CoV-2" ~ "Infective",
+
+      diagnosis.SOC_non_infectious_process == v$diagnosis.SOC_non_infectious_process$yes ~ "Non-infective",
+      diagnosis.SOC_non_LRTI == v$diagnosis.SOC_non_LRTI$yes ~ "Non-infective",
+      TRUE ~ "Non-infective"
+    ) %>% factor(levels = c("Non-infective","Infective"))
   )
 }
 
@@ -254,34 +269,36 @@ derive_covid_status = function(df,v,...) {
 #' * aetiological:
 #'   * Confirmed SARS-CoV-2 - implies Infective
 #'   * No evidence SARS-CoV-2 - implies Infective but not confirmed as SARS-CoV-2
-#'   * Non-infective
+#'   * Non-infective - presumed non infective
 #'
 #' * clinical presentation:
 #'   * Pneumonia - implies Infective
 #'   * NP-LRTI - implies Infective
-#'   * Non-infective (include CRDE and HF)
+#'   * No signs LRTI (include CRDE and HF)
+#'
+#' Some cases do not get a clinical presentation in this. Typically they are people
+#' who have an infective cause, but LRTI and pneumonia have been excluded. These
+#' could be URTI and or incidental COVID cases.
 #'
 #' @inherit derive_template
 #' @concept derived
 #' @export
 derive_aLRTD_categories = function(df,v,...) {
   df %>% dplyr::mutate(
-      admission.is_covid = dplyr::case_when(
-        admission.covid_pcr_result == "SARS-CoV-2 PCR positive" ~ "Confirmed SARS-CoV-2",
-        TRUE ~ "No evidence SARS-CoV-2"
-      ) %>% factor(levels = c("Confirmed SARS-CoV-2","No evidence SARS-CoV-2")),
+
       admission.category = dplyr::case_when(
         admission.is_covid == "Confirmed SARS-CoV-2" ~ "Confirmed SARS-CoV-2",
-        admission.is_covid == "No evidence SARS-CoV-2" & admission.infective_cause == "Infective" ~ "No evidence SARS-CoV-2",
+        admission.infective_cause == "Infective" ~ "No evidence SARS-CoV-2",
         admission.infective_cause == "Non-infective" ~ "Non-infective",
         TRUE ~ NA_character_
       ) %>% factor(levels = c("Confirmed SARS-CoV-2","No evidence SARS-CoV-2","Non-infective")),
+
       admission.presentation_3_class = dplyr::case_when(
           diagnosis.pneumonia == "yes" ~ "Pneumonia",
           diagnosis.LRTI == "yes" ~ "NP-LRTI",
-          admission.infective_cause == "Non-infective" ~ "Non-infective",
-          TRUE ~ NA_character_
-        ) %>% factor(levels = c("Pneumonia","NP-LRTI","Non-infective")),
+          admission.infective_cause == "Non-infective" ~ "No evidence LRTI",
+          TRUE ~ "No evidence LRTI"
+        ) %>% factor(levels = c("Pneumonia","NP-LRTI","No evidence LRTI")),
       )
 }
 
@@ -718,25 +735,27 @@ derive_WHO_outcome_score = function(df, v, ...) {
         day_7.max_ventilation_level == v$day_7.max_ventilation_level$None ~ "score 4",
         TRUE ~ NA_character_
 
-      ) %>% ordered(levels = c("score 0","score 4","score 5","score 6","score 7-8","score 9","score 10"))
+      ) %>% ordered(levels = c("score 4","score 5","score 6","score 7-8","score 9","score 10"))
     ) %>% dplyr::mutate(
 
       # Data is slightly different at the 30 day time point
 
       outcome.WHO_clinical_progression = dplyr::case_when(
         !is.na(outcome.survival_duration) & outcome.survival_duration <= 30 ~ "score 10",
+        outcome.functional_status == v$outcome.functional_status$Deceased ~ "score 10",
         outcome.highest_level_ventilatory_support == v$outcome.highest_level_ventilatory_support$Intubation & outcome.received_ionotropes == v$outcome.received_ionotropes$yes   ~ "score 9",
         outcome.highest_level_ventilatory_support == v$outcome.highest_level_ventilatory_support$Intubation ~ "score 7-8",
         outcome.highest_level_ventilatory_support == v$outcome.highest_level_ventilatory_support$BiPAP ~ "score 6",
         outcome.highest_level_ventilatory_support == v$outcome.highest_level_ventilatory_support$CPAP ~ "score 6",
         outcome.highest_level_ventilatory_support == v$outcome.highest_level_ventilatory_support$`High-Flow Nasal Cannulae` ~ "score 6",
         outcome.respiratory_support_needed == v$outcome.respiratory_support_needed$yes ~ "score 5",
+        outcome.highest_level_ventilatory_support == v$outcome.highest_level_ventilatory_support$None ~ "score 4",
         # if the outcome was bad at day 7 then the max outcome score bad at day 30.
-        day_7.max_o2_level == v$day_7.max_o2_level$`24-28%` ~ "score 5",
-        day_7.max_o2_level == v$day_7.max_o2_level$`room air` ~ "score 4",
-        day_7.max_ventilation_level == v$day_7.max_ventilation_level$None ~ "score 4",
+        !is.na(day_7.max_o2_level) & day_7.max_o2_level == v$day_7.max_o2_level$`24-28%` ~ "score 5",
+        !is.na(day_7.max_o2_level) & day_7.max_o2_level == v$day_7.max_o2_level$`room air` ~ "score 4",
+        !is.na(day_7.max_ventilation_level) & day_7.max_ventilation_level == v$day_7.max_ventilation_level$None ~ "score 4",
         TRUE ~ NA_character_
-      ) %>% ordered(levels = c("score 0","score 4","score 5","score 6","score 7-8","score 9","score 10"))
+      ) %>% ordered(levels = c("score 4","score 5","score 6","score 7-8","score 9","score 10"))
     )
 
 
@@ -763,6 +782,7 @@ derive_severe_disease_outcomes = function(df,v,...) {
         ) %>% factor(levels=c("confirmed","not recorded")),
         outcome.death_during_follow_up = dplyr::case_when(
           outcome.inpatient_death == v$outcome.inpatient_death$yes ~ "confirmed",
+          outcome.functional_status == v$outcome.functional_status$Deceased ~ "confirmed",
           TRUE ~ "not recorded"
         ) %>% factor(levels=c("confirmed","not recorded"))
       )
@@ -771,7 +791,7 @@ derive_severe_disease_outcomes = function(df,v,...) {
 #' Binary outcomes for hospital burden
 #'
 #' These outcomes were tested in the Delta vs Omicron severity paper and
-#' sensitiivyt analysis
+#' sensitivity analysis. These are only defined for COVID cases.
 #'
 #' * O2 requirement within 7 days (various cut-offs)
 #' * Any respiratory support in 7 days (various cut-offs)
@@ -798,6 +818,9 @@ derive_hospital_burden_outcomes = function(df,v,...) {
         day_7.los_gt_7 = ifelse(day_7.length_of_stay > v$day_7.length_of_stay$`7 days` & (is.na(outcome.survival_duration) | outcome.survival_duration > 7),"LOS>7 days","LOS<=7 days") %>% ordered(c("LOS<=7 days","LOS>7 days"))
       )
 }
+
+
+
 
 
 # Deprecated - this was for vaccination plus previous infection
@@ -1444,3 +1467,5 @@ derive_hospital_burden_outcomes = function(df,v,...) {
 #   return(tmp2)
 # }
 #
+
+

@@ -7,7 +7,7 @@
 derive_phe_pcv_group(
   df,
   ...,
-  pcv_map = default_pcv_map,
+  pcv_map = serotype_pcv_map,
   not_matched = "Other",
   col_name = "pneumo.phe_pcv_group"
 )

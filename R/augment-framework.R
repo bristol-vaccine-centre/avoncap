@@ -152,14 +152,13 @@ augment.avoncap_export.uad_controls = function(df,...) {
 augment.avoncap_export.central = function(df,...) {
   df %>%
     augment_generic(
-      derive_consent_flag,
       derive_continuous_categories,
       derive_patient_identifier,
       derive_admission_episode,
       derive_simpler_comorbidities,
-      derive_diagnosis_categories,
-      derive_infective_classification,
       derive_covid_status,
+      derive_diagnosis_categories,
+      derive_infective_classification, # must be after diagnosis categories and covid status
       derive_aLRTD_categories,
       derive_nosocomial_covid_status,
       derive_genomic_variant,
@@ -172,7 +171,9 @@ augment.avoncap_export.central = function(df,...) {
       derive_WHO_outcome_score,
       derive_severe_disease_outcomes,
       derive_hospital_burden_outcomes,
-      ...)
+      ...,
+    ) %>%
+    .wipe_non_consented_data()
 }
 
 augment.avoncap_export.central.micro = function(df,...) {
@@ -206,14 +207,12 @@ augment.avoncap_export.central.haem = function(df,...) {
 augment.nhs_extract.deltave = function(df,...) {
   df %>%
     augment_generic(
-      derive_consent_flag,
       derive_continuous_categories,
-      # derive_patient_identifier,
       derive_admission_episode,
       derive_simpler_comorbidities,
-      derive_diagnosis_categories,
-      derive_infective_classification,
       derive_covid_status,
+      derive_diagnosis_categories,
+      derive_infective_classification, # must be after diagnosis categories
       derive_aLRTD_categories,
       derive_nosocomial_covid_status,
       derive_genomic_variant,
@@ -226,7 +225,9 @@ augment.nhs_extract.deltave = function(df,...) {
       derive_WHO_outcome_score,
       derive_severe_disease_outcomes,
       derive_hospital_burden_outcomes,
-      ...)
+      ...
+    ) %>%
+    .wipe_non_consented_data()
 }
 
 augment.nhs_extract.pneumococcal = function(df,...) {

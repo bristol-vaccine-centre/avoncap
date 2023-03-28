@@ -60,7 +60,7 @@ normalise_data = function(
 #   return(rawData)
 # }
 
-normalise.avoncap_export.uad_controls = function(rawData, ...) {
+normalise.avoncap_export.uad_control = function(rawData, ...) {
   # Controls database has some naming inconsistencies:
   rawData %>%
     .reconstruct_admission_date(...) %>%
@@ -78,8 +78,13 @@ normalise.avoncap_export.central = function(rawData, ...) {
   rawData %>%
     .merge_ethnicity(...) %>%
     .reconstruct_admission_date(...) %>%
-    normalise_generic(mappings=map_avoncap_central(), ...) %>%
-    create_keys(keys_avoncap_central())
+    normalise_generic(mappings=c(
+        map_avoncap_consent(),
+        map_avoncap_central()
+      ), ...) %>%
+    create_keys(keys_avoncap_central()) %>%
+    .derive_consent_flag() %>%
+    .wipe_non_consented_data()
 }
 
 normalise.avoncap_export.central.micro = function(rawData, ...) {
@@ -87,12 +92,17 @@ normalise.avoncap_export.central.micro = function(rawData, ...) {
     tmp = tibble::tibble()
     for (i in 1:16) {
       tmp2 = rawData %>%
-        normalise_generic(mappings=map_avoncap_micro(i), ...) %>%
+        normalise_generic(mappings=c(
+          map_avoncap_consent(),
+          map_avoncap_micro(i)
+        ), ...) %>%
         create_keys(keys_avoncap_micro(i))
         # dplyr::mutate(micro.test_id = paste0(admin.record_number,"_micro_",i))
       tmp = tmp %>% dplyr::bind_rows(tmp2)
     }
-    tmp %>% create_keys(keys_avoncap_central())
+    tmp %>% create_keys(keys_avoncap_central()) %>%
+      .derive_consent_flag() %>%
+      .exclude_non_consented_patients()
   },rawData,..., .prefix="norm")
 }
 
@@ -101,12 +111,17 @@ normalise.avoncap_export.central.virol = function(rawData, ...) {
     tmp = tibble::tibble()
     for (i in 1:16) {
       tmp2 = rawData %>%
-        normalise_generic(mappings=map_avoncap_virol(i), ...) %>%
+        normalise_generic(mappings=c(
+          map_avoncap_consent(),
+          map_avoncap_virol(i)
+        ), ...) %>%
         create_keys(keys_avoncap_virol(i))
         # dplyr::mutate(virol.test_id = paste0(admin.record_number,"_virol_",i))
       tmp = tmp %>% dplyr::bind_rows(tmp2)
     }
-    tmp %>% create_keys(keys_avoncap_central())
+    tmp %>% create_keys(keys_avoncap_central()) %>%
+      .derive_consent_flag() %>%
+      .exclude_non_consented_patients()
   },rawData,..., .prefix="norm")
 }
 
@@ -115,28 +130,43 @@ normalise.avoncap_export.central.radio = function(rawData, ...) {
     tmp = tibble::tibble()
     for (i in 1:16) {
       tmp2 = rawData %>%
-        normalise_generic(mappings=map_avoncap_radio(i), ...) %>%
+        normalise_generic(mappings=c(
+          map_avoncap_consent(),
+          map_avoncap_radio(i)
+        ), ...) %>%
         create_keys(keys_avoncap_radio(i))
         # TODO:
         # dplyr::mutate(radio.test_id = paste0(admin.record_number,"_radio_",i))
       tmp = tmp %>% dplyr::bind_rows(tmp2)
     }
-    tmp %>% create_keys(keys_avoncap_central())
+    tmp %>% create_keys(keys_avoncap_central()) %>%
+      .derive_consent_flag() %>%
+      .exclude_non_consented_patients()
   },rawData,..., .prefix="norm")
 }
 
 normalise.avoncap_export.central.haem = function(rawData, ...) {
   rawData %>%
-    normalise_generic(mappings = map_avoncap_haem(), ...) %>%
-    create_keys(keys_avoncap_central())
+    normalise_generic(mappings = c(
+      map_avoncap_consent(),
+      map_avoncap_haem()
+    ),...) %>%
+    create_keys(keys_avoncap_central()) %>%
+    .derive_consent_flag() %>%
+    .exclude_non_consented_patients()
 }
 
 normalise.nhs_extract.deltave = function(rawData, ...) {
   rawData %>%
     .merge_ethnicity(...) %>%
     .reconstruct_admission_times(...) %>%
-    normalise_generic(mappings = map_avoncap_central(), ...) %>%
-    create_keys(keys_avoncap_central())
+    normalise_generic(mappings = c(
+      map_avoncap_consent(),
+      map_avoncap_central()
+    ), ...) %>%
+    create_keys(keys_avoncap_central()) %>%
+    .derive_consent_flag() %>%
+    .wipe_non_consented_data()
 }
 
 normalise.nhs_extract.pneumococcal = function(rawData, ...) {
@@ -244,7 +274,7 @@ normalise.urine_antigens.binax = function(rawData, ...) {
       # we get the year from the file-name itself (which assumes it was correctly named)
       dplyr::mutate(
         year = dplyr::case_when(
-          is.numeric(year) & !is.na(year) ~ year,
+          !is.na(year) & is.numeric(year) & year >= 2020 & year < 2025 ~ year,
           study_year == 1 & week_number>30 ~ 2020,
           study_year == 1 & week_number<=30 ~ 2021,
           study_year == 2 & week_number>30 ~ 2021,
@@ -300,8 +330,62 @@ normalise.urine_antigens.binax = function(rawData, ...) {
   return(tmp)
 }
 
+# Consent postprocessing steps (avoncap) ----
 
+# Admin ----
 
+.derive_consent_flag = function(df) {
+  df %>% dplyr::mutate(
+    admin.consent_withheld = dplyr::case_when(
+      admin.consented == "Declined consent" ~ "yes",
+      admin.pp_consented == "Declined consent" ~ "yes",
+      admin.withdrawal == "yes" ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(levels = c("no","yes"))
+  )
+}
+
+# Non consented patients ----
+
+.ifelsefct = function(pred, t, f) {
+
+  if (is.factor(f)) {
+    x = ifelse(pred, t, as.character(levels(f))[f])
+    x = factor(x, levels = levels(f), ordered = is.ordered(f))
+    return(x)
+  } else {
+    return(ifelse(pred, t, f))
+  }
+
+}
+
+.wipe_non_consented_data = function(df) {
+  # chacnge
+  df %>% dplyr::mutate(
+    across(
+      .cols = c(
+        starts_with("diagnosis"),
+        starts_with("demog"),
+        starts_with("vaccination"),
+        starts_with("admission"),
+        starts_with("day_7"),
+        starts_with("treatment"),
+        starts_with("outcome"),
+        starts_with("symptom"),
+        starts_with("comorbid"),
+        starts_with("micro"),
+        starts_with("virol"),
+        starts_with("radio"),
+        starts_with("haem"),
+      ),
+      .fns = ~ .ifelsefct(admin.consent_withheld == "yes", NA, .x)
+    )
+  )
+}
+
+.exclude_non_consented_patients = function(df) {
+  df %>% filter(admin.consent_withheld == "no")
+}
 
 #
 #   if(remove_mapped) {

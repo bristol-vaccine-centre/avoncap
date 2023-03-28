@@ -156,9 +156,6 @@ a list
 \item covid_19_diagnosis -> diagnosis.covid_19_diagnosis (list)
 \item ppv23 -> vaccination.pneumovax (list)
 \item flu_vaccine -> vaccination.influenza_vaccination (list)
-\item consented -> admin.consented (list)
-\item ppc -> admin.pp_consented (list)
-\item withdrawal -> admin.withdrawal (yesno)
 }
 }
 \concept{map}

@@ -15,7 +15,7 @@ map_urine_antigens = function() list(
         TRUE ~ "Unknown"
       )),
   "EVENT_DATE" = .normalise_date(pneumo.test_date,tryFormats="%e-%b-%y"),
-  "ANALYSIS" = .normalise_pneumo_serotype(pneumo.urine_antigen_test),
+  "ANALYSIS" = .normalise_name(pneumo.urine_antigen_test),
   "SUBJECT" = .normalise_study_id(admin.consented_record_number),
   "BARCODE" = .normalise_name(pneumo.urine_antigen_sample_id)
 )
