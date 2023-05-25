@@ -335,14 +335,43 @@ normalise.urine_antigens.binax = function(rawData, ...) {
 # Admin ----
 
 .derive_consent_flag = function(df) {
-  df %>% dplyr::mutate(
+  df = df %>% dplyr::mutate(
     admin.consent_withheld = dplyr::case_when(
+      is.na(admin.consented) & is.na(admin.pp_consented) & is.na(admin.withdrawal) ~ "yes",
       admin.consented == "Declined consent" ~ "yes",
       admin.pp_consented == "Declined consent" ~ "yes",
       admin.withdrawal == "yes" ~ "yes",
       TRUE ~ "no"
-    ) %>% factor(levels = c("no","yes"))
+    ) %>% factor(levels = c("no","yes")),
+
+    admin.consent_type = dplyr::case_when(
+      is.na(admin.consented) & is.na(admin.pp_consented) & is.na(admin.withdrawal) ~ "Missing",
+      admin.withdrawal == "yes" ~ "Withdrew",
+      admin.consented == "Declined consent" ~ "Declined",
+      admin.pp_consented == "Declined consent" ~ "Declined",
+      admin.consented == "Yes"  ~ "Explicit",
+      admin.pp_consented == "Yes" ~ "Explicit",
+      TRUE ~ "Section 251"
+    ) %>% factor(levels = c("Explicit","Section 251","Declined","Withdrew","Missing")),
   )
+
+  df = tryCatch(
+    df %>% dplyr::mutate(
+      admin.consent_samples = dplyr::case_when(
+        admin.consent_for_urine == "yes" & admin.consent_for_blood  == "yes" &
+          admin.consent_for_respiratory_samples  == "yes" ~ "All samples",
+        admin.consent_for_urine == "yes" &
+          admin.consent_for_respiratory_samples  == "yes" ~ "Urine & resp",
+        admin.consent_for_urine == "yes" ~ "Urine only",
+        admin.consent_for_respiratory_samples == "yes" ~ "Resp only",
+        TRUE ~ "None"
+      ) %>% factor(levels = c("All samples", "Urine & resp", "Urine only", "Resp only", "None"))
+    ),
+    error = function(e) df
+  )
+
+  return(df)
+
 }
 
 # Non consented patients ----
@@ -363,21 +392,7 @@ normalise.urine_antigens.binax = function(rawData, ...) {
   # chacnge
   df %>% dplyr::mutate(
     across(
-      .cols = c(
-        starts_with("diagnosis"),
-        starts_with("demog"),
-        starts_with("vaccination"),
-        starts_with("admission"),
-        starts_with("day_7"),
-        starts_with("treatment"),
-        starts_with("outcome"),
-        starts_with("symptom"),
-        starts_with("comorbid"),
-        starts_with("micro"),
-        starts_with("virol"),
-        starts_with("radio"),
-        starts_with("haem"),
-      ),
+      .cols = c(-starts_with("admin"),-admission.date),
       .fns = ~ .ifelsefct(admin.consent_withheld == "yes", NA, .x)
     )
   )

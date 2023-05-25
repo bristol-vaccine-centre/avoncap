@@ -32,7 +32,7 @@ The 3 category classifications
 \itemize{
 \item Pneumonia - implies Infective
 \item NP-LRTI - implies Infective
-\item No signs LRTI (include CRDE and HF)
+\item No evidence LRTI (include CRDE and HF)
 }
 }
 

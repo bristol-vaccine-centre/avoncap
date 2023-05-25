@@ -22,17 +22,22 @@ SARS-CoV-2 PCR positive only lab confirmed diagnosis.
 }
 \details{
 admission.covid_pcr_result:
-
-based on fields: c19_adm_swab and covid_19_diagnosis
-Patient reported, clinical diagnoses are assumed PCR negative (although possible in
-some cases they may not have been done). Lateral flows done in hospital are
-counted as PCR negative. negative admission swabs are counted as negative
-NA signifies test not done.
+\itemize{
+\item based on fields: c19_adm_swab and covid_19_diagnosis
+\item Patient reported, clinical diagnoses are assumed PCR negative (although possible in
+some cases they may not have been done).
+\item Lateral flows done in hospital are
+counted as PCR negative.
+\item negative admission swabs are counted as negative
+\item NA signifies test not done.
+}
 
 admission.is_covid:
-Binary confirmed or no-evidence.
-PCR results count as confirmed,
-LFT results count as confirmed,
-anything else is no evidence (includes negatives and test not done)
+\itemize{
+\item Binary confirmed or no-evidence.
+\item PCR results count as confirmed,
+\item Lateral flow results count as confirmed,
+\item anything else is no evidence (includes negatives and test not done)
+}
 }
 \concept{derived}

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,6 +88,8 @@ subfolder</p>
 <span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">/home/vp22681/Data/avoncap/urine-antigens</span></span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">2022-09-15</span></span></span>
 <span><span class="co">#&gt; │   └── uad-cases.csv</span></span>
+<span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">2023-05-15</span></span></span>
+<span><span class="co">#&gt; │   └── uad-cases.csv</span></span>
 <span><span class="co">#&gt; ├── B1851202_SAP V1.0-27Sep2021_Final.pdf</span></span>
 <span><span class="co">#&gt; ├── README.md</span></span>
 <span><span class="co">#&gt; └── Table Template Serotype Distribution Scientific Affairs Proposal_FINAL.docx</span></span></code></pre></div>
@@ -100,9 +102,9 @@ every person.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
 <span><span class="co">#&gt;   filename  directory      path          date       hospital study_year filetype</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> uad-cases urine-antigens …ad-cases.csv 2022-09-15 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> uad-cases urine-antigens …ad-cases.csv 2023-05-15 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv</span></span>
 <span><span class="va">rawUA</span> <span class="op">=</span> <span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"urine-antigens"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-969416e3870a1ceaa091ca0c1e17ce42-9c2e146f40e21e93dc39773001568d59.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-969416e3870a1ceaa091ca0c1e17ce42-53245217ab5aaeb56836d32bed67a2f7.rda</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="data-normalisation">Data normalisation<a class="anchor" aria-label="anchor" href="#data-normalisation"></a>
@@ -117,7 +119,7 @@ format).</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">normUA</span> <span class="op">=</span> <span class="va">rawUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"serotype"</span>, .nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.urine_antigens.serotype</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-5100bb5656b566355d59ce58f383e4c0.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-9b2175178c29c274fcc84c5f6215f563.rda</span></span>
 <span><span class="co">#&gt; mapping .RESULT to pneumo.urine_antigen_result</span></span>
 <span><span class="co">#&gt; mapping .EVENT_DATE to pneumo.test_date</span></span>
 <span><span class="co">#&gt; mapping .ANALYSIS to pneumo.urine_antigen_test</span></span>
@@ -127,7 +129,7 @@ format).</p>
 <span><span class="co">#&gt; Did not map 9 columns</span></span>
 <span><span class="va">normBinax</span> <span class="op">=</span> <span class="va">rawUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"binax"</span>, .nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.urine_antigens.binax</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-dbaafc2faf71424852c85cae1602eb20.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-3162ddc1a5a97e7ba422f3554a23cd1c.rda</span></span>
 <span><span class="co">#&gt; mapping .RESULT to pneumo.binax_result</span></span>
 <span><span class="co">#&gt; mapping .EVENT_DATE to pneumo.test_date</span></span>
 <span><span class="co">#&gt; mapping .SUBJECT to admin.consented_record_number</span></span>
@@ -173,71 +175,20 @@ relevant</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">augUA</span> <span class="op">=</span> <span class="va">normUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.urine_antigens.serotype</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-ba5f443abfb61760c28cad6c66b1a9ed.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-3e20d978cd1773f4f639a6b66eb4d943.rda</span></span>
 <span></span>
 <span></span>
-<span><span class="va">augUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">pneumo.serotype_results_complete</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">pneumo.serotype_summary_result</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu">count</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pneumo.serotype_summary_result [3]</span></span></span>
-<span><span class="co">#&gt;   pneumo.serotype_summary_result     n</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Negative                        <span style="text-decoration: underline;">1</span>348</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Positive                          93</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Other                             20</span></span>
-<span></span>
-<span><span class="va">augUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">pneumo.pcv_group</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">group</span>,<span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                                     result</span></span>
-<span><span class="co">#&gt; group                                Negative Positive Other Unknown</span></span>
-<span><span class="co">#&gt;   PCV7 (plus 9A,18A/B/F,23B)             1453       23     9     214</span></span>
-<span><span class="co">#&gt;   PCV13 (plus 9A,18A/B/F,23B,6C)         1429       44    11     215</span></span>
-<span><span class="co">#&gt;   PCV15 (plus 9A,18A/B/F,23B,6C)         1400       51    11     237</span></span>
-<span><span class="co">#&gt;   PCV20 (plus 9A,18A/B/F,23B,6C,15C)     1356       86    19     238</span></span>
-<span><span class="co">#&gt;   PPV23 (plus 9A,18A/B/F,23B,15C)        1352       89    20     238</span></span>
-<span><span class="co">#&gt;   PCV10 (Serum Study Institute)          1442       31    11     215</span></span>
-<span><span class="co">#&gt;   PCV10 (GSK)                            1442       31    11     215</span></span>
-<span><span class="co">#&gt;   PCV15 (Zhifei)                         1406       44    12     237</span></span>
-<span><span class="co">#&gt;   PCV24 (Vaxcyte)                        1348       93    20     238</span></span>
-<span><span class="co">#&gt;   PCV24 (Affinivax)                      1348       93    20     238</span></span>
-<span><span class="co">#&gt;   Additional PCV13 on 7 (plus 6C)        1452       21    11     215</span></span>
-<span><span class="co">#&gt;   Additional PCV15 on 13                 1660       11     4      24</span></span>
-<span><span class="co">#&gt;   Additional PCV20 on 15 (plus 15C)      1621       41    11      26</span></span>
-<span><span class="co">#&gt;   Additional PPV23 on PCV20              1662        9     4      24</span></span>
-<span><span class="co">#&gt;   4                                      1475        1     9     214</span></span>
-<span><span class="co">#&gt;   6B                                     1476        0     9     214</span></span>
-<span><span class="co">#&gt;   9V+A                                   1476        0     9     214</span></span>
-<span><span class="co">#&gt;   14                                     1472        4     9     214</span></span>
-<span><span class="co">#&gt;   18C+A/B/F                              1476        0     9     214</span></span>
-<span><span class="co">#&gt;   19F                                    1473        3     9     214</span></span>
-<span><span class="co">#&gt;   23F+B                                  1461       15     9     214</span></span>
-<span><span class="co">#&gt;   1                                      1472        4     9     214</span></span>
-<span><span class="co">#&gt;   3                                      1469        7     9     214</span></span>
-<span><span class="co">#&gt;   5                                      1474        2     9     214</span></span>
-<span><span class="co">#&gt;   6A+C                                   1471        5     9     214</span></span>
-<span><span class="co">#&gt;   7F                                     1470        3    12     214</span></span>
-<span><span class="co">#&gt;   19A                                    1473        3     9     214</span></span>
-<span><span class="co">#&gt;   22F                                    1666        6     3      24</span></span>
-<span><span class="co">#&gt;   33F                                    1667        5     3      24</span></span>
-<span><span class="co">#&gt;   8                                      1632       34     9      24</span></span>
-<span><span class="co">#&gt;   10A                                    1670        2     3      24</span></span>
-<span><span class="co">#&gt;   11A                                    1670        4     1      24</span></span>
-<span><span class="co">#&gt;   12F                                    1672        0     2      25</span></span>
-<span><span class="co">#&gt;   15B+C                                  1669        2     3      25</span></span>
-<span><span class="co">#&gt;   2                                      1674        0     1      24</span></span>
-<span><span class="co">#&gt;   9N                                     1670        3     2      24</span></span>
-<span><span class="co">#&gt;   17F                                    1667        4     4      24</span></span>
-<span><span class="co">#&gt;   20                                     1672        2     1      24</span></span>
-<span><span class="co">#&gt;   Other                                     0        0     0       0</span></span>
-<span></span>
-<span><span class="fu">ggplot</span><span class="op">(</span></span>
-<span>  <span class="va">augUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">pneumo.pcv_group</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>    <span class="fu">inner_join</span><span class="op">(</span><span class="fu">avoncap</span><span class="fu">::</span><span class="va">serotype_data</span><span class="op">$</span><span class="va">names</span>, by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group"</span><span class="op">=</span><span class="st">"label"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">indent</span><span class="op">==</span><span class="fl">2</span>, <span class="va">result</span> <span class="op">==</span> <span class="st">"Positive"</span><span class="op">)</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">group</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_histogram</span><span class="op">(</span>stat<span class="op">=</span><span class="st">"count"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in geom_histogram(stat = "count"): Ignoring unknown parameters:</span></span>
-<span><span class="co">#&gt; `binwidth`, `bins`, and `pad`</span></span></code></pre></div>
-<p><img src="uad-data_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+<span><span class="co"># augUA %&gt;% filter(pneumo.serotype_results_complete) %&gt;% </span></span>
+<span><span class="co">#   group_by(pneumo.serotype_summary_result) %&gt;% </span></span>
+<span><span class="co">#   count()</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># augUA %&gt;% unnest(pneumo.pcv_group) %&gt;% with(table(group,result))</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># ggplot(</span></span>
+<span><span class="co">#   augUA %&gt;% unnest(pneumo.pcv_group) %&gt;% </span></span>
+<span><span class="co">#     inner_join(avoncap::serotype_data$names, by=c("group"="label")) %&gt;%</span></span>
+<span><span class="co">#     filter(indent==2, result == "Positive"), aes(x=group))+</span></span>
+<span><span class="co">#   geom_histogram(stat="count")</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="common-operations">Common operations<a class="anchor" aria-label="anchor" href="#common-operations"></a>
@@ -251,7 +202,7 @@ relevant</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">tmp</span> <span class="op">=</span> <span class="va">augUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/derive_pcv_groupings.html">derive_pcv_groupings</a></span><span class="op">(</span>pcv_map <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="va">uad_pcv_map</span>, col_name <span class="op">=</span> <span class="va">pcv_custom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">glimpse</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 1,699</span></span>
+<span><span class="co">#&gt; Rows: 3,759</span></span>
 <span><span class="co">#&gt; Columns: 13</span></span>
 <span><span class="co">#&gt; $ admin.consented_record_number    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "1001-00045", "1001-00057", "1001-000…</span></span>
 <span><span class="co">#&gt; $ pneumo.test_date                 <span style="color: #949494; font-style: italic;">&lt;date&gt;</span> 2020-11-06, 2021-02-04, 2021-02-04, …</span></span>
@@ -269,44 +220,44 @@ relevant</p>
 <span><span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">pcv_custom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">group</span>,<span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                     result</span></span>
 <span><span class="co">#&gt; group                                Negative Positive Other Unknown</span></span>
-<span><span class="co">#&gt;   PCV7 (plus 9A,18A/B/F,23B)             1453       23     9     214</span></span>
-<span><span class="co">#&gt;   PCV13 (plus 9A,18A/B/F,23B,6C)         1429       44    11     215</span></span>
-<span><span class="co">#&gt;   PCV15 (plus 9A,18A/B/F,23B,6C)         1400       51    11     237</span></span>
-<span><span class="co">#&gt;   PCV20 (plus 9A,18A/B/F,23B,6C,15C)     1356       86    19     238</span></span>
-<span><span class="co">#&gt;   PPV23 (plus 9A,18A/B/F,23B,15C)        1352       89    20     238</span></span>
-<span><span class="co">#&gt;   PCV10 (Serum Study Institute)          1442       31    11     215</span></span>
-<span><span class="co">#&gt;   PCV10 (GSK)                            1442       31    11     215</span></span>
-<span><span class="co">#&gt;   PCV15 (Zhifei)                         1406       44    12     237</span></span>
-<span><span class="co">#&gt;   PCV24 (Vaxcyte)                        1348       93    20     238</span></span>
-<span><span class="co">#&gt;   PCV24 (Affinivax)                      1348       93    20     238</span></span>
-<span><span class="co">#&gt;   Additional PCV13 on 7 (plus 6C)        1452       21    11     215</span></span>
-<span><span class="co">#&gt;   Additional PCV15 on 13                 1660       11     4      24</span></span>
-<span><span class="co">#&gt;   Additional PCV20 on 15 (plus 15C)      1621       41    11      26</span></span>
-<span><span class="co">#&gt;   Additional PPV23 on PCV20              1662        9     4      24</span></span>
-<span><span class="co">#&gt;   4                                      1475        1     9     214</span></span>
-<span><span class="co">#&gt;   6B                                     1476        0     9     214</span></span>
-<span><span class="co">#&gt;   9V+A                                   1476        0     9     214</span></span>
-<span><span class="co">#&gt;   14                                     1472        4     9     214</span></span>
-<span><span class="co">#&gt;   18C+A/B/F                              1476        0     9     214</span></span>
-<span><span class="co">#&gt;   19F                                    1473        3     9     214</span></span>
-<span><span class="co">#&gt;   23F+B                                  1461       15     9     214</span></span>
-<span><span class="co">#&gt;   1                                      1472        4     9     214</span></span>
-<span><span class="co">#&gt;   3                                      1469        7     9     214</span></span>
-<span><span class="co">#&gt;   5                                      1474        2     9     214</span></span>
-<span><span class="co">#&gt;   6A+C                                   1471        5     9     214</span></span>
-<span><span class="co">#&gt;   7F                                     1470        3    12     214</span></span>
-<span><span class="co">#&gt;   19A                                    1473        3     9     214</span></span>
-<span><span class="co">#&gt;   22F                                    1666        6     3      24</span></span>
-<span><span class="co">#&gt;   33F                                    1667        5     3      24</span></span>
-<span><span class="co">#&gt;   8                                      1632       34     9      24</span></span>
-<span><span class="co">#&gt;   10A                                    1670        2     3      24</span></span>
-<span><span class="co">#&gt;   11A                                    1670        4     1      24</span></span>
-<span><span class="co">#&gt;   12F                                    1672        0     2      25</span></span>
-<span><span class="co">#&gt;   15B+C                                  1669        2     3      25</span></span>
-<span><span class="co">#&gt;   2                                      1674        0     1      24</span></span>
-<span><span class="co">#&gt;   9N                                     1670        3     2      24</span></span>
-<span><span class="co">#&gt;   17F                                    1667        4     4      24</span></span>
-<span><span class="co">#&gt;   20                                     1672        2     1      24</span></span>
+<span><span class="co">#&gt;   PCV7 (plus 9A,18A/B/F,23B)             3687       43    23       6</span></span>
+<span><span class="co">#&gt;   PCV13 (plus 9A,18A/B/F,23B,6C)         3594      130    29       6</span></span>
+<span><span class="co">#&gt;   PCV15 (plus 9A,18A/B/F,23B,6C)         3553      151    40      15</span></span>
+<span><span class="co">#&gt;   PCV20 (plus 9A,18A/B/F,23B,6C,15C)     3431      264    49      15</span></span>
+<span><span class="co">#&gt;   PPV23 (plus 9A,18A/B/F,23B,15C)        3417      277    50      15</span></span>
+<span><span class="co">#&gt;   PCV10 (Serum Study Institute)          3639       85    29       6</span></span>
+<span><span class="co">#&gt;   PCV10 (GSK)                            3639       85    29       6</span></span>
+<span><span class="co">#&gt;   PCV15 (Zhifei)                         3584      131    29      15</span></span>
+<span><span class="co">#&gt;   PCV24 (Vaxcyte)                        3402      292    50      15</span></span>
+<span><span class="co">#&gt;   PCV24 (Affinivax)                      3402      292    50      15</span></span>
+<span><span class="co">#&gt;   Additional PCV13 on 7 (plus 6C)        3636       88    29       6</span></span>
+<span><span class="co">#&gt;   Additional PCV15 on 13                 3693       23    32      11</span></span>
+<span><span class="co">#&gt;   Additional PCV20 on 15 (plus 15C)      3581      122    45      11</span></span>
+<span><span class="co">#&gt;   Additional PPV23 on PCV20              3712       29     7      11</span></span>
+<span><span class="co">#&gt;   4                                      3724       11    18       6</span></span>
+<span><span class="co">#&gt;   6B                                     3735        0    18       6</span></span>
+<span><span class="co">#&gt;   9V+A                                   3734        1    18       6</span></span>
+<span><span class="co">#&gt;   14                                     3721       11    21       6</span></span>
+<span><span class="co">#&gt;   18C+A/B/F                              3732        1    21       5</span></span>
+<span><span class="co">#&gt;   19F                                    3732        3    18       6</span></span>
+<span><span class="co">#&gt;   23F+B                                  3716       17    20       6</span></span>
+<span><span class="co">#&gt;   1                                      3723        9    21       6</span></span>
+<span><span class="co">#&gt;   3                                      3709       26    18       6</span></span>
+<span><span class="co">#&gt;   5                                      3730        3    20       6</span></span>
+<span><span class="co">#&gt;   6A+C                                   3717       16    20       6</span></span>
+<span><span class="co">#&gt;   7F                                     3695       33    26       5</span></span>
+<span><span class="co">#&gt;   19A                                    3728        6    19       6</span></span>
+<span><span class="co">#&gt;   22F                                    3714       12    22      11</span></span>
+<span><span class="co">#&gt;   33F                                    3714       11    23      11</span></span>
+<span><span class="co">#&gt;   8                                      3615       97    36      11</span></span>
+<span><span class="co">#&gt;   10A                                    3706       15    27      11</span></span>
+<span><span class="co">#&gt;   11A                                    3738        8     2      11</span></span>
+<span><span class="co">#&gt;   12F                                    3745        0     3      11</span></span>
+<span><span class="co">#&gt;   15B+C                                  3742        3     3      11</span></span>
+<span><span class="co">#&gt;   2                                      3744        1     3      11</span></span>
+<span><span class="co">#&gt;   9N                                     3734       11     3      11</span></span>
+<span><span class="co">#&gt;   17F                                    3732       12     4      11</span></span>
+<span><span class="co">#&gt;   20                                     3740        5     3      11</span></span>
 <span><span class="co">#&gt;   Other                                     0        0     0       0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

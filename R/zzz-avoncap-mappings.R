@@ -13,6 +13,13 @@ keys_avoncap_central = function() list(
   "consent" = "{admin.consented_record_number}"
 )
 
+#' Core avoncap consent
+#'
+#' `r .document_mapping(map_avoncap_consent)`
+#'
+#' @concept map
+#' @return a list
+#' @export
 map_avoncap_consent = function() list(
   "consented" = .normalise_list(
     admin.consented,
@@ -24,7 +31,10 @@ map_avoncap_consent = function() list(
   ),
   "withdrawal" = .normalise_yesno(
     admin.withdrawal
-  )
+  ),
+  "consent_urine" = .normalise_yesno(admin.consent_for_urine),
+  "consent_blood" = .normalise_yesno(admin.consent_for_blood),
+  "consent_resp_samples1" = .normalise_yesno(admin.consent_for_respiratory_samples)
 )
 
 #' Core avoncap normalisation
@@ -153,6 +163,40 @@ map_avoncap_central = function() list(
     demog.units_of_alcohol
   ),
 
+  #### Samples and admin ----
+  "np_swab" = .normalise_list(admin.np_swab_taken_1, c("yes","pending","no")),
+  "adm_np_type" = .normalise_list(admin.np_swab_site_1, c("nose","throat","midturbinate")),
+  "np_date" = .normalise_date(admin.np_swab_date_1),
+  "days_adm_npswab" = .normalise_double(admin.np_swab_day_since_admission, limits = c(0,Inf)),
+
+  "np_swab_2" = .normalise_list(admin.np_swab_taken_2, c("yes","pending","no")),
+  "adm_np_type_2" = .normalise_list(admin.np_swab_site_2, c("nose","throat","midturbinate")),
+  "np_date_2" = .normalise_date(admin.np_swab_date_2),
+  # no days since admission
+
+  "np_swab_3" = .normalise_list(admin.np_swab_taken_3, c("yes","pending","no")),
+  "adm_np_type_3" = .normalise_list(admin.np_swab_site_3, c("nose","throat","midturbinate")),
+  "np_date_3" = .normalise_date(admin.np_swab_date_3),
+  # no days since admission
+
+  "saliva" = .normalise_list(admin.saliva_sample_taken, c("yes","pending","no")),
+  "saliva_date" = .normalise_date(admin.saliva_sample_date),
+  "days_adm_saliva" = .normalise_double(admin.saliva_sample_day_since_admission, limits = c(0,Inf)),
+
+  "sputum" = .normalise_list(admin.sputum_sample_taken, c("yes","pending","no")),
+  "sputum_date" = .normalise_date(admin.sputum_sample_date),
+  "days_adm_sputum" = .normalise_double(admin.sputum_sample_day_since_admission, limits = c(0,Inf)),
+
+  "pt_ad_ur" = .normalise_yesno(admin.urine_sample_needed),
+  "adm_ur_taken" = .normalise_list(admin.urine_sample_taken, c("yes","pending","no")),
+  "nourine_reason" = .normalise_list(admin.urine_sample_failure_reason, c("No consent","Incontinent","Anuric","Agitated","Dying patient","Other")),
+  "adm_np_type_2" = .normalise_list(admin.urine_sample_site, c("Catheter","Non-catheter")),
+  "adm_ur_date" = .normalise_date(admin.urine_sample_date),
+  "days_adm_urine" = .normalise_double(admin.urine_sample_day_since_admission, limits = c(0,Inf)),
+
+  "adm_serum_tak" = .normalise_list(admin.serum_sample_taken, c("yes","pending","no")),
+  "adm_seru_date" = .normalise_date(admin.serum_sample_date),
+  "days_adm_serum" = .normalise_double(admin.serum_sample_day_since_admission, limits = c(0,Inf)),
 
   #### Vaccination fields: ----
   # TODO: Third dose brand is currently messed up with inconsistently transposed brand and date information.

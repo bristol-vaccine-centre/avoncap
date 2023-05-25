@@ -37,6 +37,9 @@
     <loc>/reference/augment_generic.html</loc>
   </url>
   <url>
+    <loc>/reference/cut_integer.html</loc>
+  </url>
+  <url>
     <loc>/reference/default_column_names.html</loc>
   </url>
   <url>
@@ -92,6 +95,9 @@
   </url>
   <url>
     <loc>/reference/derive_pneumo_uad_status.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_pneumococcal_categories.html</loc>
   </url>
   <url>
     <loc>/reference/derive_pneumococcal_high_risk.html</loc>
@@ -167,6 +173,9 @@
   </url>
   <url>
     <loc>/reference/map_avoncap_central.html</loc>
+  </url>
+  <url>
+    <loc>/reference/map_avoncap_consent.html</loc>
   </url>
   <url>
     <loc>/reference/map_avoncap_haem.html</loc>

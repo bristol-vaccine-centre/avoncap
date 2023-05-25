@@ -343,7 +343,7 @@ load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("repro
       # convert conflicting data type columns to character
       dplyr::mutate(csv = purrr::map2(csv, mismatches, ~ .x %>% dplyr::mutate(dplyr::across(tidyselect::any_of(.y), as.character)))) %>%
       # force merge the files together
-      dplyr::select(.hospital=hospital, .study_year=study_year, .file = file,csv) %>%
+      dplyr::select(.hospital=hospital, .study_year=study_year, .file = file, csv) %>%
       tidyr::unnest(csv)
 
     if (!("hospital" %in% colnames(tmp))) tmp = tmp %>% dplyr::mutate(hospital = .hospital)

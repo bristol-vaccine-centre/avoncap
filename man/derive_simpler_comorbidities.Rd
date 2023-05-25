@@ -18,6 +18,14 @@ set can be explicitly supplied with \code{v = get_value_sets(df)}}
 a dataframe
 }
 \description{
-Rationalise some of the more detailed comorbidities
+and generate some summary values
+}
+\details{
+\itemize{
+\item any chronic resp dx: asthma, bronchiectasis, chronic pleural disease, COPD,
+interstitial lung dx, cyctic fibrosis, other chronic resp dx
+\item any chronic heart disease: pulmonary htn, CCF, IHD, previous MI, congential
+heart dx, hypertension, AF, other arrythmia, other heart dx, other other heart dx
+}
 }
 \concept{derived}

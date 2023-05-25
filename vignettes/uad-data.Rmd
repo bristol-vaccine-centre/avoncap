@@ -86,17 +86,17 @@ For the BINAX results there is no real addition qeustions that are relevant
 augUA = normUA %>% augment_data()
 
 
-augUA %>% filter(pneumo.serotype_results_complete) %>% 
-  group_by(pneumo.serotype_summary_result) %>% 
-  count()
-
-augUA %>% unnest(pneumo.pcv_group) %>% with(table(group,result))
-
-ggplot(
-  augUA %>% unnest(pneumo.pcv_group) %>% 
-    inner_join(avoncap::serotype_data$names, by=c("group"="label")) %>%
-    filter(indent==2, result == "Positive"), aes(x=group))+
-  geom_histogram(stat="count")
+# augUA %>% filter(pneumo.serotype_results_complete) %>% 
+#   group_by(pneumo.serotype_summary_result) %>% 
+#   count()
+# 
+# augUA %>% unnest(pneumo.pcv_group) %>% with(table(group,result))
+# 
+# ggplot(
+#   augUA %>% unnest(pneumo.pcv_group) %>% 
+#     inner_join(avoncap::serotype_data$names, by=c("group"="label")) %>%
+#     filter(indent==2, result == "Positive"), aes(x=group))+
+#   geom_histogram(stat="count")
 
 
 

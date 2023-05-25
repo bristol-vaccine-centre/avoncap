@@ -39,6 +39,14 @@ derive_continuous_categories = function(df,v,...) {
     dplyr::mutate(
       admission.cci_category = cut(admission.charlson_comorbidity_index, breaks = c(-Inf,0,2,4,Inf), labels=c("None (0)","Mild (1-2)","Moderate (3-4)","Severe (5+)"), include.lowest = FALSE, ordered_result = TRUE),
       admission.rockwood_category = cut(admission.rockwood_score, breaks=c(0,5,Inf), labels=c("Independent (0-4)","Frail (5-9)"),ordered_result = TRUE),
+      admission.curb_65_category = case_when(
+        admission.curb_65_severity_score == "0-Very Low" ~ "0-1 (Mild)",
+        admission.curb_65_severity_score == "1-Low" ~ "0-1 (Mild)",
+        admission.curb_65_severity_score == "2-Moderate" ~ "2 (Moderate)",
+        admission.curb_65_severity_score == "3-Severe" ~ "3-5 (Severe)",
+        admission.curb_65_severity_score == "4-Severe" ~ "3-5 (Severe)",
+        admission.curb_65_severity_score == "5-Severe" ~ "3-5 (Severe)"
+      ) %>% ordered(c("0-1 (Mild)","2 (Moderate)","3-5 (Severe)"))
     )
 }
 
@@ -84,6 +92,13 @@ derive_admission_episode = function(df,v) {
 
 #' Rationalise some of the more detailed comorbidities
 #'
+#' and generate some summary values
+#'
+#' * any chronic resp dx: asthma, bronchiectasis, chronic pleural disease, COPD,
+#' interstitial lung dx, cyctic fibrosis, other chronic resp dx
+#' * any chronic heart disease: pulmonary htn, CCF, IHD, previous MI, congential
+#' heart dx, hypertension, AF, other arrythmia, other heart dx, other other heart dx
+#'
 #' @inherit derive_template
 #' @concept derived
 #' @export
@@ -116,7 +131,30 @@ derive_simpler_comorbidities = function(df,v,...) {
       comorbid.leukaemia == v$comorbid.leukaemia$yes ~ "yes",
       comorbid.lymphoma == v$comorbid.lymphoma$yes ~ "yes",
       TRUE ~ "no"
-    ) %>% factor(levels = c("no","yes"))
+    ) %>% factor(levels = c("no","yes")),
+    comorbid.any_chronic_lung_disease = dplyr::case_when(
+      comorbid.asthma == v$comorbid.asthma$yes ~ "yes",
+      comorbid.bronchiectasis == v$comorbid.bronchiectasis$yes ~ "yes",
+      comorbid.chronic_pleural_dx == v$comorbid.chronic_pleural_dx$yes ~ "yes",
+      comorbid.copd == v$comorbid.copd$yes ~ "yes",
+      comorbid.interstitial_lung_dx == v$comorbid.interstitial_lung_dx$yes ~ "yes",
+      comorbid.cystic_fibrosis == v$comorbid.cystic_fibrosis$yes  ~ "yes",
+      comorbid.other_chronic_resp_dx == v$comorbid.other_chronic_resp_dx$yes ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(c("no","yes")),
+    comorbid.any_chronic_heart_disease = dplyr::case_when(
+      comorbid.pulmonary_hypertension == v$comorbid.pulmonary_hypertension$yes ~ "yes",
+      comorbid.ccf == v$comorbid.ccf$yes ~ "yes",
+      comorbid.ihd == v$comorbid.ihd$yes ~ "yes",
+      comorbid.previous_mi == v$comorbid.previous_mi$yes ~ "yes",
+      comorbid.congenital_heart_dx == v$comorbid.congenital_heart_dx$yes ~ "yes",
+      comorbid.hypertension == v$comorbid.hypertension$yes ~ "yes",
+      comorbid.af == v$comorbid.af$yes ~ "yes",
+      comorbid.other_arrythmia == v$comorbid.other_arrythmia$yes ~ "yes",
+      comorbid.other_heart_dx == v$comorbid.other_heart_dx$yes ~ "yes",
+      comorbid.other_other_heart_dx == v$comorbid.other_other_heart_dx$yes ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(c("no","yes"))
   )
 }
 
@@ -130,17 +168,20 @@ derive_simpler_comorbidities = function(df,v,...) {
 #'
 #' admission.covid_pcr_result:
 #'
-#' based on fields: c19_adm_swab and covid_19_diagnosis
-#' Patient reported, clinical diagnoses are assumed PCR negative (although possible in
-#' some cases they may not have been done). Lateral flows done in hospital are
-#' counted as PCR negative. negative admission swabs are counted as negative
-#' NA signifies test not done.
+#' * based on fields: c19_adm_swab and covid_19_diagnosis
+#' * Patient reported, clinical diagnoses are assumed PCR negative (although possible in
+#' some cases they may not have been done).
+#' * Lateral flows done in hospital are
+#' counted as PCR negative.
+#' * negative admission swabs are counted as negative
+#' * NA signifies test not done.
 #'
 #' admission.is_covid:
-#' Binary confirmed or no-evidence.
-#' PCR results count as confirmed,
-#' LFT results count as confirmed,
-#' anything else is no evidence (includes negatives and test not done)
+#'
+#' * Binary confirmed or no-evidence.
+#' * PCR results count as confirmed,
+#' * Lateral flow results count as confirmed,
+#' * anything else is no evidence (includes negatives and test not done)
 #'
 #'
 #' @inherit derive_template
@@ -274,7 +315,7 @@ derive_infective_classification = function(df,v) {
 #' * clinical presentation:
 #'   * Pneumonia - implies Infective
 #'   * NP-LRTI - implies Infective
-#'   * No signs LRTI (include CRDE and HF)
+#'   * No evidence LRTI (include CRDE and HF)
 #'
 #' Some cases do not get a clinical presentation in this. Typically they are people
 #' who have an infective cause, but LRTI and pneumonia have been excluded. These
@@ -552,6 +593,39 @@ derive_vaccine_combinations = function(df,v,..) {
 
 # Pneumococcal ----
 
+#' The pneumococcal incidence diagnostic classifications
+#'
+#' The 4 category disjoint classification.
+#'
+#' * pneumo.presentation_class:
+#'   * CAP+/RAD+ - radiologically proved pneumonia
+#'   * CAP+/RAD- - pneumonia without x-ray confirmation
+#'   * NP-LRTI - non-pneumonic lower respiratory tract infection
+#'   * No evidence LRTI - believed to be non-infective at admission, this last
+#'   group is usually discarded from analysis, however it only really describes
+#'   people without a clinical diagnosis of infection on admission. There could
+#'   still be undiagnosed infection there.
+#'
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_pneumococcal_categories = function(df,v,...) {
+
+  df %>% dplyr::mutate(
+
+    pneumo.presentation_CAP = admission.presentation_3_class == "Pneumonia",
+    pneumo.presentation_RAD = diagnosis.SOC_CAP_radiologically_confirmed == "yes",
+
+    pneumo.presentation_class = dplyr::case_when(
+      pneumo.presentation_CAP & pneumo.presentation_RAD ~ "CAP+/RAD+",
+      pneumo.presentation_CAP & !pneumo.presentation_RAD ~ "CAP+/RAD-",
+      admission.presentation_3_class == "NP-LRTI" ~ "NP-LRTI",
+      TRUE ~ "No evidence LRTI"
+    ) %>% factor(c("No evidence LRTI","NP-LRTI","CAP+/RAD-","CAP+/RAD+"))
+  )
+}
+
 #' Determine if patient is in a high pneumococcal risk group
 #'
 #' High pneumococcal risk defined if any of the following:
@@ -763,6 +837,7 @@ derive_WHO_outcome_score = function(df, v, ...) {
 
 #' Binary outcomes for severe disease
 #'
+#' * Confirmed death within 30 days (subject to potential censoring)
 #' * Confirmed death (any length follow up)
 #' * Any ICU admission
 #'
@@ -780,7 +855,13 @@ derive_severe_disease_outcomes = function(df,v,...) {
           outcome.icu_duration > 0 ~ "confirmed",
           TRUE ~ "not recorded"
         ) %>% factor(levels=c("confirmed","not recorded")),
+        outcome.death_within_30_days = dplyr::case_when(
+          day_7.death == v$day_7.death$yes ~ "confirmed",
+          outcome.survival_duration <= 30 ~ "confirmed",
+          TRUE ~ "not recorded"
+        ) %>% factor(levels=c("confirmed","not recorded")),
         outcome.death_during_follow_up = dplyr::case_when(
+          !is.na(outcome.survival_duration) ~ "confirmed",
           outcome.inpatient_death == v$outcome.inpatient_death$yes ~ "confirmed",
           outcome.functional_status == v$outcome.functional_status$Deceased ~ "confirmed",
           TRUE ~ "not recorded"

@@ -30,7 +30,7 @@ options("avoncap.input" = "~/Data/avoncap/")
 
 # Data loading
 
-The raw data is expected to be in the `urine-antigens` subfolder
+The raw data is expected to be in the `nhs-extract` subfolder
 
 ```{r}
 rawPn = avoncap::load_data("nhs-extract","pneumococcal")
@@ -51,6 +51,11 @@ normPn = rawPn %>% normalise_data()
 ```{r}
 augPn = normPn %>% augment_data()
 ```
+
+
+Augmented IPD dataset format:
+
+`r avoncap:::.document_data_format(normPn)`
 
 
 ```{r}

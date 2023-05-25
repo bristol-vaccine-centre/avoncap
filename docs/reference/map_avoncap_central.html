@@ -27,6 +27,31 @@ care_home -&amp;gt; demog.care_home_resident (yesno)
 drugs -&amp;gt; dplyr (checkboxes)
 vaping -&amp;gt; demog.vaping (list)
 alc_units -&amp;gt; demog.units_of_alcohol (name)
+np_swab -&amp;gt; admin.np_swab_taken_1 (list)
+adm_np_type -&amp;gt; admin.np_swab_site_1 (list)
+np_date -&amp;gt; admin.np_swab_date_1 (date)
+days_adm_npswab -&amp;gt; admin.np_swab_day_since_admission (double)
+np_swab_2 -&amp;gt; admin.np_swab_taken_2 (list)
+adm_np_type_2 -&amp;gt; admin.np_swab_site_2 (list)
+np_date_2 -&amp;gt; admin.np_swab_date_2 (date)
+np_swab_3 -&amp;gt; admin.np_swab_taken_3 (list)
+adm_np_type_3 -&amp;gt; admin.np_swab_site_3 (list)
+np_date_3 -&amp;gt; admin.np_swab_date_3 (date)
+saliva -&amp;gt; admin.saliva_sample_taken (list)
+saliva_date -&amp;gt; admin.saliva_sample_date (date)
+days_adm_saliva -&amp;gt; admin.saliva_sample_day_since_admission (double)
+sputum -&amp;gt; admin.sputum_sample_taken (list)
+sputum_date -&amp;gt; admin.sputum_sample_date (date)
+days_adm_sputum -&amp;gt; admin.sputum_sample_day_since_admission (double)
+pt_ad_ur -&amp;gt; admin.urine_sample_needed (yesno)
+adm_ur_taken -&amp;gt; admin.urine_sample_taken (list)
+nourine_reason -&amp;gt; admin.urine_sample_failure_reason (list)
+adm_np_type_2 -&amp;gt; admin.urine_sample_site (list)
+adm_ur_date -&amp;gt; admin.urine_sample_date (date)
+days_adm_urine -&amp;gt; admin.urine_sample_day_since_admission (double)
+adm_serum_tak -&amp;gt; admin.serum_sample_taken (list)
+adm_seru_date -&amp;gt; admin.serum_sample_date (date)
+days_adm_serum -&amp;gt; admin.serum_sample_day_since_admission (double)
 contraindication -&amp;gt; vaccination.covid_vaccine_contraindicated (yesno)
 covid19_vax -&amp;gt; vaccination.covid_vaccination (list)
 covidvax_date -&amp;gt; vaccination.first_dose_date (date)
@@ -175,6 +200,31 @@ care_home -&amp;gt; demog.care_home_resident (yesno)
 drugs -&amp;gt; dplyr (checkboxes)
 vaping -&amp;gt; demog.vaping (list)
 alc_units -&amp;gt; demog.units_of_alcohol (name)
+np_swab -&amp;gt; admin.np_swab_taken_1 (list)
+adm_np_type -&amp;gt; admin.np_swab_site_1 (list)
+np_date -&amp;gt; admin.np_swab_date_1 (date)
+days_adm_npswab -&amp;gt; admin.np_swab_day_since_admission (double)
+np_swab_2 -&amp;gt; admin.np_swab_taken_2 (list)
+adm_np_type_2 -&amp;gt; admin.np_swab_site_2 (list)
+np_date_2 -&amp;gt; admin.np_swab_date_2 (date)
+np_swab_3 -&amp;gt; admin.np_swab_taken_3 (list)
+adm_np_type_3 -&amp;gt; admin.np_swab_site_3 (list)
+np_date_3 -&amp;gt; admin.np_swab_date_3 (date)
+saliva -&amp;gt; admin.saliva_sample_taken (list)
+saliva_date -&amp;gt; admin.saliva_sample_date (date)
+days_adm_saliva -&amp;gt; admin.saliva_sample_day_since_admission (double)
+sputum -&amp;gt; admin.sputum_sample_taken (list)
+sputum_date -&amp;gt; admin.sputum_sample_date (date)
+days_adm_sputum -&amp;gt; admin.sputum_sample_day_since_admission (double)
+pt_ad_ur -&amp;gt; admin.urine_sample_needed (yesno)
+adm_ur_taken -&amp;gt; admin.urine_sample_taken (list)
+nourine_reason -&amp;gt; admin.urine_sample_failure_reason (list)
+adm_np_type_2 -&amp;gt; admin.urine_sample_site (list)
+adm_ur_date -&amp;gt; admin.urine_sample_date (date)
+days_adm_urine -&amp;gt; admin.urine_sample_day_since_admission (double)
+adm_serum_tak -&amp;gt; admin.serum_sample_taken (list)
+adm_seru_date -&amp;gt; admin.serum_sample_date (date)
+days_adm_serum -&amp;gt; admin.serum_sample_day_since_admission (double)
 contraindication -&amp;gt; vaccination.covid_vaccine_contraindicated (yesno)
 covid19_vax -&amp;gt; vaccination.covid_vaccination (list)
 covidvax_date -&amp;gt; vaccination.first_dose_date (date)
@@ -306,7 +356,7 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -370,6 +420,31 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>drugs -&gt; dplyr (checkboxes)</p></li>
 <li><p>vaping -&gt; demog.vaping (list)</p></li>
 <li><p>alc_units -&gt; demog.units_of_alcohol (name)</p></li>
+<li><p>np_swab -&gt; admin.np_swab_taken_1 (list)</p></li>
+<li><p>adm_np_type -&gt; admin.np_swab_site_1 (list)</p></li>
+<li><p>np_date -&gt; admin.np_swab_date_1 (date)</p></li>
+<li><p>days_adm_npswab -&gt; admin.np_swab_day_since_admission (double)</p></li>
+<li><p>np_swab_2 -&gt; admin.np_swab_taken_2 (list)</p></li>
+<li><p>adm_np_type_2 -&gt; admin.np_swab_site_2 (list)</p></li>
+<li><p>np_date_2 -&gt; admin.np_swab_date_2 (date)</p></li>
+<li><p>np_swab_3 -&gt; admin.np_swab_taken_3 (list)</p></li>
+<li><p>adm_np_type_3 -&gt; admin.np_swab_site_3 (list)</p></li>
+<li><p>np_date_3 -&gt; admin.np_swab_date_3 (date)</p></li>
+<li><p>saliva -&gt; admin.saliva_sample_taken (list)</p></li>
+<li><p>saliva_date -&gt; admin.saliva_sample_date (date)</p></li>
+<li><p>days_adm_saliva -&gt; admin.saliva_sample_day_since_admission (double)</p></li>
+<li><p>sputum -&gt; admin.sputum_sample_taken (list)</p></li>
+<li><p>sputum_date -&gt; admin.sputum_sample_date (date)</p></li>
+<li><p>days_adm_sputum -&gt; admin.sputum_sample_day_since_admission (double)</p></li>
+<li><p>pt_ad_ur -&gt; admin.urine_sample_needed (yesno)</p></li>
+<li><p>adm_ur_taken -&gt; admin.urine_sample_taken (list)</p></li>
+<li><p>nourine_reason -&gt; admin.urine_sample_failure_reason (list)</p></li>
+<li><p>adm_np_type_2 -&gt; admin.urine_sample_site (list)</p></li>
+<li><p>adm_ur_date -&gt; admin.urine_sample_date (date)</p></li>
+<li><p>days_adm_urine -&gt; admin.urine_sample_day_since_admission (double)</p></li>
+<li><p>adm_serum_tak -&gt; admin.serum_sample_taken (list)</p></li>
+<li><p>adm_seru_date -&gt; admin.serum_sample_date (date)</p></li>
+<li><p>days_adm_serum -&gt; admin.serum_sample_day_since_admission (double)</p></li>
 <li><p>contraindication -&gt; vaccination.covid_vaccine_contraindicated (yesno)</p></li>
 <li><p>covid19_vax -&gt; vaccination.covid_vaccination (list)</p></li>
 <li><p>covidvax_date -&gt; vaccination.first_dose_date (date)</p></li>

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
 <div class="section level2">
 <h2 id="data-loading">Data loading<a class="anchor" aria-label="anchor" href="#data-loading"></a>
 </h2>
-<p>The raw data is expected to be in the <code>urine-antigens</code>
+<p>The raw data is expected to be in the <code>nhs-extract</code>
 subfolder</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawPn</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"nhs-extract"</span>,<span class="st">"pneumococcal"</span><span class="op">)</span></span>
@@ -95,7 +95,7 @@ subfolder</p>
 <span><span class="va">normPn</span> <span class="op">=</span> <span class="va">rawPn</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.nhs_extract.pneumococcal</span></span>
 <span><span class="co">#&gt; Some columns expected in the mappings were not present: hb</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-0809d654745ba7e6a0120e8bafa86288.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-b7132815a7d5beadc2954cd1603b19c9.rda</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="augment-the-data">Augment the data<a class="anchor" aria-label="anchor" href="#augment-the-data"></a>
@@ -103,9 +103,116 @@ subfolder</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">augPn</span> <span class="op">=</span> <span class="va">normPn</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.nhs_extract.pneumococcal</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-593faf69f0dce77c9d8d56509565c6e6.rda</span></span>
-<span><span class="co">#&gt; Created comorbid.diabetes_type, comorbid.solid_cancer_present, comorbid.haemotological_cancer_present, comorbid.any_cancer_present using: comorbid.diabetes, comorbid.solid_cancer, comorbid.leukaemia, comorbid.lymphoma, comorbid.no_haemotological_cancer</span></span>
-<span><span class="co">#&gt; Created panel, label, type, pneumo.phe_pcv_group using:</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-ac81898acc1f49201cea42b4b73fd6ee.rda</span></span></code></pre></div>
+<p>Augmented IPD dataset format:</p>
+<ul>
+<li>admin.record_number: numeric</li>
+<li>admin.hospital: factor</li>
+<li>admin.patient_identifier: character</li>
+<li>demog.age: numeric</li>
+<li>demog.gender: factor</li>
+<li>pneumo.test_date: Date</li>
+<li>pneumo.test_type: factor</li>
+<li>pneumo.phe_serotype: factor</li>
+<li>demog.smoker: factor</li>
+<li>comorbid.no_resp_dx: factor</li>
+<li>comorbid.copd: factor</li>
+<li>comorbid.asthma: factor</li>
+<li>comorbid.bronchiectasis: factor</li>
+<li>comorbid.pulmonary_fibrosis: factor</li>
+<li>comorbid.resp_other: factor</li>
+<li>comorbid.no_heart_dx: factor</li>
+<li>comorbid.ccf: factor</li>
+<li>comorbid.ihd: factor</li>
+<li>comorbid.hypertension: factor</li>
+<li>comorbid.af: factor</li>
+<li>comorbid.other_heart_dx: factor</li>
+<li>comorbid.previous_mi: factor</li>
+<li>comorbid.ckd: factor</li>
+<li>comorbid.liver_disease: factor</li>
+<li>comorbid.diabetes: factor</li>
+<li>comorbid.diabetes_medications: factor</li>
+<li>comorbid.no_dementia: factor</li>
+<li>comorbid.dementia: factor</li>
+<li>comorbid.cognitive_impairment: factor</li>
+<li>comorbid.neuro_other: factor</li>
+<li>comorbid.cva: factor</li>
+<li>comorbid.tia: factor</li>
+<li>comorbid.hemiplegia: factor</li>
+<li>comorbid.paraplegia: factor</li>
+<li>comorbid.no_neuro_dx: factor</li>
+<li>comorbid.gastric_ulcers: factor</li>
+<li>comorbid.dysphagia: factor</li>
+<li>comorbid.periph_vasc_dx: factor</li>
+<li>comorbid.connective_tissue_dx: factor</li>
+<li>comorbid.immunodeficiency: factor</li>
+<li>comorbid.other_pneumococcal_risks: factor</li>
+<li>comorbid.no_HIV: factor</li>
+<li>comorbid.HIV: factor</li>
+<li>comorbid.AIDS: factor</li>
+<li>comorbid.solid_cancer: factor</li>
+<li>comorbid.no_haemotological_cancer: factor</li>
+<li>comorbid.leukaemia: factor</li>
+<li>comorbid.lymphoma: factor</li>
+<li>comorbid.recent_chemotherapy: factor</li>
+<li>comorbid.recent_radiotherapy: factor</li>
+<li>comorbid.transplant_recipient: factor</li>
+<li>comorbid.pregnancy: factor</li>
+<li>demog.no_drug_abuse: factor</li>
+<li>demog.alcohol_abuse: factor</li>
+<li>demog.ivdu_abuse: factor</li>
+<li>demog.marijuana_abuse: factor</li>
+<li>demog.other_inhaled_drug_abuse: factor</li>
+<li>admission.on_immunosuppression: factor</li>
+<li>comorbid.bmi_status: factor</li>
+<li>comorbid.influenza_infection: factor</li>
+<li>comorbid.hepatitis_c: factor</li>
+<li>vaccination.ppv23_vaccination: factor</li>
+<li>vaccination.flu: factor</li>
+<li>admission.charlson_comorbidity_index: numeric</li>
+<li>outcome.length_of_stay: numeric</li>
+<li>admission.triage_score: factor</li>
+<li>admission.respiratory_rate: numeric</li>
+<li>admission.saturations_on_room_air: numeric</li>
+<li>admission.systolic_bp: numeric</li>
+<li>admission.diastolic_bp: numeric</li>
+<li>admission.crb65: numeric</li>
+<li>admission.curb65: numeric</li>
+<li>outcome.antibiotic_route: factor</li>
+<li>outcome.antibiotic_duration: numeric</li>
+<li>admission.infection_site: factor</li>
+<li>outcome.abnormal_lft: factor</li>
+<li>outcome.acute_kidney_injury: factor</li>
+<li>outcome.pleural_effusion: factor</li>
+<li>outcome.empyema: factor</li>
+<li>outcome.discharge_to: factor</li>
+<li>outcome.admitted_icu: factor</li>
+<li>outcome.non_invasive_ventilation: factor</li>
+<li>outcome.intubation: factor</li>
+<li>outcome.recurrent_pneumonia: factor</li>
+<li>outcome.received_ecmo: factor</li>
+<li>outcome.received_ionotropes: factor</li>
+<li>outcome.tracheostomy: factor</li>
+<li>outcome.inpatient_death: factor</li>
+<li>outcome.death_within_30_days: factor</li>
+<li>outcome.death_within_1_year: factor</li>
+<li>outcome.survival_duration: numeric</li>
+<li>haem.albumin: numeric</li>
+<li>haem.white_cell_count: numeric</li>
+<li>haem.neutrophils: numeric</li>
+<li>haem.lymphocytes: numeric</li>
+<li>haem.crp: numeric</li>
+<li>haem.sodium: numeric</li>
+<li>haem.urea: numeric</li>
+<li>haem.egfr: numeric</li>
+<li>haem.creatinine: numeric</li>
+<li>radio.cxr_infection: factor</li>
+<li>radio.cxr_lobar_changes: factor</li>
+<li>outcome.death_within_5_years: factor</li>
+<li>outcome.5_yr_survival_duration: numeric</li>
+<li>demog.imd_decile: character</li>
+<li>key.admit: character</li>
+</ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">augPn</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">admission.infection_site</span>, <span class="va">pneumo.test_type</span>,useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         pneumo.test_type</span></span>

@@ -166,6 +166,7 @@ augment.avoncap_export.central = function(df,...) {
       derive_completed_vaccination_status,
       derive_effective_vaccination_status,
       derive_vaccine_combinations,
+      derive_pneumococcal_categories,
       derive_pneumococcal_high_risk,
       derive_pneumococcal_risk_category,
       derive_WHO_outcome_score,
