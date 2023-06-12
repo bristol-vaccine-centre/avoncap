@@ -52,8 +52,10 @@ derive_continuous_categories = function(df,v,...) {
 
 #' Create a unique patient level id if it does not already exist
 #'
+#' The patient identifier is
+#'
 #' Derived from the record number or the first record number (ensuring it
-#' matches) an entry in the recrod number.
+#' matches) an entry in the record number.
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -64,8 +66,8 @@ derive_patient_identifier = function(df,v) {
   df %>%
     dplyr::mutate(admin.patient_identifier = ifelse(
       admin.first_record_number %in% valid,
-      admin.record_number,
-      admin.first_record_number
+      admin.first_record_number,
+      admin.record_number
     ))
 }
 
@@ -153,6 +155,11 @@ derive_simpler_comorbidities = function(df,v,...) {
       comorbid.other_arrythmia == v$comorbid.other_arrythmia$yes ~ "yes",
       comorbid.other_heart_dx == v$comorbid.other_heart_dx$yes ~ "yes",
       comorbid.other_other_heart_dx == v$comorbid.other_other_heart_dx$yes ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(c("no","yes")),
+    comorbid.cva_or_tia = case_when(
+      comorbid.cva == v$comorbid.cva$yes ~ "yes",
+      comorbid.tia == v$comorbid.tia$yes ~ "yes",
       TRUE ~ "no"
     ) %>% factor(c("no","yes"))
   )
@@ -900,9 +907,48 @@ derive_hospital_burden_outcomes = function(df,v,...) {
       )
 }
 
+# Haematology ----
 
+#' Binary outcomes for haematology data
+#'
+#' * Evelated troponin : > 14
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_haematology_categories= function(df,v,...) {
+  # omicron severe disease outcomes
+  df %>%
+    dplyr::mutate(
+      haem.troponin_level = case_when(
+        is.na(haem.troponin) ~ "Unknown",
+        haem.troponin > 14 ~ ">14",
+        TRUE ~ "≤14"
+      ) %>% factor(c("≤14",">14","Unknown")),
+      haem.crp_level = case_when(
+        is.na(haem.crp) ~ "Unknown",
+        haem.crp > 50 ~ ">50",
+        haem.crp >= 10 ~ "10-50",
+        TRUE ~ "<10"
+      ) %>% factor(c("<10","10-50",">50","Unknown")),
+      haem.white_cell_count_level = case_when(
+        is.na(haem.white_cell_count) ~ "Unknown",
+        haem.white_cell_count > 10 ~ ">10",
+        TRUE ~ "≤10"
+      ) %>% factor(c("≤10",">10","Unknown")),
+      haem.d_dimer_level = case_when(
+        is.na(haem.d_dimer) ~ "Unknown",
+        haem.d_dimer > 0.5 ~ ">0.5",
+        TRUE ~ "≤0.5"
+      ) %>% factor(c("≤0.5",">0.5","Unknown")),
+      haem.pro_bnp_level = case_when(
+        is.na(haem.pro_bnp) ~ "Unknown",
+        haem.pro_bnp > 125 ~ ">125",
+        TRUE ~ "≤125"
+      ) %>% factor(c("≤125",">125","Unknown"))
 
-
+    )
+}
 
 # Deprecated - this was for vaccination plus previous infection
 #

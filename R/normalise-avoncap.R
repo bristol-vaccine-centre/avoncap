@@ -392,7 +392,7 @@ normalise.urine_antigens.binax = function(rawData, ...) {
   # chacnge
   df %>% dplyr::mutate(
     across(
-      .cols = c(-starts_with("admin"),-admission.date),
+      .cols = c(-dplyr::starts_with("admin"),-dplyr::starts_with("key"),-dplyr::any_of(c("admission.date","admission.study_week", "admission.year"))),
       .fns = ~ .ifelsefct(admin.consent_withheld == "yes", NA, .x)
     )
   )

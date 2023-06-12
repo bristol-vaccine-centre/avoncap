@@ -201,8 +201,9 @@ augment.avoncap_export.central.radio = function(df,...) {
 augment.avoncap_export.central.haem = function(df,...) {
   df %>%
     augment_generic(
-      ~ .x # a no-op example
-      ,...)
+      derive_haematology_categories
+      ,...) %>%
+    .wipe_non_consented_data()
 }
 
 augment.nhs_extract.deltave = function(df,...) {

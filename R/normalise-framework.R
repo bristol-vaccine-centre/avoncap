@@ -296,6 +296,24 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
   })
 }
 
+.normalise_trunc_double = function(renameTo, lower, upper) {
+  renameTo=rlang::ensym(renameTo)
+  return(function(df, valueCol) {
+    message("mapping ",valueCol," to ",renameTo)
+    #TODO: error checking
+    valueCol = as.symbol(valueCol)
+    df %>%
+      dplyr::mutate(!!renameTo := dplyr::case_when(
+        stringr::str_starts(!!valueCol, "<") ~ lower,
+        stringr::str_starts(!!valueCol, ">") ~ upper,
+        TRUE ~ suppressWarnings(as.numeric(!!valueCol))
+      )) %>%
+      dplyr::mutate(!!renameTo :=  dplyr::if_else(!!renameTo < limits[1] | !!renameTo > limits[2],NA_real_,!!renameTo)) %>%
+      .relocate_old(renameTo, valueCol)
+  })
+}
+
+
 
 # diamonds %>% dplyr::mutate(cut = as.character(cut)) %>% .normalise_text_to_factor(new_cut, preprocess = ~ dplyr::case_when(.x=="Fair"~"XXX", TRUE~tolower(.x)))("cut")
 .normalise_text_to_factor = function(renameTo, levels = NULL, preprocess = tolower, sorter = sort) {

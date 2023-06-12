@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,6 +127,12 @@ format).</p>
 <span><span class="co">#&gt; mapping .BARCODE to pneumo.urine_antigen_sample_id</span></span>
 <span><span class="co">#&gt; Mapped 5 columns</span></span>
 <span><span class="co">#&gt; Did not map 9 columns</span></span>
+<span><span class="co">#&gt; Warning: There were 2 warnings in `dplyr::filter()`.</span></span>
+<span><span class="co">#&gt; The first warning was:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `|...`.</span></span>
+<span><span class="co">#&gt; Caused by warning in `stringr::fixed()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Coercing `pattern` to a plain character vector.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.</span></span>
 <span><span class="va">normBinax</span> <span class="op">=</span> <span class="va">rawUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"binax"</span>, .nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.urine_antigens.binax</span></span>
 <span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-3162ddc1a5a97e7ba422f3554a23cd1c.rda</span></span>
@@ -135,7 +141,13 @@ format).</p>
 <span><span class="co">#&gt; mapping .SUBJECT to admin.consented_record_number</span></span>
 <span><span class="co">#&gt; mapping .BARCODE to pneumo.urine_antigen_sample_id</span></span>
 <span><span class="co">#&gt; Mapped 4 columns</span></span>
-<span><span class="co">#&gt; Did not map 10 columns</span></span></code></pre></div>
+<span><span class="co">#&gt; Did not map 10 columns</span></span>
+<span><span class="co">#&gt; Warning: There were 2 warnings in `dplyr::filter()`.</span></span>
+<span><span class="co">#&gt; The first warning was:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `|...`.</span></span>
+<span><span class="co">#&gt; Caused by warning in `stringr::fixed()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Coercing `pattern` to a plain character vector.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.</span></span></code></pre></div>
 <p>The normalised UAD data has the individual serotype specific tests
 and results in a nested column. The single BinaxNOW result is not
 nested. Results are keyed off a surveillance number (admission episode

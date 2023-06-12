@@ -24,7 +24,8 @@ default_column_names = function(...) {
     demog.pcr_positive_by_age = "PCR Positives (by age)",
     demog.age_eligible = "Age Eligible for PneumoVax",
     admission.presentation_3_class = "aLTRD presentation",
-    admission.category = "Aetiology"
+    admission.category = "Aetiology",
+    comorbid.cva_or_tia = "CVA/TIA"
   )
 }
 
@@ -51,7 +52,7 @@ readable_label = function(columnVar, colNames = default_column_names()) {
   "CCI","CKD","ICU","BMI","NEWS2","COVID","LRTI","aLRTI","IMD","CURB65","MI",
   "FiO2","PEEP","BP","HIV","AIDS","AF","PE","STEMI","NSTEMI","LOS","WHO",
   "IHD","CCF","TIA","CVA","DVT","CXR","COPD","ARF","ACS","VTE","eGFR","pH",
-  "CRP")
+  "CRP","CURB","CRB")
 ) {
   out = strings
   for(acronym in acronyms) {
