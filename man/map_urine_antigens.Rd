@@ -11,7 +11,7 @@ a list
 }
 \description{
 \itemize{
-\item RESULT -> pneumo.urine_antigen_result (text)
+\item RESULT -> pneumo.urine_antigen_result, .x (text)
 \item EVENT_DATE -> pneumo.test_date (date)
 \item ANALYSIS -> pneumo.urine_antigen_test (name)
 \item SUBJECT -> admin.consented_record_number (study_id)

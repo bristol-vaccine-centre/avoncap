@@ -6,6 +6,9 @@
 \usage{
 map_avoncap_radio(instrument)
 }
+\arguments{
+\item{instrument}{the numeric instrument number}
+}
 \value{
 a list
 }
@@ -13,12 +16,10 @@ a list
 \itemize{
 \item radio_exam -> radio.test_performed (yesno)
 \item radiology_date -> radio.test_date (date)
-\item radiodays -> radio.test_days_from_admission (name)
+\item radiodays -> radio.test_days_from_admission (pos_integer)
 \item radio_test -> radio.test_type (list)
 \item radiology_result -> radio.alrtd_finding (checkboxes_to_nested_list)
 \item radiology_other_result -> radio.non_alrtd_finding (checkboxes_to_nested_list)
-\item record_number -> admin.record_number (name)
-\item ac_study_number -> admin.consented_record_number (study_id)
 }
 }
 \concept{map}

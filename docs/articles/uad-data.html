@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,9 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
+    <a class="dropdown-item" href="../articles/quality-assurance.html">Quality assurance</a>
     <a class="dropdown-item" href="../articles/uad-data.html">Pneumococcus urinary antigen data</a>
   </div>
 </li>
@@ -89,6 +91,7 @@ subfolder</p>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">2022-09-15</span></span></span>
 <span><span class="co">#&gt; │   └── uad-cases.csv</span></span>
 <span><span class="co">#&gt; ├── <span style="color: #0000BB; font-weight: bold;">2023-05-15</span></span></span>
+<span><span class="co">#&gt; │   ├── gp-cases.csv</span></span>
 <span><span class="co">#&gt; │   └── uad-cases.csv</span></span>
 <span><span class="co">#&gt; ├── B1851202_SAP V1.0-27Sep2021_Final.pdf</span></span>
 <span><span class="co">#&gt; ├── README.md</span></span>
@@ -99,12 +102,14 @@ serotype specific UAD tests and their results. Not all tests are run for
 every person.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/most_recent_files.html">most_recent_files</a></span><span class="op">(</span><span class="st">"urine-antigens"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
 <span><span class="co">#&gt;   filename  directory      path          date       hospital study_year filetype</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> uad-cases urine-antigens …ad-cases.csv 2023-05-15 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> gp-cases  urine-antigens …gp-cases.csv 2023-05-15 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> uad-cases urine-antigens …ad-cases.csv 2023-05-15 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv</span></span>
 <span><span class="va">rawUA</span> <span class="op">=</span> <span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"urine-antigens"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-969416e3870a1ceaa091ca0c1e17ce42-53245217ab5aaeb56836d32bed67a2f7.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-a34df7f73813316db44634d7c8101b95.rda</span></span>
+<span><span class="co">#&gt; Loaded 101647 rows from 2 files, (7925+93722=101647)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="data-normalisation">Data normalisation<a class="anchor" aria-label="anchor" href="#data-normalisation"></a>
@@ -119,35 +124,23 @@ format).</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">normUA</span> <span class="op">=</span> <span class="va">rawUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"serotype"</span>, .nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.urine_antigens.serotype</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-9b2175178c29c274fcc84c5f6215f563.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-47db867bf7ce62827001276c41513ee8.rda</span></span>
 <span><span class="co">#&gt; mapping .RESULT to pneumo.urine_antigen_result</span></span>
 <span><span class="co">#&gt; mapping .EVENT_DATE to pneumo.test_date</span></span>
 <span><span class="co">#&gt; mapping .ANALYSIS to pneumo.urine_antigen_test</span></span>
 <span><span class="co">#&gt; mapping .SUBJECT to admin.consented_record_number</span></span>
 <span><span class="co">#&gt; mapping .BARCODE to pneumo.urine_antigen_sample_id</span></span>
 <span><span class="co">#&gt; Mapped 5 columns</span></span>
-<span><span class="co">#&gt; Did not map 9 columns</span></span>
-<span><span class="co">#&gt; Warning: There were 2 warnings in `dplyr::filter()`.</span></span>
-<span><span class="co">#&gt; The first warning was:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `|...`.</span></span>
-<span><span class="co">#&gt; Caused by warning in `stringr::fixed()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Coercing `pattern` to a plain character vector.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.</span></span>
+<span><span class="co">#&gt; Did not map 23 columns</span></span>
 <span><span class="va">normBinax</span> <span class="op">=</span> <span class="va">rawUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"binax"</span>, .nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.urine_antigens.binax</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-3162ddc1a5a97e7ba422f3554a23cd1c.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-980aa36f9ff48c370b7f834c5f4955bc.rda</span></span>
 <span><span class="co">#&gt; mapping .RESULT to pneumo.binax_result</span></span>
 <span><span class="co">#&gt; mapping .EVENT_DATE to pneumo.test_date</span></span>
 <span><span class="co">#&gt; mapping .SUBJECT to admin.consented_record_number</span></span>
 <span><span class="co">#&gt; mapping .BARCODE to pneumo.urine_antigen_sample_id</span></span>
 <span><span class="co">#&gt; Mapped 4 columns</span></span>
-<span><span class="co">#&gt; Did not map 10 columns</span></span>
-<span><span class="co">#&gt; Warning: There were 2 warnings in `dplyr::filter()`.</span></span>
-<span><span class="co">#&gt; The first warning was:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `|...`.</span></span>
-<span><span class="co">#&gt; Caused by warning in `stringr::fixed()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Coercing `pattern` to a plain character vector.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 1 remaining warning.</span></span></code></pre></div>
+<span><span class="co">#&gt; Did not map 24 columns</span></span></code></pre></div>
 <p>The normalised UAD data has the individual serotype specific tests
 and results in a nested column. The single BinaxNOW result is not
 nested. Results are keyed off a surveillance number (admission episode
@@ -187,7 +180,9 @@ relevant</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">augUA</span> <span class="op">=</span> <span class="va">normUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.urine_antigens.serotype</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-3e20d978cd1773f4f639a6b66eb4d943.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-6e6fd7c403bfa3774af1a9a6712c5f13.rda</span></span>
+<span><span class="co">#&gt; Created pneumo.pcv_group using: key.sample, pneumo.urine_antigen</span></span>
+<span><span class="co">#&gt; Created pneumo.non_uad_panel_result, pneumo.uad1_panel_result, pneumo.uad2_panel_result, pneumo.serotype_summary_result, pneumo.serotype_positive_count, pneumo.serotype_results_complete using: key.sample, pneumo.urine_antigen</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># augUA %&gt;% filter(pneumo.serotype_results_complete) %&gt;% </span></span>
@@ -214,7 +209,7 @@ relevant</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">tmp</span> <span class="op">=</span> <span class="va">augUA</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/derive_pcv_groupings.html">derive_pcv_groupings</a></span><span class="op">(</span>pcv_map <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="va">uad_pcv_map</span>, col_name <span class="op">=</span> <span class="va">pcv_custom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">glimpse</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 3,759</span></span>
+<span><span class="co">#&gt; Rows: 4,077</span></span>
 <span><span class="co">#&gt; Columns: 13</span></span>
 <span><span class="co">#&gt; $ admin.consented_record_number    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "1001-00045", "1001-00057", "1001-000…</span></span>
 <span><span class="co">#&gt; $ pneumo.test_date                 <span style="color: #949494; font-style: italic;">&lt;date&gt;</span> 2020-11-06, 2021-02-04, 2021-02-04, …</span></span>
@@ -232,44 +227,44 @@ relevant</p>
 <span><span class="va">tmp</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">pcv_custom</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">group</span>,<span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                     result</span></span>
 <span><span class="co">#&gt; group                                Negative Positive Other Unknown</span></span>
-<span><span class="co">#&gt;   PCV7 (plus 9A,18A/B/F,23B)             3687       43    23       6</span></span>
-<span><span class="co">#&gt;   PCV13 (plus 9A,18A/B/F,23B,6C)         3594      130    29       6</span></span>
-<span><span class="co">#&gt;   PCV15 (plus 9A,18A/B/F,23B,6C)         3553      151    40      15</span></span>
-<span><span class="co">#&gt;   PCV20 (plus 9A,18A/B/F,23B,6C,15C)     3431      264    49      15</span></span>
-<span><span class="co">#&gt;   PPV23 (plus 9A,18A/B/F,23B,15C)        3417      277    50      15</span></span>
-<span><span class="co">#&gt;   PCV10 (Serum Study Institute)          3639       85    29       6</span></span>
-<span><span class="co">#&gt;   PCV10 (GSK)                            3639       85    29       6</span></span>
-<span><span class="co">#&gt;   PCV15 (Zhifei)                         3584      131    29      15</span></span>
-<span><span class="co">#&gt;   PCV24 (Vaxcyte)                        3402      292    50      15</span></span>
-<span><span class="co">#&gt;   PCV24 (Affinivax)                      3402      292    50      15</span></span>
-<span><span class="co">#&gt;   Additional PCV13 on 7 (plus 6C)        3636       88    29       6</span></span>
-<span><span class="co">#&gt;   Additional PCV15 on 13                 3693       23    32      11</span></span>
-<span><span class="co">#&gt;   Additional PCV20 on 15 (plus 15C)      3581      122    45      11</span></span>
-<span><span class="co">#&gt;   Additional PPV23 on PCV20              3712       29     7      11</span></span>
-<span><span class="co">#&gt;   4                                      3724       11    18       6</span></span>
-<span><span class="co">#&gt;   6B                                     3735        0    18       6</span></span>
-<span><span class="co">#&gt;   9V+A                                   3734        1    18       6</span></span>
-<span><span class="co">#&gt;   14                                     3721       11    21       6</span></span>
-<span><span class="co">#&gt;   18C+A/B/F                              3732        1    21       5</span></span>
-<span><span class="co">#&gt;   19F                                    3732        3    18       6</span></span>
-<span><span class="co">#&gt;   23F+B                                  3716       17    20       6</span></span>
-<span><span class="co">#&gt;   1                                      3723        9    21       6</span></span>
-<span><span class="co">#&gt;   3                                      3709       26    18       6</span></span>
-<span><span class="co">#&gt;   5                                      3730        3    20       6</span></span>
-<span><span class="co">#&gt;   6A+C                                   3717       16    20       6</span></span>
-<span><span class="co">#&gt;   7F                                     3695       33    26       5</span></span>
-<span><span class="co">#&gt;   19A                                    3728        6    19       6</span></span>
-<span><span class="co">#&gt;   22F                                    3714       12    22      11</span></span>
-<span><span class="co">#&gt;   33F                                    3714       11    23      11</span></span>
-<span><span class="co">#&gt;   8                                      3615       97    36      11</span></span>
-<span><span class="co">#&gt;   10A                                    3706       15    27      11</span></span>
-<span><span class="co">#&gt;   11A                                    3738        8     2      11</span></span>
-<span><span class="co">#&gt;   12F                                    3745        0     3      11</span></span>
-<span><span class="co">#&gt;   15B+C                                  3742        3     3      11</span></span>
-<span><span class="co">#&gt;   2                                      3744        1     3      11</span></span>
-<span><span class="co">#&gt;   9N                                     3734       11     3      11</span></span>
-<span><span class="co">#&gt;   17F                                    3732       12     4      11</span></span>
-<span><span class="co">#&gt;   20                                     3740        5     3      11</span></span>
+<span><span class="co">#&gt;   PCV7 (plus 9A,18A/B/F,23B)             4002       43    26       6</span></span>
+<span><span class="co">#&gt;   PCV13 (plus 9A,18A/B/F,23B,6C)         3907      131    33       6</span></span>
+<span><span class="co">#&gt;   PCV15 (plus 9A,18A/B/F,23B,6C)         3864      153    44      16</span></span>
+<span><span class="co">#&gt;   PCV20 (plus 9A,18A/B/F,23B,6C,15C)     3740      268    53      16</span></span>
+<span><span class="co">#&gt;   PPV23 (plus 9A,18A/B/F,23B,15C)        3727      280    54      16</span></span>
+<span><span class="co">#&gt;   PCV10 (Serum Study Institute)          3953       85    33       6</span></span>
+<span><span class="co">#&gt;   PCV10 (GSK)                            3953       85    33       6</span></span>
+<span><span class="co">#&gt;   PCV15 (Zhifei)                         3896      132    33      16</span></span>
+<span><span class="co">#&gt;   PCV24 (Vaxcyte)                        3711      296    54      16</span></span>
+<span><span class="co">#&gt;   PCV24 (Affinivax)                      3711      296    54      16</span></span>
+<span><span class="co">#&gt;   Additional PCV13 on 7 (plus 6C)        3949       89    33       6</span></span>
+<span><span class="co">#&gt;   Additional PCV15 on 13                 4008       24    33      12</span></span>
+<span><span class="co">#&gt;   Additional PCV20 on 15 (plus 15C)      3895      124    46      12</span></span>
+<span><span class="co">#&gt;   Additional PPV23 on PCV20              4028       29     8      12</span></span>
+<span><span class="co">#&gt;   4                                      4040       11    20       6</span></span>
+<span><span class="co">#&gt;   6B                                     4051        0    20       6</span></span>
+<span><span class="co">#&gt;   9V+A                                   4050        1    20       6</span></span>
+<span><span class="co">#&gt;   14                                     4037       11    23       6</span></span>
+<span><span class="co">#&gt;   18C+A/B/F                              4048        1    23       5</span></span>
+<span><span class="co">#&gt;   19F                                    4048        3    20       6</span></span>
+<span><span class="co">#&gt;   23F+B                                  4031       17    23       6</span></span>
+<span><span class="co">#&gt;   1                                      4037        9    25       6</span></span>
+<span><span class="co">#&gt;   3                                      4025       26    20       6</span></span>
+<span><span class="co">#&gt;   5                                      4046        3    22       6</span></span>
+<span><span class="co">#&gt;   6A+C                                   4032       17    22       6</span></span>
+<span><span class="co">#&gt;   7F                                     4011       33    28       5</span></span>
+<span><span class="co">#&gt;   19A                                    4044        6    21       6</span></span>
+<span><span class="co">#&gt;   22F                                    4029       13    23      12</span></span>
+<span><span class="co">#&gt;   33F                                    4030       11    24      12</span></span>
+<span><span class="co">#&gt;   8                                      3931       97    37      12</span></span>
+<span><span class="co">#&gt;   10A                                    4021       16    28      12</span></span>
+<span><span class="co">#&gt;   11A                                    4053        9     3      12</span></span>
+<span><span class="co">#&gt;   12F                                    4061        0     4      12</span></span>
+<span><span class="co">#&gt;   15B+C                                  4058        3     4      12</span></span>
+<span><span class="co">#&gt;   2                                      4060        1     4      12</span></span>
+<span><span class="co">#&gt;   9N                                     4050       11     4      12</span></span>
+<span><span class="co">#&gt;   17F                                    4048       12     5      12</span></span>
+<span><span class="co">#&gt;   20                                     4056        5     4      12</span></span>
 <span><span class="co">#&gt;   Other                                     0        0     0       0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

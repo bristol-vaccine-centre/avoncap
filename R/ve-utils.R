@@ -2,7 +2,7 @@
 # This assumes that OR ~ RR which is only true if controls >> cases
 odds_ratio_ve = function(vaccinatedCase, unvaccinatedCase, vaccinatedControl, unvaccinatedControl, p=c(0.025,0.975)) {
 
-  oddsR = case_when(
+  oddsR = dplyr::case_when(
     vaccinatedCase == 0 | unvaccinatedCase == 0 | unvaccinatedControl == 0 | vaccinatedControl == 0 ~ NA_real_,
     TRUE ~ (vaccinatedCase/vaccinatedControl) / (unvaccinatedCase/unvaccinatedControl)
   )
@@ -18,7 +18,7 @@ odds_ratio_ve = function(vaccinatedCase, unvaccinatedCase, vaccinatedControl, un
 
 # This is not calculatable in the context of a case control study I think
 relative_risk_ve = function(vaccinatedCase, unvaccinatedCase, vaccinatedControl, unvaccinatedControl, p=c(0.025,0.975)) {
-  RR = case_when(
+  RR = dplyr::case_when(
     vaccinatedCase == 0 | unvaccinatedCase == 0 | unvaccinatedControl == 0 | vaccinatedControl == 0 ~ NA_real_,
     TRUE ~ (vaccinatedCase/(vaccinatedCase+vaccinatedControl)) / (unvaccinatedCase/(unvaccinatedCase+unvaccinatedControl))
   )

@@ -8,9 +8,9 @@
 #' @return the cross-tabulation
 #' @export
 xglimpse = function(data, ...) {
-  # exprs = enexprs(...)
-  # tidyselect::eval_select(expr(c(...)),data)
+  # exprs = rlang::enexprs(...)
+  # tidyselect::eval_select(rlang::expr(c(...)),data)
   # browser()
-  data %>% select(...) %>%
-    dplyr::select(all_of(rev(colnames(.)))) %>% table(useNA = "ifany")
+  data %>% dplyr::select(...) %>%
+    dplyr::select(tidyselect::all_of(rev(colnames(.)))) %>% table(useNA = "ifany")
 }

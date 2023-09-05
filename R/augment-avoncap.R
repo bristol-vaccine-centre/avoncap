@@ -39,7 +39,7 @@ derive_continuous_categories = function(df,v,...) {
     dplyr::mutate(
       admission.cci_category = cut(admission.charlson_comorbidity_index, breaks = c(-Inf,0,2,4,Inf), labels=c("None (0)","Mild (1-2)","Moderate (3-4)","Severe (5+)"), include.lowest = FALSE, ordered_result = TRUE),
       admission.rockwood_category = cut(admission.rockwood_score, breaks=c(0,5,Inf), labels=c("Independent (0-4)","Frail (5-9)"),ordered_result = TRUE),
-      admission.curb_65_category = case_when(
+      admission.curb_65_category = dplyr::case_when(
         admission.curb_65_severity_score == "0-Very Low" ~ "0-1 (Mild)",
         admission.curb_65_severity_score == "1-Low" ~ "0-1 (Mild)",
         admission.curb_65_severity_score == "2-Moderate" ~ "2 (Moderate)",
@@ -157,13 +157,72 @@ derive_simpler_comorbidities = function(df,v,...) {
       comorbid.other_other_heart_dx == v$comorbid.other_other_heart_dx$yes ~ "yes",
       TRUE ~ "no"
     ) %>% factor(c("no","yes")),
-    comorbid.cva_or_tia = case_when(
+    comorbid.cva_or_tia = dplyr::case_when(
       comorbid.cva == v$comorbid.cva$yes ~ "yes",
       comorbid.tia == v$comorbid.tia$yes ~ "yes",
       TRUE ~ "no"
     ) %>% factor(c("no","yes"))
   )
 }
+
+# Admission ----
+
+#' Create presumed diagnostic categories
+#'
+#' Pneumonia if one of:
+#' * Initial diagnosis of CAP (supported by initial radiology or clinically)
+#' * Empyema or abscess
+#'
+#' Presumed clinical presentation:
+#'   * Pneumonia - implies Infective
+#'   * NP-LRTI - implies Infective
+#'   * No evidence LRTI (include CRDE and HF)
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_presumed_diagnosis_categories = function(df,v) {
+  df %>% dplyr::mutate(
+    admission.initial_presentation_3_class = dplyr::case_when(
+      admission.presumed_CAP_clinically_confirmed == v$admission.presumed_CAP_clinically_confirmed$yes ~ "Pneumonia",
+      admission.presumed_CAP_radiologically_confirmed == v$admission.presumed_CAP_radiologically_confirmed$yes ~ "Pneumonia",
+      admission.presumed_CAP_no_radiology == v$admission.presumed_CAP_no_radiology$yes ~ "Pneumonia",
+      admission.presumed_Empyema_or_abscess == v$admission.presumed_Empyema_or_abscess$yes ~ "Pneumonia",
+      # not sure: (!is.na(admission.cxr_pneumonia) & admission.cxr_pneumonia == v$admission.cxr_pneumonia$yes) ~ "Pneumonia",
+      admission.presumed_LRTI == v$admission.presumed_LRTI$yes ~ "NP-LRTI",
+      admission.presumed_exacerbation_COPD == v$admission.presumed_exacerbation_COPD$yes ~ "No evidence LRTI",
+      admission.presumed_exacerbation_non_COPD == v$admission.presumed_exacerbation_non_COPD$yes ~ "No evidence LRTI",
+      admission.presumed_congestive_heart_failure == v$admission.presumed_congestive_heart_failure$yes ~ "No evidence LRTI",
+      TRUE ~ NA_character_
+    ) %>% factor(levels = c("Pneumonia","NP-LRTI","No evidence LRTI"))
+    #TODO: equivalent to infective classification and HF/CRDE overlap
+  )
+}
+
+
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_aLRTD_categories = function(df,v,...) {
+  df %>% dplyr::mutate(
+
+    admission.category = dplyr::case_when(
+      admission.is_covid == "Confirmed SARS-CoV-2" ~ "Confirmed SARS-CoV-2",
+      admission.infective_cause == "Infective" ~ "No evidence SARS-CoV-2",
+      admission.infective_cause == "Non-infective" ~ "Non-infective",
+      TRUE ~ NA_character_
+    ) %>% factor(levels = c("Confirmed SARS-CoV-2","No evidence SARS-CoV-2","Non-infective")),
+
+    admission.presentation_3_class = dplyr::case_when(
+      diagnosis.pneumonia == "yes" ~ "Pneumonia",
+      diagnosis.LRTI == "yes" ~ "NP-LRTI",
+      admission.infective_cause == "Non-infective" ~ "No evidence LRTI",
+      TRUE ~ "No evidence LRTI"
+    ) %>% factor(levels = c("Pneumonia","NP-LRTI","No evidence LRTI")),
+  )
+}
+
 
 # Diagnostic ----
 
@@ -252,7 +311,7 @@ derive_covid_status = function(df,v,...) {
 #' @export
 derive_diagnosis_categories = function(df,v) {
   df %>% dplyr::mutate(
-    diagnosis.pneumonia = case_when(
+    diagnosis.pneumonia = dplyr::case_when(
       diagnosis.SOC_CAP_clinically_confirmed == v$diagnosis.SOC_CAP_clinically_confirmed$yes ~ "yes",
       diagnosis.SOC_CAP_radiologically_confirmed == v$diagnosis.SOC_CAP_radiologically_confirmed$yes ~ "yes",
       diagnosis.SOC_CAP_no_radiology == v$diagnosis.SOC_CAP_no_radiology$yes ~ "yes",
@@ -260,19 +319,19 @@ derive_diagnosis_categories = function(df,v) {
       (!is.na(admission.cxr_pneumonia) & admission.cxr_pneumonia == v$admission.cxr_pneumonia$yes) ~ "yes",
       TRUE ~ "no"
     ) %>% factor(levels = c("no","yes")),
-    diagnosis.LRTI = case_when(
+    diagnosis.LRTI = dplyr::case_when(
       # preventing overlap between pneumonia and LRTD is desirable here
       # TODO: we should have a test that looks for this in the source data
       diagnosis.pneumonia == "yes" ~ "no",
       diagnosis.SOC_LRTI == v$diagnosis.SOC_LRTI$yes ~ "yes",
       TRUE ~ "no"
     ) %>% factor(levels = c("no","yes")),
-    diagnosis.exacerbation_of_chronic_respiratory_disease = case_when(
+    diagnosis.exacerbation_of_chronic_respiratory_disease = dplyr::case_when(
       diagnosis.SOC_exacerbation_COPD == v$diagnosis.SOC_exacerbation_COPD$yes ~ "yes",
       diagnosis.SOC_exacerbation_non_COPD == v$diagnosis.SOC_exacerbation_non_COPD$yes ~ "yes",
       TRUE ~ "no"
     ) %>% factor(levels = c("no","yes")),
-    diagnosis.heart_failure = case_when(
+    diagnosis.heart_failure = dplyr::case_when(
       diagnosis.SOC_congestive_heart_failure == v$diagnosis.SOC_congestive_heart_failure$yes ~ "yes",
       TRUE ~ "no"
     ) %>% factor(levels = c("no","yes"))
@@ -551,7 +610,7 @@ derive_effective_vaccination_status = function(df,v,...) {
 #' @inherit derive_template
 #' @concept derived
 #' @export
-derive_vaccine_combinations = function(df,v,..) {
+derive_vaccine_combinations = function(df,v,...) {
   # Vaccine brand combinations
   df %>% dplyr::mutate(
     vaccination.brand_combination = paste(
@@ -911,7 +970,11 @@ derive_hospital_burden_outcomes = function(df,v,...) {
 
 #' Binary outcomes for haematology data
 #'
-#' * Evelated troponin : > 14
+#' * Elevated troponin : > 18:  18ng/L is simply the 99th percentile value Beckman
+#' assay we use as quoted by the IFCC. We elected to not use sex-specific 99th
+#' percentile values although they are also quoted here and you could
+#' incorporate into your analysis. I am sure you are aware of the 4th Universal
+#' definition of MI that requires a rise or fall above the 99th percentile etc.
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -920,32 +983,32 @@ derive_haematology_categories= function(df,v,...) {
   # omicron severe disease outcomes
   df %>%
     dplyr::mutate(
-      haem.troponin_level = case_when(
+      haem.troponin_level = dplyr::case_when(
         is.na(haem.troponin) ~ "Unknown",
-        haem.troponin > 14 ~ ">14",
-        TRUE ~ "≤14"
-      ) %>% factor(c("≤14",">14","Unknown")),
-      haem.crp_level = case_when(
+        haem.troponin > 18 ~ ">18",
+        TRUE ~ "\u226418" # \u2264 is &lte;
+      ) %>% factor(c("\u226418",">18","Unknown")),
+      haem.crp_level = dplyr::case_when(
         is.na(haem.crp) ~ "Unknown",
         haem.crp > 50 ~ ">50",
         haem.crp >= 10 ~ "10-50",
         TRUE ~ "<10"
       ) %>% factor(c("<10","10-50",">50","Unknown")),
-      haem.white_cell_count_level = case_when(
+      haem.white_cell_count_level = dplyr::case_when(
         is.na(haem.white_cell_count) ~ "Unknown",
         haem.white_cell_count > 10 ~ ">10",
-        TRUE ~ "≤10"
-      ) %>% factor(c("≤10",">10","Unknown")),
-      haem.d_dimer_level = case_when(
+        TRUE ~ "\u226410"
+      ) %>% factor(c("\u226410",">10","Unknown")),
+      haem.d_dimer_level = dplyr::case_when(
         is.na(haem.d_dimer) ~ "Unknown",
         haem.d_dimer > 0.5 ~ ">0.5",
-        TRUE ~ "≤0.5"
-      ) %>% factor(c("≤0.5",">0.5","Unknown")),
-      haem.pro_bnp_level = case_when(
+        TRUE ~ "\u22640.5"
+      ) %>% factor(c("\u22640.5",">0.5","Unknown")),
+      haem.pro_bnp_level = dplyr::case_when(
         is.na(haem.pro_bnp) ~ "Unknown",
         haem.pro_bnp > 125 ~ ">125",
-        TRUE ~ "≤125"
-      ) %>% factor(c("≤125",">125","Unknown"))
+        TRUE ~ "\u2264125"
+      ) %>% factor(c("\u2264125",">125","Unknown"))
 
     )
 }

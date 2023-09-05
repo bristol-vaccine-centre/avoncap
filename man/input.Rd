@@ -7,10 +7,10 @@
 input(...)
 }
 \arguments{
-\item{...}{the sub path(s) within the input directory}
+\item{...}{the sub paths within the input directory}
 }
 \value{
-a path to the input directory and sub path(s) if provided
+a path to the input directory and sub paths if provided
 }
 \description{
 Locate the input directory

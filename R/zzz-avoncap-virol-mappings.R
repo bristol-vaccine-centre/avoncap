@@ -24,13 +24,15 @@
 
 keys_avoncap_virol  = function(instrument) {
   list(
-    "virol" = sprintf("{admin.record_number}_virol_%d",instrument)
+    "virol" = sprintf("{admin.record_number}_virol_%s",as.character(instrument))
   )
 }
 
 #' Normalise the avoncap data virology data
 #'
 #' `r .document_mapping(map_avoncap_virol)`
+#'
+#' @param instrument the numeric instrument number
 #'
 #' @concept map
 #' @return a list
@@ -39,7 +41,7 @@ map_avoncap_virol = function(instrument) {
   tmp = list(
     "viral_testing_performed" = .normalise_yesno(virol.test_performed),
     "virology_date_of_asst" = .normalise_date(virol.test_date),
-    "viroldays" = .normalise_name(virol.test_days_from_admission),
+    "viroldays" = .normalise_pos_integer(virol.test_days_from_admission),
     "specimen_type" = .normalise_list(virol.test_type,c("Sputum", "Saliva", "Bronchoalveolar lavage (BAL)", "Pleural Fluid", "Swabbed material", "Blood")),
     "virus_isolated" = .normalise_yesno(virol.pathogen_detected),
     "test_type" = .normalise_list(virol.test_type,c("PCR - COVID only", "PCR - Respiratory panel", "PCR Respiratory (Biofire)", "Viral Culture", "Lateral Flow - COVID only", "POCT Test (Abbott)")),
@@ -47,7 +49,7 @@ map_avoncap_virol = function(instrument) {
     # "viral_other", text
     "virol_patient_lab" = .normalise_list(virol.test_provenance,c("Laboratory confirmed report (i.e. on ICE or Open Net)", "Patient reported (e.g. COVID-19 community testing)"))
   )
-  names(tmp) = sprintf("%s_%d",names(tmp),instrument)
+  names(tmp) = sprintf("%s_%s",names(tmp),as.character(instrument))
   return(c(
     "record_number" = .normalise_name(admin.record_number),
     "ac_study_number" = .normalise_study_id(admin.consented_record_number),

@@ -14,70 +14,76 @@
 #' @export
 #'
 #' @examples
-#' stacked_barplot(diamonds, aes(x=cut, fill=clarity, group=color))+facet_wrap(vars(color))
+#' stacked_barplot(
+#'     ggplot2::diamonds,
+#'     ggplot2::aes(x=cut, fill=clarity, group=color)
+#'   )+
+#'   ggplot2::facet_wrap(dplyr::vars(color))
 #'
 stacked_barplot = function(data, mapping, ...) {
   tmp = .summary_binomial(data,mapping,.fill)
-  ggplot(tmp$data, tmp$mapping)+
-    geom_bar(mapping=aes(y=mean), stat ="identity", position = "stack", ...)+
-    ylab("proportion")
+  ggplot2::ggplot(tmp$data, tmp$mapping)+
+    ggplot2::geom_bar(mapping=ggplot2::aes(y=mean), stat ="identity", position = "stack", ...)+
+    ggplot2::ylab("proportion")
 }
 
 
 binomial_proportion_points = function(data, mapping, ..., width = 0.8, size=0.5) {
   tmp = .summary_binomial(data,mapping,.x)
-  ggplot(tmp$data, tmp$mapping)+
-    geom_point(mapping=aes(y=mean), position=position_dodge(width=width), size=size, ...)+
-    geom_errorbar(mapping=aes(ymin=lower, ymax=upper), position=position_dodge(width=width), width=width*0.9, ...)+
-    ylab("proportion")
+  ggplot2::ggplot(tmp$data, tmp$mapping)+
+    ggplot2::geom_point(mapping=ggplot2::aes(y=mean), position=ggplot2::position_dodge(width=width), size=size, ...)+
+    ggplot2::geom_errorbar(mapping=ggplot2::aes(ymin=lower, ymax=upper), position=ggplot2::position_dodge(width=width), width=width*0.9, ...)+
+    ggplot2::ylab("proportion")
 }
 
 binomial_proportion_bars = function(data, mapping, ..., width = 0.8, size=0.5,error_colour="grey50", lbl_size = 6) {
   tmp = .summary_binomial(data,mapping,.x)
-  ggplot(tmp$data, tmp$mapping)+
-    geom_bar(mapping=aes(y=mean), stat="identity", position=position_dodge(width=width), width=width*0.9, size=size, ...)+
-    geom_point(mapping=aes(y=mean), position=position_dodge(width=width), size=size, colour=error_colour, ...)+
-    geom_errorbar(mapping=aes(ymin=lower, ymax=upper), position=position_dodge(width=width), width=width*0.9, colour=error_colour, ...)+
-    geom_text(mapping=aes(x = !!tmp$mapping$x, label = sprintf(" %d", x), colour = !!tmp$mapping$fill, y=-0.01), inherit.aes = FALSE, position = position_dodge(width=0.8),size=gg_label_size(lbl_size), angle=90, hjust=1)+
-    ylab("proportion")
+  ggplot2::ggplot(tmp$data, tmp$mapping)+
+    ggplot2::geom_bar(mapping=ggplot2::aes(y=mean), stat="identity", position=ggplot2::position_dodge(width=width), width=width*0.9, size=size, ...)+
+    ggplot2::geom_point(mapping=ggplot2::aes(y=mean), position=ggplot2::position_dodge(width=width), size=size, colour=error_colour, ...)+
+    ggplot2::geom_errorbar(mapping=ggplot2::aes(ymin=lower, ymax=upper), position=ggplot2::position_dodge(width=width), width=width*0.9, colour=error_colour, ...)+
+    ggplot2::geom_text(mapping=ggplot2::aes(x = !!tmp$mapping$x, label = sprintf(" %d", x), colour = !!tmp$mapping$fill, y=-0.01), inherit.aes = FALSE, position = ggplot2::position_dodge(width=0.8),size=gg_label_size(lbl_size), angle=90, hjust=1)+
+    ggplot2::ylab("proportion")
 }
 
-
+gg_label_size = function(pts) {
+  return(pts/ggplot2::.pt)
+}
 
 .summary_binomial = function(data, mapping, denom) {
-  denom = ensym(denom)
-  plot_data = names(mapping) %>% reduce(.f = function(d, colname, ...) {
+  denom = rlang::ensym(denom)
+  plot_data = names(mapping) %>% purrr::reduce(.f = function(d, colname, ...) {
     f = mapping[[colname]]
     colname = paste0(".",colname)
-    d %>% mutate(!!colname := !!f)
-  }, .init = data) %>% select(all_of(paste0(".",names(mapping))))
+    d %>% dplyr::mutate(!!colname := !!f)
+  }, .init = data) %>% dplyr::select(tidyselect::all_of(paste0(".",names(mapping))))
 
-  labs = lapply(sapply(mapping, as_label),as.symbol)
+  labs = lapply(sapply(mapping, rlang::as_label),as.symbol)
   names(labs) = names(mapping)
 
   rename = paste0(".",names(mapping))
-  names(rename) = sapply(mapping, as_label)
+  names(rename) = sapply(mapping, rlang::as_label)
 
-  tmp = plot_data %>% group_by(across(everything())) %>%
-    summarise(count = n(), .groups="drop") %>%
+  tmp = plot_data %>% dplyr::group_by(dplyr::across(tidyselect::everything())) %>%
+    dplyr::summarise(count = dplyr::n(), .groups="drop") %>%
     # This is a very useful way to use tidyselect syntax within complete:
-    tidyr::complete(!!!select(., -count), fill = list(count=0))
+    tidyr::complete(!!!dplyr::select(., -count), fill = list(count=0))
   # TODO: detect in mapping everything that is the same as .fill and
   # exclude them from the grouping otherwise specifying color and fill
   # could result in incorrect grouping and total calculation.
   tmp2 = tmp %>%
-    group_by(across(c(everything(),-!!denom,-count))) %>%
-    mutate(total = sum(count))
+    dplyr::group_by(dplyr::across(c(tidyselect::everything(),-!!denom,-count))) %>%
+    dplyr::mutate(total = sum(count))
   #TODO: a fisher exact test.
 
   tmp3 = tmp2 %>%
-    mutate(binom::binom.confint(count, total, methods="wilson")) %>%
-    rename(!!!rename)
+    dplyr::mutate(binom::binom.confint(count, total, methods="wilson")) %>%
+    dplyr::rename(!!!rename)
   # TODO: this does not handle NaNs as produced by 0/0 groups.
   # These are probably stripped out by ggplot.
 
   list(
     data = tmp3,
-    mapping = aes(!!!labs)
+    mapping = ggplot2::aes(!!!labs)
   )
 }

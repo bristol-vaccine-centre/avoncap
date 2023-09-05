@@ -8,13 +8,15 @@ load_data(
   type,
   subtype = NULL,
   reproduce_at = as.Date(getOption("reproduce.at", default = Sys.Date())),
-  merge = NA,
+  merge = TRUE,
   ...
 )
 }
 \arguments{
-\item{type}{the file category see valid_inputs() for current list in input
+\item{type}{the file category see \code{valid_inputs()} for current list in input
 directory}
+
+\item{subtype}{the subtype from \code{valid_inputs()}}
 
 \item{reproduce_at}{\itemize{
 \item the date at which to cut off newer data files
@@ -26,11 +28,8 @@ single data frame by losing mismatching columns.
 }}
 
 \item{...}{\itemize{
-\item passed to \code{cached} may specifically want to use `nocache=TRUE``
+\item passed to \code{cached} may specifically want to use `.nocache=TRUE``
 }}
-
-\item{file}{(optional in some circumstances) the file name component see
-valid_inputs() for current list in input directory}
 }
 \value{
 either a list of dataframes or a single merged dataframe

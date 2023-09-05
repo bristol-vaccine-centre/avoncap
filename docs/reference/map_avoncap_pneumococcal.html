@@ -10,29 +10,29 @@ test_date -&amp;gt; pneumo.test_date (date)
 test -&amp;gt; pneumo.test_type (list)
 serotype -&amp;gt; pneumo.phe_serotype (pneumo_serotype)
 smoker -&amp;gt; demog.smoker (list)
-resp_disease -&amp;gt; dplyr (checkboxes)
-chd -&amp;gt; dplyr (checkboxes)
+resp_disease -&amp;gt; comorbid.no_resp_dx, comorbid.copd, comorbid.asthma, comorbid.bronchiectasis, comorbid.pulmonary_fibrosis, comorbid.resp_other (checkboxes)
+chd -&amp;gt; comorbid.no_heart_dx, comorbid.ccf, comorbid.ihd, comorbid.hypertension, comorbid.af, comorbid.other_heart_dx (checkboxes)
 mi -&amp;gt; comorbid.previous_mi (yesno)
 ckd -&amp;gt; comorbid.ckd (list)
 liver_disease -&amp;gt; comorbid.liver_disease (list)
 diabetes -&amp;gt; comorbid.diabetes (list)
 dm_meds -&amp;gt; comorbid.diabetes_medications (list)
-dementia -&amp;gt; dplyr (checkboxes)
-neurological_disease -&amp;gt; dplyr (checkboxes)
+dementia -&amp;gt; comorbid.no_dementia, comorbid.dementia, comorbid.cognitive_impairment (checkboxes)
+neurological_disease -&amp;gt; comorbid.neuro_other, comorbid.cva, comorbid.tia, comorbid.hemiplegia, comorbid.paraplegia, comorbid.no_neuro_dx (checkboxes)
 gastric_ulcers -&amp;gt; comorbid.gastric_ulcers (yesno)
 dysphagia -&amp;gt; comorbid.dysphagia (yesno)
 pvd -&amp;gt; comorbid.periph_vasc_dx (yesno)
 ctd -&amp;gt; comorbid.connective_tissue_dx (yesno)
 immunodeficiency -&amp;gt; comorbid.immunodeficiency (yesno)
 other_pn_disease -&amp;gt; comorbid.other_pneumococcal_risks (yesno)
-hiv -&amp;gt; dplyr (checkboxes)
+hiv -&amp;gt; comorbid.no_HIV, comorbid.HIV, comorbid.AIDS (checkboxes)
 cancer -&amp;gt; comorbid.solid_cancer (list)
-haem_malig -&amp;gt; dplyr (checkboxes)
+haem_malig -&amp;gt; comorbid.no_haemotological_cancer, comorbid.leukaemia, comorbid.lymphoma (checkboxes)
 recent_chemo -&amp;gt; comorbid.recent_chemotherapy (yesno)
 recent_radiotherapy -&amp;gt; comorbid.recent_radiotherapy (yesno)
 transplant -&amp;gt; comorbid.transplant_recipient (yesno)
 pregnancy -&amp;gt; comorbid.pregnancy (list)
-drugs -&amp;gt; dplyr (checkboxes)
+drugs -&amp;gt; demog.no_drug_abuse, demog.alcohol_abuse, demog.ivdu_abuse, demog.marijuana_abuse, demog.other_inhaled_drug_abuse (checkboxes)
 immsup -&amp;gt; admission.on_immunosuppression (yesno)
 weight_problem -&amp;gt; comorbid.bmi_status (list)
 concomittant_flu -&amp;gt; comorbid.influenza_infection (yesno)
@@ -94,29 +94,29 @@ test_date -&amp;gt; pneumo.test_date (date)
 test -&amp;gt; pneumo.test_type (list)
 serotype -&amp;gt; pneumo.phe_serotype (pneumo_serotype)
 smoker -&amp;gt; demog.smoker (list)
-resp_disease -&amp;gt; dplyr (checkboxes)
-chd -&amp;gt; dplyr (checkboxes)
+resp_disease -&amp;gt; comorbid.no_resp_dx, comorbid.copd, comorbid.asthma, comorbid.bronchiectasis, comorbid.pulmonary_fibrosis, comorbid.resp_other (checkboxes)
+chd -&amp;gt; comorbid.no_heart_dx, comorbid.ccf, comorbid.ihd, comorbid.hypertension, comorbid.af, comorbid.other_heart_dx (checkboxes)
 mi -&amp;gt; comorbid.previous_mi (yesno)
 ckd -&amp;gt; comorbid.ckd (list)
 liver_disease -&amp;gt; comorbid.liver_disease (list)
 diabetes -&amp;gt; comorbid.diabetes (list)
 dm_meds -&amp;gt; comorbid.diabetes_medications (list)
-dementia -&amp;gt; dplyr (checkboxes)
-neurological_disease -&amp;gt; dplyr (checkboxes)
+dementia -&amp;gt; comorbid.no_dementia, comorbid.dementia, comorbid.cognitive_impairment (checkboxes)
+neurological_disease -&amp;gt; comorbid.neuro_other, comorbid.cva, comorbid.tia, comorbid.hemiplegia, comorbid.paraplegia, comorbid.no_neuro_dx (checkboxes)
 gastric_ulcers -&amp;gt; comorbid.gastric_ulcers (yesno)
 dysphagia -&amp;gt; comorbid.dysphagia (yesno)
 pvd -&amp;gt; comorbid.periph_vasc_dx (yesno)
 ctd -&amp;gt; comorbid.connective_tissue_dx (yesno)
 immunodeficiency -&amp;gt; comorbid.immunodeficiency (yesno)
 other_pn_disease -&amp;gt; comorbid.other_pneumococcal_risks (yesno)
-hiv -&amp;gt; dplyr (checkboxes)
+hiv -&amp;gt; comorbid.no_HIV, comorbid.HIV, comorbid.AIDS (checkboxes)
 cancer -&amp;gt; comorbid.solid_cancer (list)
-haem_malig -&amp;gt; dplyr (checkboxes)
+haem_malig -&amp;gt; comorbid.no_haemotological_cancer, comorbid.leukaemia, comorbid.lymphoma (checkboxes)
 recent_chemo -&amp;gt; comorbid.recent_chemotherapy (yesno)
 recent_radiotherapy -&amp;gt; comorbid.recent_radiotherapy (yesno)
 transplant -&amp;gt; comorbid.transplant_recipient (yesno)
 pregnancy -&amp;gt; comorbid.pregnancy (list)
-drugs -&amp;gt; dplyr (checkboxes)
+drugs -&amp;gt; demog.no_drug_abuse, demog.alcohol_abuse, demog.ivdu_abuse, demog.marijuana_abuse, demog.other_inhaled_drug_abuse (checkboxes)
 immsup -&amp;gt; admission.on_immunosuppression (yesno)
 weight_problem -&amp;gt; comorbid.bmi_status (list)
 concomittant_flu -&amp;gt; comorbid.influenza_infection (yesno)
@@ -178,7 +178,7 @@ imd_decile -&amp;gt; demog.imd_decile (name)
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -186,17 +186,17 @@ imd_decile -&amp;gt; demog.imd_decile (name)
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../articles/avoncap.html">Get started</a>
-</li>
-<li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
-    <a class="dropdown-item" href="../articles/uad-data.html">Pneumococcus urinary antigen data</a>
+    <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
+    <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
+    <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
+    <a class="dropdown-item" href="../articles/web/uad-data.html">Pneumococcus urinary antigen data</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -225,29 +225,29 @@ imd_decile -&amp;gt; demog.imd_decile (name)
 <li><p>test -&gt; pneumo.test_type (list)</p></li>
 <li><p>serotype -&gt; pneumo.phe_serotype (pneumo_serotype)</p></li>
 <li><p>smoker -&gt; demog.smoker (list)</p></li>
-<li><p>resp_disease -&gt; dplyr (checkboxes)</p></li>
-<li><p>chd -&gt; dplyr (checkboxes)</p></li>
+<li><p>resp_disease -&gt; comorbid.no_resp_dx, comorbid.copd, comorbid.asthma, comorbid.bronchiectasis, comorbid.pulmonary_fibrosis, comorbid.resp_other (checkboxes)</p></li>
+<li><p>chd -&gt; comorbid.no_heart_dx, comorbid.ccf, comorbid.ihd, comorbid.hypertension, comorbid.af, comorbid.other_heart_dx (checkboxes)</p></li>
 <li><p>mi -&gt; comorbid.previous_mi (yesno)</p></li>
 <li><p>ckd -&gt; comorbid.ckd (list)</p></li>
 <li><p>liver_disease -&gt; comorbid.liver_disease (list)</p></li>
 <li><p>diabetes -&gt; comorbid.diabetes (list)</p></li>
 <li><p>dm_meds -&gt; comorbid.diabetes_medications (list)</p></li>
-<li><p>dementia -&gt; dplyr (checkboxes)</p></li>
-<li><p>neurological_disease -&gt; dplyr (checkboxes)</p></li>
+<li><p>dementia -&gt; comorbid.no_dementia, comorbid.dementia, comorbid.cognitive_impairment (checkboxes)</p></li>
+<li><p>neurological_disease -&gt; comorbid.neuro_other, comorbid.cva, comorbid.tia, comorbid.hemiplegia, comorbid.paraplegia, comorbid.no_neuro_dx (checkboxes)</p></li>
 <li><p>gastric_ulcers -&gt; comorbid.gastric_ulcers (yesno)</p></li>
 <li><p>dysphagia -&gt; comorbid.dysphagia (yesno)</p></li>
 <li><p>pvd -&gt; comorbid.periph_vasc_dx (yesno)</p></li>
 <li><p>ctd -&gt; comorbid.connective_tissue_dx (yesno)</p></li>
 <li><p>immunodeficiency -&gt; comorbid.immunodeficiency (yesno)</p></li>
 <li><p>other_pn_disease -&gt; comorbid.other_pneumococcal_risks (yesno)</p></li>
-<li><p>hiv -&gt; dplyr (checkboxes)</p></li>
+<li><p>hiv -&gt; comorbid.no_HIV, comorbid.HIV, comorbid.AIDS (checkboxes)</p></li>
 <li><p>cancer -&gt; comorbid.solid_cancer (list)</p></li>
-<li><p>haem_malig -&gt; dplyr (checkboxes)</p></li>
+<li><p>haem_malig -&gt; comorbid.no_haemotological_cancer, comorbid.leukaemia, comorbid.lymphoma (checkboxes)</p></li>
 <li><p>recent_chemo -&gt; comorbid.recent_chemotherapy (yesno)</p></li>
 <li><p>recent_radiotherapy -&gt; comorbid.recent_radiotherapy (yesno)</p></li>
 <li><p>transplant -&gt; comorbid.transplant_recipient (yesno)</p></li>
 <li><p>pregnancy -&gt; comorbid.pregnancy (list)</p></li>
-<li><p>drugs -&gt; dplyr (checkboxes)</p></li>
+<li><p>drugs -&gt; demog.no_drug_abuse, demog.alcohol_abuse, demog.ivdu_abuse, demog.marijuana_abuse, demog.other_inhaled_drug_abuse (checkboxes)</p></li>
 <li><p>immsup -&gt; admission.on_immunosuppression (yesno)</p></li>
 <li><p>weight_problem -&gt; comorbid.bmi_status (list)</p></li>
 <li><p>concomittant_flu -&gt; comorbid.influenza_infection (yesno)</p></li>

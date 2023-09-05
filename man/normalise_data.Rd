@@ -11,6 +11,8 @@ normalise_data(rawData, instrument = NULL, ...)
 \item the raw data from \code{load_data()}
 }}
 
+\item{instrument}{the numeric instrument number if applicable}
+
 \item{...}{
   Arguments passed on to \code{\link[=normalise_generic]{normalise_generic}}
   \describe{

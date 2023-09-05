@@ -18,8 +18,11 @@ library(avoncap)
 
 ```{r setup}
 
+# The data input directory on my development machine:
+options("avoncap.input" = "~/Data/avoncap/")
+
 # library(avoncap)
-# devtools::load_all()
+devtools::load_all()
 
 ```
 
@@ -62,7 +65,11 @@ avoncap::save_data_source_info(ethn, rawData, .file = tempfile("file-info",filee
 
 ```{r}
 # devtools::install_local(force=TRUE)
-normData = rawData %>% avoncap::normalise_data()
+normData = rawData %>% 
+  avoncap::validate_data() %T>%
+  # note the magrittr `T` pipe above to drop the output of write issues
+  avoncap::write_issues("issues.csv") %>%
+  avoncap::normalise_data()
 ```
 
 # Mapping columns
@@ -117,7 +124,22 @@ rawData2 = avoncap::load_data("avoncap-export","central", merge=TRUE)
 # due to the fact it is mostly a numeric but some values ">250"
 
 # devtools::load_all()
-normData2 = rawData2 %>% avoncap::normalise_data()
+normData2 = rawData2 %>% avoncap::validate_data() %>% avoncap::normalise_data()
+failures = normData2 %>% avoncap::write_issues("~/avoncap-issues")
+
+tmp = failures %>% 
+    filter(.error_type %in% c("none checked in checkbox","missing value")) %>% 
+    inner_join(rawData2, by="record_number", suffix=c("",".raw")) %>%
+  group_by(.variable) %>%
+  filter(n()>20)
+  
+    
+ggplot(tmp, aes(x=enrollment_date, fill=as.factor(hosp)))+
+  geom_histogram(binwidth = 7)+
+  scale_x_date(date_breaks = "1 month", date_labels = "%m-%Y")+
+  theme(axis.text.x.bottom = element_text(angle = 90, vjust=0.5, hjust=1))+
+  facet_wrap(~.variable,scales = "free_y")
+
 ```
 
 ```{r}
@@ -153,10 +175,14 @@ normRadio %>% filter(radio.test_performed=="yes") %>% select(radio.test_type, ra
 ```
 
 ```{r}
-normHaem = rawData2 %>% normalise_data(instrument = "haem")
+normHaem = rawData2 %>% normalise_data(instrument = "haem") 
+augHaem = normHaem %>% augment_data()
 
-x = normHaem %>% summary()
-t(x)
+augHaem %>% xglimpse(haem.troponin_level, haem.d_dimer_level)
+augHaem %>% xglimpse(haem.crp_level, haem.white_cell_count_level)
+
+# x = augHaem %>% summary()
+# t(x)
 ```
 
 

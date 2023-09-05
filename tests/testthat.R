@@ -9,4 +9,4 @@
 library(testthat)
 library(avoncap)
 
-test_check("avoncap")
+testthat::test_check("avoncap")

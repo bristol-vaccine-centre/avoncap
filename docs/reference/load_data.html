@@ -16,7 +16,7 @@ reproduce_at date and detects whether they are in a set of files."><!-- mathjax 
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,17 +24,17 @@ reproduce_at date and detects whether they are in a set of files."><!-- mathjax 
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../articles/avoncap.html">Get started</a>
-</li>
-<li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
-    <a class="dropdown-item" href="../articles/uad-data.html">Pneumococcus urinary antigen data</a>
+    <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
+    <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
+    <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
+    <a class="dropdown-item" href="../articles/web/uad-data.html">Pneumococcus urinary antigen data</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -65,7 +65,7 @@ as part of the file name. This selects the most recent files earlier than the
 <span>  <span class="va">type</span>,</span>
 <span>  subtype <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reproduce_at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"reproduce.at"</span>, default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  merge <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  merge <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -73,8 +73,12 @@ as part of the file name. This selects the most recent files earlier than the
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>type</dt>
-<dd><p>the file category see valid_inputs() for current list in input
+<dd><p>the file category see <code><a href="valid_inputs.html">valid_inputs()</a></code> for current list in input
 directory</p></dd>
+
+
+<dt>subtype</dt>
+<dd><p>the subtype from <code><a href="valid_inputs.html">valid_inputs()</a></code></p></dd>
 
 
 <dt>reproduce_at</dt>
@@ -89,13 +93,8 @@ single data frame by losing mismatching columns.</p></li>
 
 
 <dt>...</dt>
-<dd><ul><li><p>passed to <code>cached</code> may specifically want to use `nocache=TRUE``</p></li>
+<dd><ul><li><p>passed to <code>cached</code> may specifically want to use `.nocache=TRUE``</p></li>
 </ul></dd>
-
-
-<dt>file</dt>
-<dd><p>(optional in some circumstances) the file name component see
-valid_inputs() for current list in input directory</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -115,22 +114,22 @@ return the individually loaded files as a list of dataframes.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">load_data</span><span class="op">(</span><span class="st">"nhs-extract"</span>,<span class="st">"deltave"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> using cached item: ~/.cache/avoncap/data-969416e3870a1ceaa091ca0c1e17ce42-2455e2e169f1b657eeece521d9a79582.rda</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 18,009 × 238</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-efc310106a2b36fab3e67f93fe2c9461.rda</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 18,009 × 243</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    record_number nhs_number admission_date gender age_at_admission   imd</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> B02976        <span style="text-decoration: underline;">6</span>124<span style="text-decoration: underline;">792</span>060 17/05/2021          2             83.4     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> B02977        <span style="text-decoration: underline;">4</span>867<span style="text-decoration: underline;">644</span>056 17/05/2021          2             32.5     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> B02978        <span style="text-decoration: underline;">4</span>722<span style="text-decoration: underline;">751</span>269 17/05/2021          2             77.4     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> B02980        <span style="text-decoration: underline;">6</span>103<span style="text-decoration: underline;">077</span>427 17/05/2021          1             90.6     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> B02984        <span style="text-decoration: underline;">4</span>780<span style="text-decoration: underline;">809</span>983 17/05/2021          2             60.2     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> B02993        <span style="text-decoration: underline;">4</span>584<span style="text-decoration: underline;">988</span>390 17/05/2021          2             65.6     8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> B02994        <span style="text-decoration: underline;">4</span>866<span style="text-decoration: underline;">191</span>937 17/05/2021          1             64.1     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> B03018        <span style="text-decoration: underline;">4</span>722<span style="text-decoration: underline;">881</span>049 18/05/2021          1             74.7     4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> B03020        <span style="text-decoration: underline;">6</span>283<span style="text-decoration: underline;">943</span>446 18/05/2021          2             65.4     4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> B03024        <span style="text-decoration: underline;">4</span>725<span style="text-decoration: underline;">779</span>881 18/05/2021          2             75.7     9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> B02976        <span style="text-decoration: underline;">1</span>829<span style="text-decoration: underline;">824</span>764 17/05/2021          2             83.4     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> B02977         572<span style="text-decoration: underline;">676</span>760 17/05/2021          2             32.5     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> B02978         427<span style="text-decoration: underline;">783</span>973 17/05/2021          2             77.4     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> B02980        <span style="text-decoration: underline;">1</span>808<span style="text-decoration: underline;">110</span>131 17/05/2021          1             90.6     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> B02984         485<span style="text-decoration: underline;">842</span>687 17/05/2021          2             60.2     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> B02993         290<span style="text-decoration: underline;">021</span>094 17/05/2021          2             65.6     8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> B02994         571<span style="text-decoration: underline;">224</span>641 17/05/2021          1             64.1     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> B03018         427<span style="text-decoration: underline;">913</span>753 18/05/2021          1             74.7     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> B03020        <span style="text-decoration: underline;">1</span>988<span style="text-decoration: underline;">976</span>150 18/05/2021          2             65.4     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> B03024         430<span style="text-decoration: underline;">812</span>585 18/05/2021          2             75.7     9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 17,999 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 232 more variables: rockwood &lt;dbl&gt;, symptom_days_preadmit &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 237 more variables: rockwood &lt;dbl&gt;, symptom_days_preadmit &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   fever2 &lt;dbl&gt;, pleurtic_cp &lt;dbl&gt;, cough2 &lt;dbl&gt;, sput_prod &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dyspnoea &lt;dbl&gt;, tachypnoea2 &lt;dbl&gt;, anosmia &lt;dbl&gt;, ageusia &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   dysgeusia &lt;dbl&gt;, fever &lt;dbl&gt;, hypothermia &lt;dbl&gt;, chills &lt;dbl&gt;,</span></span>

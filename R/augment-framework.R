@@ -21,7 +21,7 @@
 #' @examples
 #' fn1 = function(df,v) {df %>% dplyr::filter(cut=="Fair") %>% dplyr::mutate(x_col = color)}
 #' fn2 = function(df,v) {df %>% dplyr::filter(color==v$color$J)}
-#' df = diamonds %>% augment_generic(fn1, fn2)
+#' df = ggplot2::diamonds %>% augment_generic(fn1, fn2)
 augment_generic = function(df, ...) {
   dots = rlang::list2(...)
   if (!is.null(names(dots))) {
@@ -157,6 +157,7 @@ augment.avoncap_export.central = function(df,...) {
       derive_admission_episode,
       derive_simpler_comorbidities,
       derive_covid_status,
+      derive_presumed_diagnosis_categories,
       derive_diagnosis_categories,
       derive_infective_classification, # must be after diagnosis categories and covid status
       derive_aLRTD_categories,

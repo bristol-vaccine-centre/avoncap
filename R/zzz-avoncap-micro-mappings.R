@@ -64,13 +64,15 @@
 
 keys_avoncap_micro  = function(instrument) {
   list(
-    "micro" = sprintf("{admin.record_number}_micro_%d",instrument)
+    "micro" = sprintf("{admin.record_number}_micro_%s",as.character(instrument))
   )
 }
 
 #' Normalise the avoncap data microbiology data
 #'
 #' `r .document_mapping(map_avoncap_micro)`
+#'
+#' @param instrument the numeric instrument number
 #'
 #' @concept map
 #' @return a list
@@ -79,7 +81,7 @@ map_avoncap_micro = function(instrument) {
   tmp = list(
     "microtest_done" = .normalise_yesno(micro.test_performed),
     "microtest_date" = .normalise_date(micro.test_date),
-    "microday" = .normalise_name(micro.test_days_from_admission),
+    "microday" = .normalise_pos_integer(micro.test_days_from_admission),
     "micro_test" = .normalise_list(micro.test_type,
         c("Blood culture", "Sputum", "Respiratory swab", "Pleural fluid",
           "Bronchoalveolar lavage", "Tracheal Aspirate",
@@ -89,7 +91,7 @@ map_avoncap_micro = function(instrument) {
     "isolate_identified" = .normalise_checkboxes_to_nested_list(micro.pathogen, .micro_isolate_list, "pathogen", "detected"),
     # "micro_other", text
     "pn_result" = .normalise_list(micro.pneumo_serotype_status,
-        c("Not tested/no result", "Non-typable", "Serotype obtained")),
+        c("Not tested/no result", "Non-typeable", "Serotype obtained")),
     "pn_st" = .normalise_pneumo_serotype(micro.pneumo_serotype),
     "micro_lab" = .normalise_yesno_unknown(micro.sent_to_central_lab),
     "pen_susceptibility" = .normalise_checkboxes_to_list(micro.penicillin_susceptibility,
@@ -108,7 +110,7 @@ map_avoncap_micro = function(instrument) {
     # "micro_report_header", text
   )
 
-  names(tmp) = sprintf("%s_%d",names(tmp),instrument)
+  names(tmp) = sprintf("%s_%s",names(tmp),as.character(instrument))
   return(c(
     "record_number" = .normalise_name(admin.record_number),
     "ac_study_number" = .normalise_study_id(admin.consented_record_number),

@@ -62,6 +62,7 @@ normalise_generic = function(
       tomap = paste0(".",mappingName)
       if (any(stringr::str_starts(colnames(tmp),tomap))) {
         tryCatch({
+          # if (mappingName %>% stringr::str_starts("viroldays")) browser()
           tmp = tmp %>% .fn(tomap)
         }, error = function(e) {
           message("could not process column or column set ",mappingName," due to ",e$message)
@@ -115,7 +116,7 @@ normalise_generic = function(
 
 # key_spec = keys_urine_antigens_serotype()
 # normUA %>% create_keys(key_spec)
-create_keys = function(df, key_spec = list("id"="{row_number()}")) {
+create_keys = function(df, key_spec = list("id"="{dplyr::row_number()}")) {
   for (key in names(key_spec)) {
     newCol = as.symbol(paste0("key.",key))
     keyValues = glue::glue_data(df, key_spec[[key]], .na=NULL)
@@ -127,14 +128,34 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
 
 ## Documentation utility ----
 
+# depth first traverse
+.find_list = function(ast) {
+  if (is.call(ast) && ast[[1]]==as.name("list")) return(ast)
+  if (length(ast)==1) return(NULL)
+  for (i in 1:length(ast)) {
+    ast2 = ast[[i]]
+    tmp = .find_list(ast2)
+    if (!is.null(tmp)) return(tmp)
+  }
+  return(NULL)
+}
+
 # Used internally to document a mapping function
 .document_mapping = function(map_fn) {
-  tmp = deparse1(body(map_fn)) %>%
-    stringr::str_match_all("([a-zA-Z0-9\\._]+)\\s*=\\s*\\.normalise_([^\\(]+)\\(([a-zA-Z0-9\\._]+)")
-  old = tmp[[1]][,2]
-  new = tmp[[1]][,4]
-  type = tmp[[1]][,3]
-  sprintf("* %s -> %s (%s)",old,new,type) %>% paste0(collapse = "\n")
+  tmp = body(map_fn)
+  # tmp2 = eval(tmp)
+  tmp2 = .find_list(tmp)
+  old = names(tmp2)
+  # tmp3 = deparse1(tmp)
+  tmp5 = tmp2[old!=""]
+  old = old[old!=""]
+
+  new = lapply(tmp5, all.vars) %>% sapply(paste0, collapse=", ")
+  type = lapply(tmp5, all.names) %>% sapply(`[`, 1) %>% stringr::str_remove(".normalise_")
+
+  return(sprintf("* %s -> %s (%s)",old,new,type) %>%
+    paste0(collapse = "\n") %>%
+    knitr::asis_output())
 }
 
 .document_data_format = function(df) {
@@ -199,8 +220,13 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
     message("mapping ",valueCol," to ",renameTo)
     tmp = df %>% dplyr::pull(!!valueCol)
 
+    # lots of possible formats to detect here:
+    # linelist %>% dplyr::select(c(record_number, tidyselect::starts_with("pn_st"))) %>% dplyr::mutate(across(tidyselect::everything(), as.character)) %>% tidyr::pivot_longer(tidyselect::starts_with("pn_st")) %>% dplyr::pull(value) %>% unique()
+    # gives a list from the raw data.
+
     tmp = tmp %>%
-      stringr::str_match_all("(^|_)([0-9][0-9]?[A-Za-z]?)($|_)") %>%
+      as.character() %>%
+      stringr::str_match_all("(^|_|\\s)([0-9][0-9]?[A-Za-z]?)($|_|\\s)") %>%
       purrr::map_chr(~ ifelse(length(.x)==0,NA_character_,.x[[3]])) %>%
       toupper()
     # TODO: consider the need to merge serotypes like 6A/6C
@@ -244,6 +270,7 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
   return(function(df, valueCol) {
     valueCol = as.symbol(valueCol)
     message("mapping ",valueCol," to ",renameTo)
+    # TODO: do we need to handle a NaN value (explicit unavailable) and if so how?
     df %>%
       dplyr::mutate(!!renameTo := !!valueCol %>% factor(levels=codes, labels=values, ordered = ordered)) %>%
       .relocate_old(renameTo, valueCol)
@@ -283,6 +310,25 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
   })
 }
 
+.normalise_integer = function(renameTo, limits=c(-Inf,Inf)) {
+  renameTo=rlang::ensym(renameTo)
+  return(function(df, valueCol) {
+    message("mapping ",valueCol," to ",renameTo)
+    #TODO: error checking
+    valueCol = as.symbol(valueCol)
+    df %>%
+      dplyr::mutate(!!renameTo :=  suppressWarnings(as.numeric(!!valueCol))) %>%
+      dplyr::mutate(!!renameTo :=  dplyr::if_else(!!renameTo != round(!!renameTo), NA_real_,!!renameTo)) %>%
+      dplyr::mutate(!!renameTo :=  dplyr::if_else(!!renameTo < limits[1] | !!renameTo > limits[2],NA_real_,!!renameTo)) %>%
+      .relocate_old(renameTo, valueCol)
+  })
+}
+
+.normalise_pos_integer = function(renameTo, upper=Inf) {
+  renameTo=rlang::ensym(renameTo)
+  .normalise_integer(!!renameTo, limits = c(0,upper))
+}
+
 .normalise_double = function(renameTo, limits=c(-Inf,Inf)) {
   renameTo=rlang::ensym(renameTo)
   return(function(df, valueCol) {
@@ -315,7 +361,7 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
 
 
 
-# diamonds %>% dplyr::mutate(cut = as.character(cut)) %>% .normalise_text_to_factor(new_cut, preprocess = ~ dplyr::case_when(.x=="Fair"~"XXX", TRUE~tolower(.x)))("cut")
+# ggplot2::diamonds %>% dplyr::mutate(cut = as.character(cut)) %>% .normalise_text_to_factor(new_cut, preprocess = ~ dplyr::case_when(.x=="Fair"~"XXX", TRUE~tolower(.x)))("cut")
 .normalise_text_to_factor = function(renameTo, levels = NULL, preprocess = tolower, sorter = sort) {
   renameTo=rlang::ensym(renameTo)
   preprocess = purrr::as_mapper(preprocess)
@@ -331,7 +377,7 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
   })
 }
 
-# diamonds %>% dplyr::mutate(cut = as.character(cut)) %>% .normalise_text_to_factor(new_cut, preprocess = ~ dplyr::case_when(.x=="Fair"~"XXX", TRUE~tolower(.x)))("cut")
+# ggplot2::diamonds %>% dplyr::mutate(cut = as.character(cut)) %>% .normalise_text_to_factor(new_cut, preprocess = ~ dplyr::case_when(.x=="Fair"~"XXX", TRUE~tolower(.x)))("cut")
 .normalise_text = function(renameTo, preprocess = tolower) {
   renameTo=rlang::ensym(renameTo)
   preprocess = purrr::as_mapper(preprocess)
@@ -374,6 +420,7 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
       df = df %>% dplyr::mutate(!!renameTo := !!valueCol)
       if(hasNa) {
         # deal with ___na columns etc, by making the renamed checkbox variables have an NA in them for the values where NA has been checked
+        # TODO: maybe this shoudl be a NaN and we handle this as a known unknown?
         df = df %>% dplyr::mutate(!!renameTo := dplyr::if_else(!!naCol == 1, NA_real_, !!renameTo))
       }
       df = df %>%
@@ -415,6 +462,7 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
       valueCol = as.symbol(paste0(valueColPrefix,"___",code))
       message("mapping ",valueCol," to ",renameTo,", value ",value)
       df = df %>% dplyr::mutate(!!renameTo := ifelse(!!valueCol == 1 & is.na(!!renameTo),value,!!renameTo))
+      # TODO: maybe this shoudl be a NaN and we handle this as a known unknown?
       # no need to deal with ___na columns etc as columns start with NA. no way to tell missing from present but NA.
       # hide original ___1, ___2, etc columns
       df = df %>% dplyr::rename(!!(paste0(".",valueCol)) := (!!valueCol))
@@ -428,6 +476,7 @@ create_keys = function(df, key_spec = list("id"="{row_number()}")) {
 
   })
 }
+
 
 .normalise_checkboxes_to_nested_list = function(renameTo, values, nameCol = "name", valueCol = "value") {
   renameTo=rlang::ensym(renameTo)

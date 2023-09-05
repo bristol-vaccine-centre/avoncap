@@ -19,7 +19,11 @@ a dataframe
 }
 \description{
 \itemize{
-\item Evelated troponin : > 14
+\item Elevated troponin : > 18:  18ng/L is simply the 99th percentile value Beckman
+assay we use as quoted by the IFCC. We elected to not use sex-specific 99th
+percentile values although they are also quoted here and you could
+incorporate into your analysis. I am sure you are aware of the 4th Universal
+definition of MI that requires a rise or fall above the 99th percentile etc.
 }
 }
 \concept{derived}

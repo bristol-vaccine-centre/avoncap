@@ -5,6 +5,8 @@
 \title{The aLRTD incidence paper classifications}
 \usage{
 derive_aLRTD_categories(df, v, ...)
+
+derive_aLRTD_categories(df, v, ...)
 }
 \arguments{
 \item{df}{the dataframe.}

@@ -21,5 +21,5 @@ This sequences, catches errors and allows parameters to be passed by name
 \examples{
 fn1 = function(df,v) {df \%>\% dplyr::filter(cut=="Fair") \%>\% dplyr::mutate(x_col = color)}
 fn2 = function(df,v) {df \%>\% dplyr::filter(color==v$color$J)}
-df = diamonds \%>\% augment_generic(fn1, fn2)
+df = ggplot2::diamonds \%>\% augment_generic(fn1, fn2)
 }

@@ -25,9 +25,9 @@ set_input = function(path) {
 
 #' Locate the input directory
 #'
-#' @param ... the sub path(s) within the input directory
+#' @param ... the sub paths within the input directory
 #'
-#' @return a path to the input directory and sub path(s) if provided
+#' @return a path to the input directory and sub paths if provided
 #' @export
 #'
 #' @example inst/examples/data-location-examples.R
@@ -215,15 +215,18 @@ valid_inputs = function() {
 }
 
 # parse the list of dataframes for columns and emptiness
-# (list(iris,mtcars)) %>% .detect_structure()
+# (list(iris,mtcars %>% dplyr::mutate(empt = NA))) %>% .detect_structure()
 .detect_structure =  function(listOfDf) {
   purrr::map(listOfDf, ~ dplyr::inner_join(
-    .x %>% lapply(class) %>% unlist() %>% tibble::enframe() %>%
+
+    # detect the structure accounting for possible unavailable values.
+    .x %>% lapply(readr::guess_parser, na=.unavailable()) %>% unlist() %>% tibble::enframe() %>%
       dplyr::rename(type = value) %>%
       dplyr::mutate(convert = dplyr::case_when(
         # bind_rows can automatically convert some data types
         type == "logical" ~ "numeric",
         type == "integer" ~ "numeric",
+        type == "double" ~ "numeric",
         TRUE ~ type
       )),
     .x %>% lapply(function(c) all(is.na(c))) %>% unlist() %>% tibble::enframe() %>% dplyr::rename(empty = value),
@@ -252,6 +255,9 @@ valid_inputs = function() {
   structure %>% purrr::map(~ .x %>% dplyr::filter(!empty) %>% dplyr::semi_join(minority, by=c("name","convert")) %>% dplyr::pull(name))
 }
 
+.unavailable = function() {
+  getOption("avoncap.unavailable", c("NA","Na","na","N/A","UNK"))
+}
 
 #' Load data and check structure
 #'
@@ -265,21 +271,20 @@ valid_inputs = function() {
 #' merges the files into a single dataframe, if possible, otherwise it will
 #' return the individually loaded files as a list of dataframes.
 #'
-#' @param type the file category see valid_inputs() for current list in input
+#' @param type the file category see `valid_inputs()` for current list in input
 #'   directory
-#' @param file (optional in some circumstances) the file name component see
-#'   valid_inputs() for current list in input directory
+#' @param subtype the subtype from `valid_inputs()`
 #' @param reproduce_at - the date at which to cut off newer data files
 #' @param merge - setting to `TRUE` forces multiple files be merged into a
 #'   single data frame by losing mismatching columns.
-#' @param ... - passed to `cached` may specifically want to use `nocache=TRUE``
+#' @param ... - passed to `cached` may specifically want to use `.nocache=TRUE``
 #'
 #' @return either a list of dataframes or a single merged dataframe
 #' @export
 #'
 #' @examples
 #' load_data("nhs-extract","deltave")
-load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date())), merge = NA, ...) {
+load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date())), merge = TRUE, ...) {
   if(reproduce_at != Sys.Date()) warning("REPRODUCING RESULTS FROM: ",reproduce_at, ", to disable this set options(reproduce.at=NULL)")
   tmp = type
   tmp_files = most_recent_files(type, subtype, reproduce_at)
@@ -303,7 +308,8 @@ load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("repro
 
     data = tmp_files %>%
       dplyr::mutate(
-        csv = purrr::map(path, ~ suppressWarnings(readr::read_csv(.x, na = c("","NA","Na","na","N/A","UNK"), show_col_types = FALSE))),
+        # parse to character without converting any unavailables
+        csv = purrr::map(path, ~ suppressWarnings(readr::read_csv(.x, na = c(""), show_col_types = FALSE, guess_max = Inf, col_types = readr::cols(.default=readr::col_character())))),
         entries = purrr::map_dbl(csv, ~ nrow(.))
       )
     data2 = data %>%
@@ -317,15 +323,21 @@ load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("repro
       dplyr::select(-path,-filename)
     col_suppress = unique(c(unlist(data2$mismatches)))
 
+    if(length(col_suppress) > 0) {
+      message("INCONSISTENT COLUMN(S) IN FILES: ",paste0(col_suppress,collapse=";"))
+    }
+
     if (is.na(merge)) {
       if(length(col_suppress) > 0) {
-        message("INCONSISTENT COLUMN(S) IN FILES: ",paste0(col_suppress,collapse=";"))
         message("NOT MERGING FILES")
         merge = FALSE
       } else {
         merge = TRUE
       }
+    } else {
+      merge = TRUE
     }
+
 
     if (nrow(dplyr::bind_rows(data2$parse_issues))>0) {
       message(nrow(dplyr::bind_rows(data2$parse_issues))," parse issues in raw files. Check the parse_issues attrbute.")
@@ -338,13 +350,32 @@ load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("repro
     total = sum(data2$entries)
 
     tmp = data2 %>%
+      # all columns will be loaded as text to begin with
+
       # Lose empty columns which will have been assigned incorrect type
-      dplyr::mutate(csv = purrr::map2(csv, empty, ~ .x %>% dplyr::select(-tidyselect::any_of(.y)))) %>%
+      # dplyr::mutate(csv = purrr::map2(csv, empty, ~ .x %>% dplyr::select(-tidyselect::any_of(.y)))) %>%
       # convert conflicting data type columns to character
-      dplyr::mutate(csv = purrr::map2(csv, mismatches, ~ .x %>% dplyr::mutate(dplyr::across(tidyselect::any_of(.y), as.character)))) %>%
+      # dplyr::mutate(csv = purrr::map2(csv, mismatches, ~ .x %>% dplyr::mutate(dplyr::across(tidyselect::any_of(.y), as.character)))) %>%
+
       # force merge the files together
       dplyr::select(.hospital=hospital, .study_year=study_year, .file = file, csv) %>%
       tidyr::unnest(csv)
+
+
+
+    for (col in colnames(tmp)) {
+      # detect and apply default types:
+
+      tmp_col = readr::parse_guess( as.character(tmp[[col]]), na = .unavailable(), trim_ws = TRUE,guess_integer = TRUE)
+      # manually convert numerics with explicit "NA" in raw data from NA to NaN
+      if (is.numeric(tmp_col)) {
+        tmp_col[as.character(tmp[[col]]) %in% .unavailable()] = NaN
+      }
+
+      tmp[[col]] = tmp_col
+
+      #TODO: debug output: message("parsing ",col," to <",class(tmp[[col]]),">")
+    }
 
     if (!("hospital" %in% colnames(tmp))) tmp = tmp %>% dplyr::mutate(hospital = .hospital)
     if (!("study_year" %in% colnames(tmp))) tmp = tmp %>% dplyr::mutate(study_year = .study_year)

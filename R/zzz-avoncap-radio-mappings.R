@@ -1,13 +1,15 @@
 
 keys_avoncap_radio  = function(instrument) {
   list(
-    "radio" = sprintf("{admin.record_number}_radio_%d",instrument)
+    "radio" = sprintf("{admin.record_number}_radio_%s",as.character(instrument))
   )
 }
 
 #' Normalise the avoncap data radiology data
 #'
 #' `r .document_mapping(map_avoncap_radio)`
+#'
+#' @param instrument the numeric instrument number
 #'
 #' @concept map
 #' @return a list
@@ -16,7 +18,7 @@ map_avoncap_radio = function(instrument) {
   tmp = list(
     "radio_exam" = .normalise_yesno(radio.test_performed),
     "radiology_date" = .normalise_date(radio.test_date),
-    "radiodays" = .normalise_name(radio.test_days_from_admission),
+    "radiodays" = .normalise_pos_integer(radio.test_days_from_admission),
     "radio_test" = .normalise_list(radio.test_type, c("CXR", "CT scan (CT thorax, CTPA, HRCT)", "US thorax", "MRI", "Other")),
     # "radiology_othertest", text
     # "radiology_result" = .normalise_checkboxes(dplyr::vars(
@@ -50,7 +52,7 @@ map_avoncap_radio = function(instrument) {
     # "micro_other", text
   )
 
-  names(tmp) = sprintf("%s_%d",names(tmp),instrument)
+  names(tmp) = sprintf("%s_%s",names(tmp),as.character(instrument))
   return(c(
     "record_number" = .normalise_name(admin.record_number),
     "ac_study_number" = .normalise_study_id(admin.consented_record_number),

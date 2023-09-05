@@ -7,7 +7,9 @@
 derive_qcovid(df, v = avoncap_df \%>\% get_value_sets())
 }
 \arguments{
-\item{avoncap_df}{a normalised augmented avoncap data source}
+\item{df}{a normalised avoncap data source}
+
+\item{v}{a value set}
 }
 \value{
 the same dataframe with additional columns,

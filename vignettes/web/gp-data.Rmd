@@ -1,0 +1,49 @@
+---
+title: "The primary care data set"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The primary care data set}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(tidyverse)
+library(avoncap)
+```
+
+```{r setup}
+
+# The data input directory on my development machine:
+options("avoncap.input" = "~/Data/avoncap/")
+
+# library(avoncap)
+# devtools::load_all()
+
+```
+
+# Input data location
+
+* first level directories.
+* Filenames need some indication of database year (either as 20-21,21-22,... or as y1,y2,...)
+
+```{r}
+# The data input directory on my development machine:
+options("avoncap.input" = "~/Data/avoncap/")
+```
+
+
+```{r}
+avoncap::most_recent_files("avoncap-export","gp")
+```
+
+
+```{r}
+rawData = avoncap::load_data("avoncap-export","gp")
+```
+
+

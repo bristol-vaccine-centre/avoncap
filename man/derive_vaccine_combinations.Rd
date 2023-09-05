@@ -4,13 +4,15 @@
 \alias{derive_vaccine_combinations}
 \title{Deprecated - Vaccine combinations are less relevant now}
 \usage{
-derive_vaccine_combinations(df, v, ..)
+derive_vaccine_combinations(df, v, ...)
 }
 \arguments{
 \item{df}{the dataframe.}
 
 \item{v}{the value set. usually precomputed by the augment framework the value
 set can be explicitly supplied with \code{v = get_value_sets(df)}}
+
+\item{...}{ignored}
 }
 \value{
 a dataframe

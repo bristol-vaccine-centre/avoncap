@@ -1,6 +1,6 @@
 Package: avoncap
 Title: AvonCap Study Analysis
-Version: 0.0.0.9003
+Version: 0.0.0.9004
 Authors@R: 
     person("Rob", "Challen", , "rob.challen@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5504-7768"))
@@ -27,12 +27,20 @@ Imports:
     stringr,
     tidyselect (>= 1.2.0),
     yaml,
-    testthat,
-    ggplot2
+    ggplot2,
+    stats,
+    ggstance,
+    glue,
+    nplyr,
+    openxlsx,
+    patchwork,
+    rappdirs,
+    binom
 Suggests: 
     knitr,
     rmarkdown,
-    tidyverse
+    tidyverse,
+    testthat
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

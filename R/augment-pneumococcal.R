@@ -72,7 +72,7 @@ derive_pcv_groupings = function(df, ..., pcv_map = uad_pcv_map, not_matched="Oth
     } %>%
     dplyr::group_by(key.sample, group) %>%
     dplyr::summarise(
-      result = case_when(
+      result = dplyr::case_when(
         any(result == "Unknown") ~ "Unknown",
         any(result == "Positive") ~ "Positive",
         all(result == "Negative") ~ "Negative",
@@ -104,7 +104,7 @@ derive_pcv_groupings = function(df, ..., pcv_map = uad_pcv_map, not_matched="Oth
 #' @export
 derive_pneumo_uad_panel = function(df, ...) {
   df %>%
-    nplyr::nest_mutate(pneumo.urine_antigen, uad_panel = case_when(
+    nplyr::nest_mutate(pneumo.urine_antigen, uad_panel = dplyr::case_when(
       test %in% uad_groups$uad1 ~ "uad1",
       test %in% uad_groups$uad2 ~ "uad2",
       TRUE ~ "non_uad"
@@ -128,14 +128,14 @@ derive_pneumo_uad_status = function(df, ...) {
   tmp1 = df %>%
     dplyr::select(key.sample, pneumo.urine_antigen) %>%
     tidyr::unnest(pneumo.urine_antigen) %>%
-    dplyr::mutate(uad_panel = case_when(
+    dplyr::mutate(uad_panel = dplyr::case_when(
       test %in% uad_groups$uad1 ~ "uad1",
       test %in% uad_groups$uad2 ~ "uad2",
       TRUE ~ "non_uad"
     )) %>%
     dplyr::group_by(key.sample, uad_panel) %>%
     dplyr::summarise(
-      summary = case_when(
+      summary = dplyr::case_when(
         any(result == "Unknown") ~ "Unknown",
         any(result == "Positive") ~ "Positive",
         all(result == "Negative") ~ "Negative",
@@ -151,7 +151,7 @@ derive_pneumo_uad_status = function(df, ...) {
     tidyr::unnest(pneumo.urine_antigen) %>%
     dplyr::group_by(key.sample) %>%
     dplyr::summarise(
-      pneumo.serotype_summary_result = case_when(
+      pneumo.serotype_summary_result = dplyr::case_when(
         any(result == "Unknown") ~ "Unknown",
         any(result == "Positive") ~ "Positive",
         all(result == "Negative") ~ "Negative",
@@ -162,7 +162,7 @@ derive_pneumo_uad_status = function(df, ...) {
     )
 
   return(df %>%
-           left_join(tmp1, by="key.sample") %>%
-           left_join(tmp2, by="key.sample"))
+           dplyr::left_join(tmp1, by="key.sample") %>%
+           dplyr::left_join(tmp2, by="key.sample"))
 
 }

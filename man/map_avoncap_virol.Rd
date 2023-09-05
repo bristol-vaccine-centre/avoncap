@@ -6,6 +6,9 @@
 \usage{
 map_avoncap_virol(instrument)
 }
+\arguments{
+\item{instrument}{the numeric instrument number}
+}
 \value{
 a list
 }
@@ -13,14 +16,12 @@ a list
 \itemize{
 \item viral_testing_performed -> virol.test_performed (yesno)
 \item virology_date_of_asst -> virol.test_date (date)
-\item viroldays -> virol.test_days_from_admission (name)
+\item viroldays -> virol.test_days_from_admission (pos_integer)
 \item specimen_type -> virol.test_type (list)
 \item virus_isolated -> virol.pathogen_detected (yesno)
 \item test_type -> virol.test_type (list)
-\item virus_pathogen -> virol.pathogen (checkboxes_to_nested_list)
+\item virus_pathogen -> virol.pathogen, .virol_isolate_list (checkboxes_to_nested_list)
 \item virol_patient_lab -> virol.test_provenance (list)
-\item record_number -> admin.record_number (name)
-\item ac_study_number -> admin.consented_record_number (study_id)
 }
 }
 \concept{map}

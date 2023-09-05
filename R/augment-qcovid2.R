@@ -3,7 +3,9 @@
 #' uses inbuilt imd_to_townsend map. This implements a cut down version of the
 #' QCovid2 score depending on what data is available.
 #'
-#' @param avoncap_df a normalised augmented avoncap data source
+#'
+#' @param df a normalised avoncap data source
+#' @param v a value set
 #'
 #' @concept derived
 #' @return the same dataframe with additional columns,

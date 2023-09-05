@@ -2,6 +2,9 @@
 
 metadata_mapping = function(db = "uad-controls") {
   # set_input("~/Data/avoncap")
+  `Variable / Field Name` = `Form Name` = `Field Type` = `Text Validation Type OR Show Slider Number` = `Field Label` =
+    `Choices, Calculations, OR Slider Labels` = `Required Field?` = NULL
+
   metadata = suppressMessages(load_data("metadata",db, nocache=TRUE))
   meta = metadata %>% dplyr::select(
     variable = `Variable / Field Name`,
@@ -77,7 +80,7 @@ generate_column_name_review_list = function() {
     dplyr::filter(!stringr::str_detect(variable,"staff|nurse")) %>%
     dplyr::distinct() %>%
     dplyr::group_by(variable) %>%
-    dplyr::filter(n() > 1) %>%
+    dplyr::filter(dplyr::n() > 1) %>%
     dplyr::select(variable) %>%
     dplyr::distinct()
 
@@ -96,7 +99,7 @@ generate_column_name_review_list = function() {
       candidate = paste0(prefix,".",suffix)
     ) %>%
     dplyr::select(-prefix,-suffix) %>%
-    dplyr::group_by(across(c(tidyselect::everything(),-source,-level_dp,-level_code,-level_size, -label))) %>%
+    dplyr::group_by(dplyr::across(c(tidyselect::everything(),-source,-level_dp,-level_code,-level_size, -label))) %>%
     dplyr::summarise(
       source = paste0(sort(source),collapse = "|"),
       level_dp = dplyr::last(level_dp, level_size),
@@ -126,7 +129,7 @@ generate_column_name_review_list = function() {
       candidate = paste0(prefix,".",suffix)
       ) %>%
     dplyr::select(-prefix,-suffix, -levels, -level_dp, -level_code, -level_size) %>%
-    dplyr::group_by(across(c(tidyselect::everything(),-source, -label))) %>%
+    dplyr::group_by(dplyr::across(c(tidyselect::everything(),-source, -label))) %>%
     dplyr::summarise(
       source = paste0(sort(source),collapse = "|"),
       label = dplyr::first(label),

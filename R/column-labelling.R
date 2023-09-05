@@ -145,6 +145,23 @@ original_field_names = function(data, inverse = TRUE) {
   return(tmp2)
 }
 
+#' Get the transformed columns from original field names
+#'
+#' @param normalised the transformed data set.
+#' @param fields a vector of field names
+#'
+#' @return a named list mapping original to new columns
+#' @export
+find_new_field_names = function(normalised, fields) {
+  lookup = original_field_names(normalised, TRUE)
+  tmp = character()
+  for (field in fields) {
+    tmp = c(tmp,lookup[names(lookup) %>% stringr::str_starts(stringr::fixed(field))])
+  }
+  if (length(tmp) == 0) stop("fields not found: ",paste0(fields,collapse=", "))
+  return(tmp)
+}
+
 #' Extract the
 #'
 #' @param data the dataframe
@@ -166,8 +183,8 @@ extract_dependencies = function(data, col, original = TRUE) {
 
 .extract_dependencies = function(data, col, d, max_d) {
   if (d==0) return(character())
-  col = ensym(col)
-  val = data %>% pull(!!col)
+  col = rlang::ensym(col)
+  val = data %>% dplyr::pull(!!col)
   tmp = attr(val,"depends")
   tmp = unique(c(tmp,sapply(tmp, function(x) {
     s = as.symbol(x)

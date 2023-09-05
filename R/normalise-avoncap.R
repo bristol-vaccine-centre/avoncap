@@ -22,6 +22,7 @@
 #' `zzz-avoncap-mappings.R` file.
 #'
 #' @param rawData - the raw data from `load_data()`
+#' @param instrument the numeric instrument number if applicable
 #' @inheritDotParams normalise_generic
 #'
 #' @return a tracked dataframe with
@@ -60,7 +61,7 @@ normalise_data = function(
 #   return(rawData)
 # }
 
-normalise.avoncap_export.uad_control = function(rawData, ...) {
+normalise.avoncap_export.uad_controls = function(rawData, ...) {
   # Controls database has some naming inconsistencies:
   rawData %>%
     .reconstruct_admission_date(...) %>%
@@ -87,10 +88,18 @@ normalise.avoncap_export.central = function(rawData, ...) {
     .wipe_non_consented_data()
 }
 
+.repeat_instrument = function(data, names) {
+  data %>% dplyr::select(tidyselect::starts_with(names)) %>%
+    colnames() %>%
+    stringr::str_extract("[0-9]+$") %>%
+    unique() %>%
+    stats::na.omit()
+}
+
 normalise.avoncap_export.central.micro = function(rawData, ...) {
   .cached({
     tmp = tibble::tibble()
-    for (i in 1:16) {
+    for (i in .repeat_instrument(rawData, "micro")) {
       tmp2 = rawData %>%
         normalise_generic(mappings=c(
           map_avoncap_consent(),
@@ -109,7 +118,7 @@ normalise.avoncap_export.central.micro = function(rawData, ...) {
 normalise.avoncap_export.central.virol = function(rawData, ...) {
   .cached({
     tmp = tibble::tibble()
-    for (i in 1:16) {
+    for (i in .repeat_instrument(rawData, "virol")) {
       tmp2 = rawData %>%
         normalise_generic(mappings=c(
           map_avoncap_consent(),
@@ -128,7 +137,7 @@ normalise.avoncap_export.central.virol = function(rawData, ...) {
 normalise.avoncap_export.central.radio = function(rawData, ...) {
   .cached({
     tmp = tibble::tibble()
-    for (i in 1:16) {
+    for (i in .repeat_instrument(rawData, "radio")) {
       tmp2 = rawData %>%
         normalise_generic(mappings=c(
           map_avoncap_consent(),
@@ -194,7 +203,7 @@ normalise.urine_antigens.serotype = function(rawData, ...) {
 }
 
 normalise.urine_antigens.binax = function(rawData, ...) {
-  rawData %>% filter(ANALYSIS == "BINAX") %>%
+  rawData %>% dplyr::filter(ANALYSIS == "BINAX") %>%
     normalise_generic(mappings=map_urine_binax(), ...) %>%
     dplyr::mutate(pneumo.binax_result = factor(pneumo.binax_result, levels = c("Negative","Positive","Other","Unknown"))) %>%
     create_keys(keys_urine_antigens_binax())
@@ -375,31 +384,33 @@ normalise.urine_antigens.binax = function(rawData, ...) {
 }
 
 # Non consented patients ----
-
-.ifelsefct = function(pred, t, f) {
-
-  if (is.factor(f)) {
-    x = ifelse(pred, t, as.character(levels(f))[f])
-    x = factor(x, levels = levels(f), ordered = is.ordered(f))
-    return(x)
-  } else {
-    return(ifelse(pred, t, f))
-  }
-
-}
+#
+# # fct = factor(c("a","b","c","a")) %>% magrittr::set_attr("test",1)
+# # .ifelsefct(fct=="a",NA,fct)
+# .ifelsefct = function(pred, t, f) {
+#
+#   if (is.factor(f)) {
+#     x = dplyr::if_else(pred, t, as.character(levels(f))[f])
+#     x = factor(x, levels = levels(f), ordered = is.ordered(f))
+#     return(x)
+#   } else {
+#     return(dplyr::if_else(pred, t, f))
+#   }
+#
+# }
 
 .wipe_non_consented_data = function(df) {
   # chacnge
   df %>% dplyr::mutate(
-    across(
+    dplyr::across(
       .cols = c(-dplyr::starts_with("admin"),-dplyr::starts_with("key"),-dplyr::any_of(c("admission.date","admission.study_week", "admission.year"))),
-      .fns = ~ .ifelsefct(admin.consent_withheld == "yes", NA, .x)
+      .fns = ~ dplyr::if_else(admin.consent_withheld == "yes", NA, .x)
     )
   )
 }
 
 .exclude_non_consented_patients = function(df) {
-  df %>% filter(admin.consent_withheld == "no")
+  df %>% dplyr::filter(admin.consent_withheld == "no")
 }
 
 #

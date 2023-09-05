@@ -266,6 +266,21 @@ map_avoncap_central = function() list(
     admission.date),
   "hospital" = .normalise_text_to_factor(admin.hospital, preprocess = toupper, levels = c("NBT","BRI")),
 
+  #### Day 2-7 ----
+
+  "adm_diagnosis" = .normalise_checkboxes(renameToVars = dplyr::vars(
+    admission.presumed_CAP_radiologically_confirmed,
+    admission.presumed_CAP_clinically_confirmed,
+    admission.presumed_CAP_no_radiology,
+    admission.presumed_LRTI,
+    admission.presumed_Empyema_or_abscess,
+    admission.presumed_exacerbation_COPD,
+    admission.presumed_exacerbation_non_COPD,
+    admission.presumed_congestive_heart_failure,
+    admission.presumed_non_infectious_process,
+    admission.presumed_non_LRTI
+  )),
+
   #### Admission symptoms signs: ----
   ## TODO: range and data quality checks
   "ics" = .normalise_yesno(
@@ -292,7 +307,7 @@ map_avoncap_central = function() list(
     admission.heart_rate),
   "temperature" = .normalise_list(
     admission.temperature, c("Normal","Fever (T>38.0\u00B0C)","Hypothermia (T< 35.5\u00B0C)","Not recorded"), codes = c(3,1,2,4)),
-  "symptom_days_preadmit" = .normalise_name(
+  "symptom_days_preadmit" = .normalise_double(
     admission.duration_symptoms),
   "previous_infection" = .normalise_list(
     admission.previous_covid_infection, c("yes","no","unknown")),
@@ -367,19 +382,19 @@ map_avoncap_central = function() list(
   #### Long term follow up ----
   "hospital_length_of_stay" = .normalise_name(
     outcome.length_of_stay),
-  "survival_days" = .normalise_name(
+  "survival_days" = .normalise_double(
     outcome.survival_duration),
   "ip_death" = .normalise_yesno(
     outcome.inpatient_death),
-  "days_in_icu" = .normalise_name(
+  "days_in_icu" = .normalise_double(
     outcome.icu_duration),
   "did_the_patient_have_respi" = .normalise_yesno(
     outcome.respiratory_support_needed),
-  "number_of_days_of_ventilat" = .normalise_name(
+  "number_of_days_of_ventilat" = .normalise_double(
     outcome.ventilator_duration),
-  "ett_days" = .normalise_name(
+  "ett_days" = .normalise_double(
     outcome.endotracheal_tube_duration),
-  "renal_replacement_therapy" = .normalise_name(
+  "renal_replacement_therapy" = .normalise_double(
     outcome.renal_support_duration),
   "complications" = .normalise_checkboxes(dplyr::vars(
     outcome.acute_renal_failure,
@@ -550,7 +565,7 @@ map_avoncap_central = function() list(
   # ),
   "ppv23" = .normalise_list(
     vaccination.pneumovax,
-    c("Not received","Received","Unknown"), codes=c(2,1,3)
+    c("Not received","PPV23","PCV13","Unknown"), codes=c(2,1,4,3)
   ),
   "flu_vaccine" = .normalise_list(
     vaccination.influenza_vaccination,

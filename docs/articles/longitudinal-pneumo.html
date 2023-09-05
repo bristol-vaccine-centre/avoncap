@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,9 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
+    <a class="dropdown-item" href="../articles/quality-assurance.html">Quality assurance</a>
     <a class="dropdown-item" href="../articles/uad-data.html">Pneumococcus urinary antigen data</a>
   </div>
 </li>
@@ -85,7 +87,7 @@
 subfolder</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawPn</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"nhs-extract"</span>,<span class="st">"pneumococcal"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-969416e3870a1ceaa091ca0c1e17ce42-4d09a3d57df30f773e8c4e8b3b567596.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-e7f5def26af13823d6fa3194a5398ec4.rda</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="data-normalisation">Data normalisation<a class="anchor" aria-label="anchor" href="#data-normalisation"></a>
@@ -95,7 +97,7 @@ subfolder</p>
 <span><span class="va">normPn</span> <span class="op">=</span> <span class="va">rawPn</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.nhs_extract.pneumococcal</span></span>
 <span><span class="co">#&gt; Some columns expected in the mappings were not present: hb</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-b7132815a7d5beadc2954cd1603b19c9.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-061bef6892ac5e394efabaf301b1cadb.rda</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="augment-the-data">Augment the data<a class="anchor" aria-label="anchor" href="#augment-the-data"></a>
@@ -103,9 +105,7 @@ subfolder</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">augPn</span> <span class="op">=</span> <span class="va">normPn</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.nhs_extract.pneumococcal</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-59708cc4283de045d503f4e7e7a736e5.rda</span></span>
-<span><span class="co">#&gt; Skipping function due to error: In argument: `comorbid.any_chronic_lung_disease = `%&gt;%`(...)`.</span></span>
-<span><span class="co">#&gt; Created panel, label, type, pneumo.phe_pcv_group using:</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-6400b885f07f2a6e47574983965bb885.rda</span></span></code></pre></div>
 <p>Augmented IPD dataset format:</p>
 <ul>
 <li>admin.record_number: numeric</li>

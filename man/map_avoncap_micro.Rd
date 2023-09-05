@@ -6,6 +6,9 @@
 \usage{
 map_avoncap_micro(instrument)
 }
+\arguments{
+\item{instrument}{the numeric instrument number}
+}
 \value{
 a list
 }
@@ -13,10 +16,10 @@ a list
 \itemize{
 \item microtest_done -> micro.test_performed (yesno)
 \item microtest_date -> micro.test_date (date)
-\item microday -> micro.test_days_from_admission (name)
+\item microday -> micro.test_days_from_admission (pos_integer)
 \item micro_test -> micro.test_type (list)
 \item micro_isolates -> micro.pathogen_detected (yesno_unknown)
-\item isolate_identified -> micro.pathogen (checkboxes_to_nested_list)
+\item isolate_identified -> micro.pathogen, .micro_isolate_list (checkboxes_to_nested_list)
 \item pn_result -> micro.pneumo_serotype_status (list)
 \item pn_st -> micro.pneumo_serotype (pneumo_serotype)
 \item micro_lab -> micro.sent_to_central_lab (yesno_unknown)
@@ -28,8 +31,6 @@ a list
 \item pn_uat_result -> micro.pneumo_binax_now (list)
 \item lg_uat_result -> micro.pneumo_legionella_uat (list)
 \item micro_final_report -> micro.is_final_report (yesno)
-\item record_number -> admin.record_number (name)
-\item ac_study_number -> admin.consented_record_number (study_id)
 }
 }
 \concept{map}

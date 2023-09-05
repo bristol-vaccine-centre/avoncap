@@ -24,7 +24,7 @@ imd -&amp;gt; demog.imd_decile (name)
 smoking -&amp;gt; demog.smoker (list)
 ethnicity2 -&amp;gt; demog.ethnicity (list)
 care_home -&amp;gt; demog.care_home_resident (yesno)
-drugs -&amp;gt; dplyr (checkboxes)
+drugs -&amp;gt; demog.no_drug_abuse, demog.alcohol_abuse, demog.ivdu_abuse, demog.marijuana_abuse, demog.other_inhaled_drug_abuse (checkboxes)
 vaping -&amp;gt; demog.vaping (list)
 alc_units -&amp;gt; demog.units_of_alcohol (name)
 np_swab -&amp;gt; admin.np_swab_taken_1 (list)
@@ -80,7 +80,8 @@ c19_variant -&amp;gt; genomic.variant (variant)
 year -&amp;gt; admission.year (double)
 study_week -&amp;gt; admission.study_week (double)
 admission_date -&amp;gt; admission.date (date)
-hospital -&amp;gt; admin.hospital (text_to_factor)
+hospital -&amp;gt; admin.hospital, toupper (text_to_factor)
+adm_diagnosis -&amp;gt; admission.presumed_CAP_radiologically_confirmed, admission.presumed_CAP_clinically_confirmed, admission.presumed_CAP_no_radiology, admission.presumed_LRTI, admission.presumed_Empyema_or_abscess, admission.presumed_exacerbation_COPD, admission.presumed_exacerbation_non_COPD, admission.presumed_congestive_heart_failure, admission.presumed_non_infectious_process, admission.presumed_non_LRTI (checkboxes)
 ics -&amp;gt; admission.on_inhaled_corticosteroids (yesno)
 immsup -&amp;gt; admission.on_immunosuppression (yesno)
 psi_class -&amp;gt; admission.pneumonia_severity_index_class (list)
@@ -93,7 +94,7 @@ systolic_bp -&amp;gt; admission.systolic_bp (name)
 diastolic_bp -&amp;gt; admission.diastolic_bp (name)
 hr -&amp;gt; admission.heart_rate (name)
 temperature -&amp;gt; admission.temperature (list)
-symptom_days_preadmit -&amp;gt; admission.duration_symptoms (name)
+symptom_days_preadmit -&amp;gt; admission.duration_symptoms (double)
 previous_infection -&amp;gt; admission.previous_covid_infection (list)
 previousinfection_date -&amp;gt; admission.previous_covid_infection_date (date)
 c19d_preadm -&amp;gt; admission.time_since_covid_diagnosis (name)
@@ -102,7 +103,7 @@ cci_total_score -&amp;gt; admission.charlson_comorbidity_index (name)
 height -&amp;gt; admission.height (name)
 weight -&amp;gt; admission.weight (name)
 bmi -&amp;gt; admission.BMI (double)
-first_radio -&amp;gt; dplyr (checkboxes)
+first_radio -&amp;gt; admission.cxr_normal, admission.cxr_pneumonia, admission.cxr_heart_failure, admission.cxr_pleural_effusion, admission.cxr_covid_changes, admission.cxr_other (checkboxes)
 c19_peep -&amp;gt; day_7.max_peep (name)
 c19_hospadm -&amp;gt; day_7.length_of_stay (list)
 c17_high -&amp;gt; day_7.max_care_level (list)
@@ -111,18 +112,18 @@ c19_icudays -&amp;gt; day_7.icu_length_of_stay (list)
 c19_vent -&amp;gt; day_7.max_ventilation_level (list)
 c19_ox -&amp;gt; day_7.max_o2_level (list)
 c19_ionotropes -&amp;gt; day_7.ionotropes_needed (yesno)
-c19_complication -&amp;gt; dplyr (checkboxes)
+c19_complication -&amp;gt; day_7.PE, day_7.DVT, day_7.ARF, day_7.NSTEMI, day_7.STEMI, day_7.cardiac_failure, day_7.new_AF, day_7.new_other_arrythmia, day_7.inpatient_fall, day_7.other_complication, day_7.no_complication (checkboxes)
 c19_death7d -&amp;gt; day_7.death (yesno)
-c19_meds -&amp;gt; dplyr (checkboxes)
+c19_meds -&amp;gt; treatment.dexamethasone, treatment.remdesevir, treatment.tocilizumab, treatment.sarilumab, treatment.in_drug_trial, treatment.no_drug_treatment, treatment.sotrovimab (checkboxes)
 hospital_length_of_stay -&amp;gt; outcome.length_of_stay (name)
-survival_days -&amp;gt; outcome.survival_duration (name)
+survival_days -&amp;gt; outcome.survival_duration (double)
 ip_death -&amp;gt; outcome.inpatient_death (yesno)
-days_in_icu -&amp;gt; outcome.icu_duration (name)
+days_in_icu -&amp;gt; outcome.icu_duration (double)
 did_the_patient_have_respi -&amp;gt; outcome.respiratory_support_needed (yesno)
-number_of_days_of_ventilat -&amp;gt; outcome.ventilator_duration (name)
-ett_days -&amp;gt; outcome.endotracheal_tube_duration (name)
-renal_replacement_therapy -&amp;gt; outcome.renal_support_duration (name)
-complications -&amp;gt; dplyr (checkboxes)
+number_of_days_of_ventilat -&amp;gt; outcome.ventilator_duration (double)
+ett_days -&amp;gt; outcome.endotracheal_tube_duration (double)
+renal_replacement_therapy -&amp;gt; outcome.renal_support_duration (double)
+complications -&amp;gt; outcome.acute_renal_failure, outcome.liver_dysfunction, outcome.hospital_acquired_infection, outcome.acute_respiratory_distress_syndrome, outcome.NSTEMI, outcome.STEMI, outcome.new_AF, outcome.new_other_arrhthmia, outcome.stroke, outcome.DVT, outcome.PE, outcome.heart_failure, outcome.fall_in_hospital, outcome.reduced_mobility, outcome.increasing_care_requirement, outcome.no_complications (checkboxes)
 ventilatory_support -&amp;gt; outcome.highest_level_ventilatory_support (list)
 did_the_patient_receive_ec -&amp;gt; outcome.received_ecmo (yesno)
 inotropic_support_required -&amp;gt; outcome.received_ionotropes (yesno)
@@ -146,17 +147,17 @@ myalgia -&amp;gt; symptom.myalgia (yesno_unknown)
 worse_confusion -&amp;gt; symptom.worsening_confusion (yesno_unknown)
 general_det -&amp;gt; symptom.general_deterioration (yesno_unknown)
 ox_on_admission -&amp;gt; symptom.oxygen_required_on_admission (yesno_unknown)
-resp_disease -&amp;gt; dplyr (checkboxes)
-other_respiratory_disease -&amp;gt; dplyr (checkboxes)
-chd -&amp;gt; dplyr (checkboxes)
+resp_disease -&amp;gt; comorbid.no_resp_dx, comorbid.copd, comorbid.asthma, comorbid.resp_other (checkboxes)
+other_respiratory_disease -&amp;gt; comorbid.bronchiectasis, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.pulmonary_hypertension, comorbid.chronic_pleural_dx, comorbid.other_chronic_resp_dx (checkboxes)
+chd -&amp;gt; comorbid.no_heart_dx, comorbid.ccf, comorbid.ihd, comorbid.hypertension, comorbid.other_heart_dx (checkboxes)
 mi -&amp;gt; comorbid.previous_mi (yesno)
-other_chd -&amp;gt; dplyr (checkboxes)
+other_chd -&amp;gt; comorbid.congenital_heart_dx, comorbid.af, comorbid.other_arrythmia, comorbid.pacemaker, comorbid.valvular_heart_dx, comorbid.other_other_heart_dx (checkboxes)
 diabetes -&amp;gt; comorbid.diabetes (list)
 dm_meds -&amp;gt; comorbid.diabetes_medications (list)
-neurological_disease -&amp;gt; dplyr (checkboxes)
-dementia -&amp;gt; dplyr (checkboxes)
+neurological_disease -&amp;gt; comorbid.neuro_other, comorbid.cva, comorbid.tia, comorbid.hemiplegia, comorbid.paraplegia, comorbid.no_neuro_dx (checkboxes)
+dementia -&amp;gt; comorbid.no_dementia, comorbid.dementia, comorbid.cognitive_impairment (checkboxes)
 cancer -&amp;gt; comorbid.solid_cancer (list)
-haem_malig -&amp;gt; dplyr (checkboxes)
+haem_malig -&amp;gt; comorbid.no_haemotological_cancer, comorbid.leukaemia, comorbid.lymphoma (checkboxes)
 ckd -&amp;gt; comorbid.ckd (list)
 liver_disease -&amp;gt; comorbid.liver_disease (list)
 gastric_ulcers -&amp;gt; comorbid.gastric_ulcers (yesno)
@@ -166,8 +167,8 @@ immunodeficiency -&amp;gt; comorbid.immunodeficiency (yesno)
 other_pn_disease -&amp;gt; comorbid.other_pneumococcal_risks (yesno)
 transplant -&amp;gt; comorbid.transplant_recipient (yesno)
 pregnancy -&amp;gt; comorbid.pregnancy (list)
-hiv -&amp;gt; dplyr (checkboxes)
-final_soc_lrtd_diagnosis -&amp;gt; renameToVars (checkboxes)
+hiv -&amp;gt; comorbid.no_HIV, comorbid.HIV, comorbid.AIDS (checkboxes)
+final_soc_lrtd_diagnosis -&amp;gt; diagnosis.SOC_CAP_radiologically_confirmed, diagnosis.SOC_CAP_clinically_confirmed, diagnosis.SOC_CAP_no_radiology, diagnosis.SOC_LRTI, diagnosis.SOC_Empyema_or_abscess, diagnosis.SOC_exacerbation_COPD, diagnosis.SOC_exacerbation_non_COPD, diagnosis.SOC_congestive_heart_failure, diagnosis.SOC_non_infectious_process, diagnosis.SOC_non_LRTI (checkboxes)
 covid_19_diagnosis -&amp;gt; diagnosis.covid_19_diagnosis (list)
 ppv23 -&amp;gt; vaccination.pneumovax (list)
 flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
@@ -197,7 +198,7 @@ imd -&amp;gt; demog.imd_decile (name)
 smoking -&amp;gt; demog.smoker (list)
 ethnicity2 -&amp;gt; demog.ethnicity (list)
 care_home -&amp;gt; demog.care_home_resident (yesno)
-drugs -&amp;gt; dplyr (checkboxes)
+drugs -&amp;gt; demog.no_drug_abuse, demog.alcohol_abuse, demog.ivdu_abuse, demog.marijuana_abuse, demog.other_inhaled_drug_abuse (checkboxes)
 vaping -&amp;gt; demog.vaping (list)
 alc_units -&amp;gt; demog.units_of_alcohol (name)
 np_swab -&amp;gt; admin.np_swab_taken_1 (list)
@@ -253,7 +254,8 @@ c19_variant -&amp;gt; genomic.variant (variant)
 year -&amp;gt; admission.year (double)
 study_week -&amp;gt; admission.study_week (double)
 admission_date -&amp;gt; admission.date (date)
-hospital -&amp;gt; admin.hospital (text_to_factor)
+hospital -&amp;gt; admin.hospital, toupper (text_to_factor)
+adm_diagnosis -&amp;gt; admission.presumed_CAP_radiologically_confirmed, admission.presumed_CAP_clinically_confirmed, admission.presumed_CAP_no_radiology, admission.presumed_LRTI, admission.presumed_Empyema_or_abscess, admission.presumed_exacerbation_COPD, admission.presumed_exacerbation_non_COPD, admission.presumed_congestive_heart_failure, admission.presumed_non_infectious_process, admission.presumed_non_LRTI (checkboxes)
 ics -&amp;gt; admission.on_inhaled_corticosteroids (yesno)
 immsup -&amp;gt; admission.on_immunosuppression (yesno)
 psi_class -&amp;gt; admission.pneumonia_severity_index_class (list)
@@ -266,7 +268,7 @@ systolic_bp -&amp;gt; admission.systolic_bp (name)
 diastolic_bp -&amp;gt; admission.diastolic_bp (name)
 hr -&amp;gt; admission.heart_rate (name)
 temperature -&amp;gt; admission.temperature (list)
-symptom_days_preadmit -&amp;gt; admission.duration_symptoms (name)
+symptom_days_preadmit -&amp;gt; admission.duration_symptoms (double)
 previous_infection -&amp;gt; admission.previous_covid_infection (list)
 previousinfection_date -&amp;gt; admission.previous_covid_infection_date (date)
 c19d_preadm -&amp;gt; admission.time_since_covid_diagnosis (name)
@@ -275,7 +277,7 @@ cci_total_score -&amp;gt; admission.charlson_comorbidity_index (name)
 height -&amp;gt; admission.height (name)
 weight -&amp;gt; admission.weight (name)
 bmi -&amp;gt; admission.BMI (double)
-first_radio -&amp;gt; dplyr (checkboxes)
+first_radio -&amp;gt; admission.cxr_normal, admission.cxr_pneumonia, admission.cxr_heart_failure, admission.cxr_pleural_effusion, admission.cxr_covid_changes, admission.cxr_other (checkboxes)
 c19_peep -&amp;gt; day_7.max_peep (name)
 c19_hospadm -&amp;gt; day_7.length_of_stay (list)
 c17_high -&amp;gt; day_7.max_care_level (list)
@@ -284,18 +286,18 @@ c19_icudays -&amp;gt; day_7.icu_length_of_stay (list)
 c19_vent -&amp;gt; day_7.max_ventilation_level (list)
 c19_ox -&amp;gt; day_7.max_o2_level (list)
 c19_ionotropes -&amp;gt; day_7.ionotropes_needed (yesno)
-c19_complication -&amp;gt; dplyr (checkboxes)
+c19_complication -&amp;gt; day_7.PE, day_7.DVT, day_7.ARF, day_7.NSTEMI, day_7.STEMI, day_7.cardiac_failure, day_7.new_AF, day_7.new_other_arrythmia, day_7.inpatient_fall, day_7.other_complication, day_7.no_complication (checkboxes)
 c19_death7d -&amp;gt; day_7.death (yesno)
-c19_meds -&amp;gt; dplyr (checkboxes)
+c19_meds -&amp;gt; treatment.dexamethasone, treatment.remdesevir, treatment.tocilizumab, treatment.sarilumab, treatment.in_drug_trial, treatment.no_drug_treatment, treatment.sotrovimab (checkboxes)
 hospital_length_of_stay -&amp;gt; outcome.length_of_stay (name)
-survival_days -&amp;gt; outcome.survival_duration (name)
+survival_days -&amp;gt; outcome.survival_duration (double)
 ip_death -&amp;gt; outcome.inpatient_death (yesno)
-days_in_icu -&amp;gt; outcome.icu_duration (name)
+days_in_icu -&amp;gt; outcome.icu_duration (double)
 did_the_patient_have_respi -&amp;gt; outcome.respiratory_support_needed (yesno)
-number_of_days_of_ventilat -&amp;gt; outcome.ventilator_duration (name)
-ett_days -&amp;gt; outcome.endotracheal_tube_duration (name)
-renal_replacement_therapy -&amp;gt; outcome.renal_support_duration (name)
-complications -&amp;gt; dplyr (checkboxes)
+number_of_days_of_ventilat -&amp;gt; outcome.ventilator_duration (double)
+ett_days -&amp;gt; outcome.endotracheal_tube_duration (double)
+renal_replacement_therapy -&amp;gt; outcome.renal_support_duration (double)
+complications -&amp;gt; outcome.acute_renal_failure, outcome.liver_dysfunction, outcome.hospital_acquired_infection, outcome.acute_respiratory_distress_syndrome, outcome.NSTEMI, outcome.STEMI, outcome.new_AF, outcome.new_other_arrhthmia, outcome.stroke, outcome.DVT, outcome.PE, outcome.heart_failure, outcome.fall_in_hospital, outcome.reduced_mobility, outcome.increasing_care_requirement, outcome.no_complications (checkboxes)
 ventilatory_support -&amp;gt; outcome.highest_level_ventilatory_support (list)
 did_the_patient_receive_ec -&amp;gt; outcome.received_ecmo (yesno)
 inotropic_support_required -&amp;gt; outcome.received_ionotropes (yesno)
@@ -319,17 +321,17 @@ myalgia -&amp;gt; symptom.myalgia (yesno_unknown)
 worse_confusion -&amp;gt; symptom.worsening_confusion (yesno_unknown)
 general_det -&amp;gt; symptom.general_deterioration (yesno_unknown)
 ox_on_admission -&amp;gt; symptom.oxygen_required_on_admission (yesno_unknown)
-resp_disease -&amp;gt; dplyr (checkboxes)
-other_respiratory_disease -&amp;gt; dplyr (checkboxes)
-chd -&amp;gt; dplyr (checkboxes)
+resp_disease -&amp;gt; comorbid.no_resp_dx, comorbid.copd, comorbid.asthma, comorbid.resp_other (checkboxes)
+other_respiratory_disease -&amp;gt; comorbid.bronchiectasis, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.pulmonary_hypertension, comorbid.chronic_pleural_dx, comorbid.other_chronic_resp_dx (checkboxes)
+chd -&amp;gt; comorbid.no_heart_dx, comorbid.ccf, comorbid.ihd, comorbid.hypertension, comorbid.other_heart_dx (checkboxes)
 mi -&amp;gt; comorbid.previous_mi (yesno)
-other_chd -&amp;gt; dplyr (checkboxes)
+other_chd -&amp;gt; comorbid.congenital_heart_dx, comorbid.af, comorbid.other_arrythmia, comorbid.pacemaker, comorbid.valvular_heart_dx, comorbid.other_other_heart_dx (checkboxes)
 diabetes -&amp;gt; comorbid.diabetes (list)
 dm_meds -&amp;gt; comorbid.diabetes_medications (list)
-neurological_disease -&amp;gt; dplyr (checkboxes)
-dementia -&amp;gt; dplyr (checkboxes)
+neurological_disease -&amp;gt; comorbid.neuro_other, comorbid.cva, comorbid.tia, comorbid.hemiplegia, comorbid.paraplegia, comorbid.no_neuro_dx (checkboxes)
+dementia -&amp;gt; comorbid.no_dementia, comorbid.dementia, comorbid.cognitive_impairment (checkboxes)
 cancer -&amp;gt; comorbid.solid_cancer (list)
-haem_malig -&amp;gt; dplyr (checkboxes)
+haem_malig -&amp;gt; comorbid.no_haemotological_cancer, comorbid.leukaemia, comorbid.lymphoma (checkboxes)
 ckd -&amp;gt; comorbid.ckd (list)
 liver_disease -&amp;gt; comorbid.liver_disease (list)
 gastric_ulcers -&amp;gt; comorbid.gastric_ulcers (yesno)
@@ -339,8 +341,8 @@ immunodeficiency -&amp;gt; comorbid.immunodeficiency (yesno)
 other_pn_disease -&amp;gt; comorbid.other_pneumococcal_risks (yesno)
 transplant -&amp;gt; comorbid.transplant_recipient (yesno)
 pregnancy -&amp;gt; comorbid.pregnancy (list)
-hiv -&amp;gt; dplyr (checkboxes)
-final_soc_lrtd_diagnosis -&amp;gt; renameToVars (checkboxes)
+hiv -&amp;gt; comorbid.no_HIV, comorbid.HIV, comorbid.AIDS (checkboxes)
+final_soc_lrtd_diagnosis -&amp;gt; diagnosis.SOC_CAP_radiologically_confirmed, diagnosis.SOC_CAP_clinically_confirmed, diagnosis.SOC_CAP_no_radiology, diagnosis.SOC_LRTI, diagnosis.SOC_Empyema_or_abscess, diagnosis.SOC_exacerbation_COPD, diagnosis.SOC_exacerbation_non_COPD, diagnosis.SOC_congestive_heart_failure, diagnosis.SOC_non_infectious_process, diagnosis.SOC_non_LRTI (checkboxes)
 covid_19_diagnosis -&amp;gt; diagnosis.covid_19_diagnosis (list)
 ppv23 -&amp;gt; vaccination.pneumovax (list)
 flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
@@ -356,7 +358,7 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -364,17 +366,17 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../articles/avoncap.html">Get started</a>
-</li>
-<li class="active nav-item">
+      <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
-    <a class="dropdown-item" href="../articles/uad-data.html">Pneumococcus urinary antigen data</a>
+    <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
+    <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
+    <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
+    <a class="dropdown-item" href="../articles/web/uad-data.html">Pneumococcus urinary antigen data</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -417,7 +419,7 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>smoking -&gt; demog.smoker (list)</p></li>
 <li><p>ethnicity2 -&gt; demog.ethnicity (list)</p></li>
 <li><p>care_home -&gt; demog.care_home_resident (yesno)</p></li>
-<li><p>drugs -&gt; dplyr (checkboxes)</p></li>
+<li><p>drugs -&gt; demog.no_drug_abuse, demog.alcohol_abuse, demog.ivdu_abuse, demog.marijuana_abuse, demog.other_inhaled_drug_abuse (checkboxes)</p></li>
 <li><p>vaping -&gt; demog.vaping (list)</p></li>
 <li><p>alc_units -&gt; demog.units_of_alcohol (name)</p></li>
 <li><p>np_swab -&gt; admin.np_swab_taken_1 (list)</p></li>
@@ -473,7 +475,8 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>year -&gt; admission.year (double)</p></li>
 <li><p>study_week -&gt; admission.study_week (double)</p></li>
 <li><p>admission_date -&gt; admission.date (date)</p></li>
-<li><p>hospital -&gt; admin.hospital (text_to_factor)</p></li>
+<li><p>hospital -&gt; admin.hospital, toupper (text_to_factor)</p></li>
+<li><p>adm_diagnosis -&gt; admission.presumed_CAP_radiologically_confirmed, admission.presumed_CAP_clinically_confirmed, admission.presumed_CAP_no_radiology, admission.presumed_LRTI, admission.presumed_Empyema_or_abscess, admission.presumed_exacerbation_COPD, admission.presumed_exacerbation_non_COPD, admission.presumed_congestive_heart_failure, admission.presumed_non_infectious_process, admission.presumed_non_LRTI (checkboxes)</p></li>
 <li><p>ics -&gt; admission.on_inhaled_corticosteroids (yesno)</p></li>
 <li><p>immsup -&gt; admission.on_immunosuppression (yesno)</p></li>
 <li><p>psi_class -&gt; admission.pneumonia_severity_index_class (list)</p></li>
@@ -486,7 +489,7 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>diastolic_bp -&gt; admission.diastolic_bp (name)</p></li>
 <li><p>hr -&gt; admission.heart_rate (name)</p></li>
 <li><p>temperature -&gt; admission.temperature (list)</p></li>
-<li><p>symptom_days_preadmit -&gt; admission.duration_symptoms (name)</p></li>
+<li><p>symptom_days_preadmit -&gt; admission.duration_symptoms (double)</p></li>
 <li><p>previous_infection -&gt; admission.previous_covid_infection (list)</p></li>
 <li><p>previousinfection_date -&gt; admission.previous_covid_infection_date (date)</p></li>
 <li><p>c19d_preadm -&gt; admission.time_since_covid_diagnosis (name)</p></li>
@@ -495,7 +498,7 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>height -&gt; admission.height (name)</p></li>
 <li><p>weight -&gt; admission.weight (name)</p></li>
 <li><p>bmi -&gt; admission.BMI (double)</p></li>
-<li><p>first_radio -&gt; dplyr (checkboxes)</p></li>
+<li><p>first_radio -&gt; admission.cxr_normal, admission.cxr_pneumonia, admission.cxr_heart_failure, admission.cxr_pleural_effusion, admission.cxr_covid_changes, admission.cxr_other (checkboxes)</p></li>
 <li><p>c19_peep -&gt; day_7.max_peep (name)</p></li>
 <li><p>c19_hospadm -&gt; day_7.length_of_stay (list)</p></li>
 <li><p>c17_high -&gt; day_7.max_care_level (list)</p></li>
@@ -504,18 +507,18 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>c19_vent -&gt; day_7.max_ventilation_level (list)</p></li>
 <li><p>c19_ox -&gt; day_7.max_o2_level (list)</p></li>
 <li><p>c19_ionotropes -&gt; day_7.ionotropes_needed (yesno)</p></li>
-<li><p>c19_complication -&gt; dplyr (checkboxes)</p></li>
+<li><p>c19_complication -&gt; day_7.PE, day_7.DVT, day_7.ARF, day_7.NSTEMI, day_7.STEMI, day_7.cardiac_failure, day_7.new_AF, day_7.new_other_arrythmia, day_7.inpatient_fall, day_7.other_complication, day_7.no_complication (checkboxes)</p></li>
 <li><p>c19_death7d -&gt; day_7.death (yesno)</p></li>
-<li><p>c19_meds -&gt; dplyr (checkboxes)</p></li>
+<li><p>c19_meds -&gt; treatment.dexamethasone, treatment.remdesevir, treatment.tocilizumab, treatment.sarilumab, treatment.in_drug_trial, treatment.no_drug_treatment, treatment.sotrovimab (checkboxes)</p></li>
 <li><p>hospital_length_of_stay -&gt; outcome.length_of_stay (name)</p></li>
-<li><p>survival_days -&gt; outcome.survival_duration (name)</p></li>
+<li><p>survival_days -&gt; outcome.survival_duration (double)</p></li>
 <li><p>ip_death -&gt; outcome.inpatient_death (yesno)</p></li>
-<li><p>days_in_icu -&gt; outcome.icu_duration (name)</p></li>
+<li><p>days_in_icu -&gt; outcome.icu_duration (double)</p></li>
 <li><p>did_the_patient_have_respi -&gt; outcome.respiratory_support_needed (yesno)</p></li>
-<li><p>number_of_days_of_ventilat -&gt; outcome.ventilator_duration (name)</p></li>
-<li><p>ett_days -&gt; outcome.endotracheal_tube_duration (name)</p></li>
-<li><p>renal_replacement_therapy -&gt; outcome.renal_support_duration (name)</p></li>
-<li><p>complications -&gt; dplyr (checkboxes)</p></li>
+<li><p>number_of_days_of_ventilat -&gt; outcome.ventilator_duration (double)</p></li>
+<li><p>ett_days -&gt; outcome.endotracheal_tube_duration (double)</p></li>
+<li><p>renal_replacement_therapy -&gt; outcome.renal_support_duration (double)</p></li>
+<li><p>complications -&gt; outcome.acute_renal_failure, outcome.liver_dysfunction, outcome.hospital_acquired_infection, outcome.acute_respiratory_distress_syndrome, outcome.NSTEMI, outcome.STEMI, outcome.new_AF, outcome.new_other_arrhthmia, outcome.stroke, outcome.DVT, outcome.PE, outcome.heart_failure, outcome.fall_in_hospital, outcome.reduced_mobility, outcome.increasing_care_requirement, outcome.no_complications (checkboxes)</p></li>
 <li><p>ventilatory_support -&gt; outcome.highest_level_ventilatory_support (list)</p></li>
 <li><p>did_the_patient_receive_ec -&gt; outcome.received_ecmo (yesno)</p></li>
 <li><p>inotropic_support_required -&gt; outcome.received_ionotropes (yesno)</p></li>
@@ -539,17 +542,17 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>worse_confusion -&gt; symptom.worsening_confusion (yesno_unknown)</p></li>
 <li><p>general_det -&gt; symptom.general_deterioration (yesno_unknown)</p></li>
 <li><p>ox_on_admission -&gt; symptom.oxygen_required_on_admission (yesno_unknown)</p></li>
-<li><p>resp_disease -&gt; dplyr (checkboxes)</p></li>
-<li><p>other_respiratory_disease -&gt; dplyr (checkboxes)</p></li>
-<li><p>chd -&gt; dplyr (checkboxes)</p></li>
+<li><p>resp_disease -&gt; comorbid.no_resp_dx, comorbid.copd, comorbid.asthma, comorbid.resp_other (checkboxes)</p></li>
+<li><p>other_respiratory_disease -&gt; comorbid.bronchiectasis, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.pulmonary_hypertension, comorbid.chronic_pleural_dx, comorbid.other_chronic_resp_dx (checkboxes)</p></li>
+<li><p>chd -&gt; comorbid.no_heart_dx, comorbid.ccf, comorbid.ihd, comorbid.hypertension, comorbid.other_heart_dx (checkboxes)</p></li>
 <li><p>mi -&gt; comorbid.previous_mi (yesno)</p></li>
-<li><p>other_chd -&gt; dplyr (checkboxes)</p></li>
+<li><p>other_chd -&gt; comorbid.congenital_heart_dx, comorbid.af, comorbid.other_arrythmia, comorbid.pacemaker, comorbid.valvular_heart_dx, comorbid.other_other_heart_dx (checkboxes)</p></li>
 <li><p>diabetes -&gt; comorbid.diabetes (list)</p></li>
 <li><p>dm_meds -&gt; comorbid.diabetes_medications (list)</p></li>
-<li><p>neurological_disease -&gt; dplyr (checkboxes)</p></li>
-<li><p>dementia -&gt; dplyr (checkboxes)</p></li>
+<li><p>neurological_disease -&gt; comorbid.neuro_other, comorbid.cva, comorbid.tia, comorbid.hemiplegia, comorbid.paraplegia, comorbid.no_neuro_dx (checkboxes)</p></li>
+<li><p>dementia -&gt; comorbid.no_dementia, comorbid.dementia, comorbid.cognitive_impairment (checkboxes)</p></li>
 <li><p>cancer -&gt; comorbid.solid_cancer (list)</p></li>
-<li><p>haem_malig -&gt; dplyr (checkboxes)</p></li>
+<li><p>haem_malig -&gt; comorbid.no_haemotological_cancer, comorbid.leukaemia, comorbid.lymphoma (checkboxes)</p></li>
 <li><p>ckd -&gt; comorbid.ckd (list)</p></li>
 <li><p>liver_disease -&gt; comorbid.liver_disease (list)</p></li>
 <li><p>gastric_ulcers -&gt; comorbid.gastric_ulcers (yesno)</p></li>
@@ -559,8 +562,8 @@ flu_vaccine -&amp;gt; vaccination.influenza_vaccination (list)
 <li><p>other_pn_disease -&gt; comorbid.other_pneumococcal_risks (yesno)</p></li>
 <li><p>transplant -&gt; comorbid.transplant_recipient (yesno)</p></li>
 <li><p>pregnancy -&gt; comorbid.pregnancy (list)</p></li>
-<li><p>hiv -&gt; dplyr (checkboxes)</p></li>
-<li><p>final_soc_lrtd_diagnosis -&gt; renameToVars (checkboxes)</p></li>
+<li><p>hiv -&gt; comorbid.no_HIV, comorbid.HIV, comorbid.AIDS (checkboxes)</p></li>
+<li><p>final_soc_lrtd_diagnosis -&gt; diagnosis.SOC_CAP_radiologically_confirmed, diagnosis.SOC_CAP_clinically_confirmed, diagnosis.SOC_CAP_no_radiology, diagnosis.SOC_LRTI, diagnosis.SOC_Empyema_or_abscess, diagnosis.SOC_exacerbation_COPD, diagnosis.SOC_exacerbation_non_COPD, diagnosis.SOC_congestive_heart_failure, diagnosis.SOC_non_infectious_process, diagnosis.SOC_non_LRTI (checkboxes)</p></li>
 <li><p>covid_19_diagnosis -&gt; diagnosis.covid_19_diagnosis (list)</p></li>
 <li><p>ppv23 -&gt; vaccination.pneumovax (list)</p></li>
 <li><p>flu_vaccine -&gt; vaccination.influenza_vaccination (list)</p></li>

@@ -13,13 +13,34 @@
     <loc>/articles/avoncap.html</loc>
   </url>
   <url>
+    <loc>/articles/gp-data.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
     <loc>/articles/longitudinal-pneumo.html</loc>
   </url>
   <url>
+    <loc>/articles/quality-assurance.html</loc>
+  </url>
+  <url>
     <loc>/articles/uad-data.html</loc>
+  </url>
+  <url>
+    <loc>/articles/web/avoncap.html</loc>
+  </url>
+  <url>
+    <loc>/articles/web/gp-data.html</loc>
+  </url>
+  <url>
+    <loc>/articles/web/longitudinal-pneumo.html</loc>
+  </url>
+  <url>
+    <loc>/articles/web/quality-assurance.html</loc>
+  </url>
+  <url>
+    <loc>/articles/web/uad-data.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -109,6 +130,9 @@
     <loc>/reference/derive_pneumococcal_risk_category.html</loc>
   </url>
   <url>
+    <loc>/reference/derive_presumed_diagnosis_categories.html</loc>
+  </url>
+  <url>
     <loc>/reference/derive_qcovid.html</loc>
   </url>
   <url>
@@ -146,6 +170,9 @@
   </url>
   <url>
     <loc>/reference/extract_dependencies.html</loc>
+  </url>
+  <url>
+    <loc>/reference/find_new_field_names.html</loc>
   </url>
   <url>
     <loc>/reference/get_value_sets.html</loc>
@@ -238,6 +265,15 @@
     <loc>/reference/save_data_source_info.html</loc>
   </url>
   <url>
+    <loc>/reference/serotype_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/serotype_pcv_map.html</loc>
+  </url>
+  <url>
+    <loc>/reference/serotype_uad_map.html</loc>
+  </url>
+  <url>
     <loc>/reference/set_input.html</loc>
   </url>
   <url>
@@ -250,13 +286,25 @@
     <loc>/reference/study_week.html</loc>
   </url>
   <url>
+    <loc>/reference/uad_groups.html</loc>
+  </url>
+  <url>
+    <loc>/reference/uad_pcv_map.html</loc>
+  </url>
+  <url>
     <loc>/reference/upset_plot.html</loc>
   </url>
   <url>
     <loc>/reference/valid_inputs.html</loc>
   </url>
   <url>
+    <loc>/reference/validate_data.html</loc>
+  </url>
+  <url>
     <loc>/reference/weekendEffect.html</loc>
+  </url>
+  <url>
+    <loc>/reference/write_issues.html</loc>
   </url>
   <url>
     <loc>/reference/xglimpse.html</loc>

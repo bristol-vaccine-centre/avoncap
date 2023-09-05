@@ -21,6 +21,10 @@ a ggplot
 This function plots a stacked bar of proportions for an input set of data
 }
 \examples{
-stacked_barplot(diamonds, aes(x=cut, fill=clarity, group=color))+facet_wrap(vars(color))
+stacked_barplot(
+    ggplot2::diamonds,
+    ggplot2::aes(x=cut, fill=clarity, group=color)
+  )+
+  ggplot2::facet_wrap(dplyr::vars(color))
 
 }

@@ -65,8 +65,8 @@ standard_exclusions = function(avoncap_df, censoring=7) {
 #' @export
 #'
 #' @examples
-#' cut_integer(rbinom(20,20,0.5), c(5,10,15))
-#' cut_integer(floor(runif(100,-10,10)), cut_points = c(2,3,4,6), lower_limit=0, upper_limit=10)
+#' cut_integer(stats::rbinom(20,20,0.5), c(5,10,15))
+#' cut_integer(floor(stats::runif(100,-10,10)), cut_points = c(2,3,4,6), lower_limit=0, upper_limit=10)
 cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, upper_limit = Inf, ...) {
 
   next_low = NULL # remove global binding note
