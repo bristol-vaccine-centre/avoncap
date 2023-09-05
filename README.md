@@ -1,5 +1,14 @@
 # avoncap: Functions for manipulating and analysing the AvonCap study data.
 
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/bristol-vaccine-centre/avoncap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bristol-vaccine-centre/tableone/actions/workflows/R-CMD-check.yaml)
+[![DOI](https://zenodo.org/badge/538909567.svg)](https://zenodo.org/badge/latestdoi/538909567)
+[![avoncap status
+badge](https://bristol-vaccine-centre.r-universe.dev/badges/avoncap)](https://bristol-vaccine-centre.r-universe.dev)
+<!-- badges: end -->
+
 This is a development status package, designed only to support AvonCap publications with and will never be submitted to CRAN.
 
 It is under continuous revision and use of stable releases is recommended
