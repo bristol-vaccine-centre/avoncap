@@ -283,7 +283,7 @@ valid_inputs = function() {
 #' @export
 #'
 #' @examples
-#' load_data("nhs-extract","deltave")
+#' try(load_data("nhs-extract","deltave"))
 load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("reproduce.at",default = Sys.Date())), merge = TRUE, ...) {
   if(reproduce_at != Sys.Date()) warning("REPRODUCING RESULTS FROM: ",reproduce_at, ", to disable this set options(reproduce.at=NULL)")
   tmp = type
