@@ -16,16 +16,15 @@ It is under continuous revision and use of stable releases is recommended
 ## Installation
 
 This package is hosted
-in the [Bristol Vaccine Centre
-r-universe](https://https://bristol-vaccine-centre.r-universe.dev/).
+in the [Bristol Vaccine Centre r-universe](https://bristol-vaccine-centre.r-universe.dev/).
 Installation from there is as follows:
 
 ``` r
 options(repos = c(
-  "bristol-vaccine-centre" = 'https://https://bristol-vaccine-centre.r-universe.dev/',
+  "bristol-vaccine-centre" = 'https://bristol-vaccine-centre.r-universe.dev/',
   CRAN = 'https://cloud.r-project.org'))
 
-# Download and install tableone in R
+# Download and install avoncap in R
 install.packages("avoncap")
 ```
 
