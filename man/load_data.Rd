@@ -47,5 +47,5 @@ merges the files into a single dataframe, if possible, otherwise it will
 return the individually loaded files as a list of dataframes.
 }
 \examples{
-load_data("nhs-extract","deltave")
+try(load_data("nhs-extract","deltave"))
 }
