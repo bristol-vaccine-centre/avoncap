@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,61 +84,26 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># devtools::load_all()</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="set_input.html">set_input</a></span><span class="op">(</span><span class="st">"~/Data/avoncap"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="input.html">input</a></span><span class="op">(</span><span class="st">"nhs-extract"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="set_input.html">set_input</a></span><span class="op">(</span><span class="st">"~/Data/avoncap"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="all_files.html">all_files</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># exact match on filename column of all_data()</span></span></span>
+<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu">most_recent_files</span><span class="op">(</span><span class="st">"AvonCAPLRTDCentralDa"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># or matches by lower case startWith on directory</span></span></span>
+<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu">most_recent_files</span><span class="op">(</span><span class="st">"nhs-extract"</span>,<span class="st">"deltave"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu">most_recent_files</span><span class="op">(</span><span class="st">"metadata"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="valid_inputs.html">valid_inputs</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Found data directory: /home/vp22681/Data/avoncap</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB; font-weight: bold;">/home/vp22681/Data/avoncap</span></span>
-<span class="r-in"><span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="input.html">input</a></span><span class="op">(</span><span class="st">"nhs-extract"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB; font-weight: bold;">/home/vp22681/Data/avoncap/nhs-extract</span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="all_files.html">all_files</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 76 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    filename     directory     path       date       hospital study_year filetype</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> central_y1   avoncap-expo… …al_y1.csv 2022-03-22 <span style="color: #BB0000;">NA</span>                1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> central_y2   avoncap-expo… …al_y2.csv 2022-03-22 <span style="color: #BB0000;">NA</span>                2 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> central_y1   avoncap-expo… …al_y1.csv 2022-06-20 <span style="color: #BB0000;">NA</span>                1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> central_y2   avoncap-expo… …al_y2.csv 2022-06-20 <span style="color: #BB0000;">NA</span>                2 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> central_y1   avoncap-expo… …al_y1.csv 2022-07-11 <span style="color: #BB0000;">NA</span>                1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> central_y2   avoncap-expo… …al_y2.csv 2022-07-11 <span style="color: #BB0000;">NA</span>                2 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> central_y1   avoncap-expo… …al_y1.csv 2022-09-21 <span style="color: #BB0000;">NA</span>                1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> central_y2   avoncap-expo… …al_y2.csv 2022-09-21 <span style="color: #BB0000;">NA</span>                2 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> uad-controls avoncap-expo… …trols.csv 2022-10-07 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> central_y1   avoncap-expo… …al_y1.csv 2022-11-09 <span style="color: #BB0000;">NA</span>                1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 66 more rows</span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># exact match on filename column of all_data()</span></span></span>
-<span class="r-in"><span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu">most_recent_files</span><span class="op">(</span><span class="st">"AvonCAPLRTDCentralDa"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 variables: filename &lt;chr&gt;, directory &lt;chr&gt;, path &lt;fs::path&gt;, date &lt;date&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   hospital &lt;chr&gt;, study_year &lt;int&gt;, filetype &lt;chr&gt;</span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># or matches by lower case startWith on directory</span></span></span>
-<span class="r-in"><span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu">most_recent_files</span><span class="op">(</span><span class="st">"nhs-extract"</span>,<span class="st">"deltave"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   filename       directory   path        date       hospital study_year filetype</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> deltave_BRI_y1 nhs-extract …BRI_y1.csv 2022-12-07 BRI               1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> deltave_BRI_y2 nhs-extract …BRI_y2.csv 2022-12-07 BRI               2 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> deltave_BRI_y3 nhs-extract …BRI_y3.csv 2022-12-07 BRI               3 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> deltave_NBT_y1 nhs-extract …NBT_y1.csv 2022-12-07 NBT               1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> deltave_NBT_y2 nhs-extract …NBT_y2.csv 2022-12-07 NBT               2 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> deltave_NBT_y3 nhs-extract …NBT_y3.csv 2022-12-07 NBT               3 csv     </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu">most_recent_files</span><span class="op">(</span><span class="st">"metadata"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   filename     directory path            date       hospital study_year filetype</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> central_y1   metadata  …central_y1.csv 2022-10-24 <span style="color: #BB0000;">NA</span>                1 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> central_y2   metadata  …central_y2.csv 2022-10-24 <span style="color: #BB0000;">NA</span>                2 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> central_y3   metadata  …central_y3.csv 2022-10-24 <span style="color: #BB0000;">NA</span>                3 csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> uad-controls metadata  …d-controls.csv 2022-10-24 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> pneumococcal metadata  …eumococcal.csv 2022-11-29 <span style="color: #BB0000;">NA</span>               <span style="color: #BB0000;">NA</span> csv     </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="valid_inputs.html">valid_inputs</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 24 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Groups:   type [6]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    type           subtype      file        </span>

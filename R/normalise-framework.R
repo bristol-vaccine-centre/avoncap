@@ -221,7 +221,7 @@ create_keys = function(df, key_spec = list("id"="{dplyr::row_number()}")) {
     tmp = df %>% dplyr::pull(!!valueCol)
 
     # lots of possible formats to detect here:
-    # linelist %>% dplyr::select(c(record_number, tidyselect::starts_with("pn_st"))) %>% dplyr::mutate(across(tidyselect::everything(), as.character)) %>% tidyr::pivot_longer(tidyselect::starts_with("pn_st")) %>% dplyr::pull(value) %>% unique()
+    # linelist %>% dplyr::select(c(record_number, tidyselect::starts_with("pn_st"))) %>% dplyr::mutate(dplyr::across(tidyselect::everything(), as.character)) %>% tidyr::pivot_longer(tidyselect::starts_with("pn_st")) %>% dplyr::pull(value) %>% unique()
     # gives a list from the raw data.
 
     tmp = tmp %>%

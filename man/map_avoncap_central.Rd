@@ -31,9 +31,12 @@ a list
 \item age_at_admission -> demog.age (double)
 \item age_march -> demog.age_in_march_2021 (double)
 \item imd -> demog.imd_decile (name)
+\item gp_practice -> admin.gp_practice (name)
 \item smoking -> demog.smoker (list)
 \item ethnicity2 -> demog.ethnicity (list)
 \item care_home -> demog.care_home_resident (yesno)
+\item hapcovid_screening -> admission.non_lrtd_hospital_acquired_covid (yesno)
+\item hospital_covid -> admission.hospital_acquired_covid (yesno)
 \item drugs -> demog.no_drug_abuse, demog.alcohol_abuse, demog.ivdu_abuse, demog.marijuana_abuse, demog.other_inhaled_drug_abuse (checkboxes)
 \item vaping -> demog.vaping (list)
 \item alc_units -> demog.units_of_alcohol (name)
@@ -138,6 +141,9 @@ a list
 \item did_the_patient_receive_ec -> outcome.received_ecmo (yesno)
 \item inotropic_support_required -> outcome.received_ionotropes (yesno)
 \item lrtd_30d_outcome -> outcome.functional_status (list)
+\item survive_1yr -> outcome.one_year_survival (yesno)
+\item survival_1yr_days -> outcome.one_year_survival_duration (integer)
+\item yr_survival_complete -> outcome.one_year_survival_complete (list)
 \item fever2 -> symptom.abnormal_temperature (yesno_unknown)
 \item pleurtic_cp -> symptom.pleuritic_chest_pain (yesno_unknown)
 \item cough2 -> symptom.cough (yesno_unknown)
@@ -182,6 +188,8 @@ a list
 \item covid_19_diagnosis -> diagnosis.covid_19_diagnosis (list)
 \item ppv23 -> vaccination.pneumovax (list)
 \item flu_vaccine -> vaccination.influenza_vaccination (list)
+\item abx_14d_prior -> admission.pre_admission_antibiotics_given (yesno_unknown)
+\item antibiotic_used -> admission.pre_admission_antibiotic (checkboxes_to_nested_list)
 }
 }
 \concept{map}

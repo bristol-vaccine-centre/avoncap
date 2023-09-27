@@ -37,3 +37,6 @@ devtools::install_github("bristol-vaccine-centre/avoncap")
 # recommended to use a stable release version such as:
 devtools::install_github("bristol-vaccine-centre/avoncap@0.0.0.9000")
 ```
+
+
+Bump version

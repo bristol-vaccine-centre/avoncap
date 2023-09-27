@@ -133,12 +133,15 @@ tmp = failures %>%
   group_by(.variable) %>%
   filter(n()>20)
   
-    
-ggplot(tmp, aes(x=enrollment_date, fill=as.factor(hosp)))+
-  geom_histogram(binwidth = 7)+
-  scale_x_date(date_breaks = "1 month", date_labels = "%m-%Y")+
-  theme(axis.text.x.bottom = element_text(angle = 90, vjust=0.5, hjust=1))+
-  facet_wrap(~.variable,scales = "free_y")
+if (nrow(tmp) != 0) {  
+  ggplot(tmp, aes(x=enrollment_date, fill=as.factor(hosp)))+
+    geom_histogram(binwidth = 7)+
+    scale_x_date(date_breaks = "1 month", date_labels = "%m-%Y")+
+    theme(axis.text.x.bottom = element_text(angle = 90, vjust=0.5, hjust=1))+
+    facet_wrap(~.variable,scales = "free_y")
+} else {
+  message("No quality checked variables with more than 20 missing items")
+}
 
 ```
 

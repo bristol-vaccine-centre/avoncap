@@ -261,7 +261,7 @@ normalise.urine_antigens.binax = function(rawData, ...) {
   tmp = rawData
   if ("admission_date" %in% colnames(tmp)) {
     # the NHS data set has and admission date
-    # bit not
+    # bit not week_number / study_week / study_year
     tmp = tmp %>%
       dplyr::mutate(
         year = lubridate::year(admission_date),

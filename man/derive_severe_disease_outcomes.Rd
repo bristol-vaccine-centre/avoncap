@@ -25,6 +25,7 @@ a dataframe
 }
 }
 \details{
-described in aLRTD paper
+described in aLRTD paper.
+These outcomes are
 }
 \concept{derived}

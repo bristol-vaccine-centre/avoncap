@@ -90,6 +90,25 @@ derive_admission_episode = function(df,v) {
     dplyr::ungroup()
 }
 
+#' Identify patients from surgeries in linked GP study
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_gp_linkage = function(df,v) {
+  df %>% dplyr::mutate(
+    admin.linked_gp_practice = dplyr::case_when(
+      stringr::str_detect(tolower(admin.gp_practice), "concord") ~ "Concord",
+      stringr::str_detect(tolower(admin.gp_practice), "court") ~ "Courtside",
+      stringr::str_detect(tolower(admin.gp_practice), "montpelier") ~ "Montpelier",
+      stringr::str_detect(tolower(admin.gp_practice), "tyntesfield|tynesfield|tyntesield") ~ "Tyntesfield",
+      stringr::str_detect(tolower(admin.gp_practice), "wellspring") ~ "Wellspring",
+      stringr::str_detect(tolower(admin.gp_practice), "pioneer") ~ "Pioneer",
+      !is.na(admin.gp_practice) ~ "Other specified",
+      TRUE ~ "Not recorded"
+    ) %>% factor(levels = c("Concord", "Courtside", "Montpelier", "Tyntesfield", "Wellspring", "Pioneer","Other specified","Not recorded"))
+  )
+}
 
 
 #' Rationalise some of the more detailed comorbidities
@@ -161,6 +180,11 @@ derive_simpler_comorbidities = function(df,v,...) {
       comorbid.cva == v$comorbid.cva$yes ~ "yes",
       comorbid.tia == v$comorbid.tia$yes ~ "yes",
       TRUE ~ "no"
+    ) %>% factor(c("no","yes")),
+    comorbid.any_immune_compromise = dplyr::case_when(
+      comorbid.immunodeficiency == "yes" ~ "yes",
+      admission.on_immunosuppression == "yes" ~ "yes",
+      TRUE ~ "no"
     ) %>% factor(c("no","yes"))
   )
 }
@@ -200,29 +224,33 @@ derive_presumed_diagnosis_categories = function(df,v) {
 }
 
 
+#' Identify patients who were admitted already prior to study entry
+#'
+#' Hospital acquired COVID is recorded explicitly in 2 places for some patients.
+#' A large difference between admission date and enrollment date (<21 days) is
+#' suggestive in other cases
+#'
 #'
 #' @inherit derive_template
 #' @concept derived
 #' @export
-derive_aLRTD_categories = function(df,v,...) {
+derive_nosocomial_status = function(df,v) {
   df %>% dplyr::mutate(
-
-    admission.category = dplyr::case_when(
-      admission.is_covid == "Confirmed SARS-CoV-2" ~ "Confirmed SARS-CoV-2",
-      admission.infective_cause == "Infective" ~ "No evidence SARS-CoV-2",
-      admission.infective_cause == "Non-infective" ~ "Non-infective",
-      TRUE ~ NA_character_
-    ) %>% factor(levels = c("Confirmed SARS-CoV-2","No evidence SARS-CoV-2","Non-infective")),
-
-    admission.presentation_3_class = dplyr::case_when(
-      diagnosis.pneumonia == "yes" ~ "Pneumonia",
-      diagnosis.LRTI == "yes" ~ "NP-LRTI",
-      admission.infective_cause == "Non-infective" ~ "No evidence LRTI",
-      TRUE ~ "No evidence LRTI"
-    ) %>% factor(levels = c("Pneumonia","NP-LRTI","No evidence LRTI")),
+    admission.hospital_acquired = dplyr::case_when(
+      admission.hospital_acquired_covid == "yes" ~ "Probable",
+      admission.non_lrtd_hospital_acquired_covid == "yes" ~ "Probable",
+      # If neother of the HAP fields is given fall back on the admission date versus enrollment date.
+      is.na(admission.hospital_acquired_covid) &
+        is.na(admission.non_lrtd_hospital_acquired_covid) &
+        admission.date+21 < admin.enrollment_date ~ "Possible",
+      TRUE ~ "Unlikely"
+    ) %>% factor(levels = c("Unlikely","Possible", "Probable")),
+    admission.days_before_enrollment = cut_integer(
+      as.integer(admin.enrollment_date-admission.date), c(8,15,22,29), lower_limit = 0
+    )
   )
+  # normData2 %>% xglimpse(delayed_enrol = admission.date + 28 < admin.enrollment_date, hap = admission.hospital_acquired_covid=="yes" | admission.non_lrtd_hospital_acquired_covid == "yes")
 }
-
 
 # Diagnostic ----
 
@@ -744,42 +772,42 @@ derive_pneumococcal_high_risk = function(df,v,...) {
 #'
 #' High-risk (immunocompromised)
 #'
-#' * ✗ Asplenia
-#' * ✓ Cancer/Malignancy, Hematologic
-#' * ✓ Cancer/Malignancy, Solid Tumor
-#' * ✓ Chronic Kidney Disease
-#' * ✓ Human Immunodeficiency Virus (HIV) – AIDS
-#' * ✓ Human Immunodeficiency Virus (HIV) – No AIDS
-#' * ✓ Immunodeficiency
-#' * ✓ Immunosuppressant Drug Therapy
-#' * ✓ Organ Transplantation
-#' * ✗ Multiple Myeloma
+#' * Asplenia - not supported
+#' * Cancer/Malignancy, Hematologic - OK
+#' * Cancer/Malignancy, Solid Tumor - OK
+#' * Chronic Kidney Disease - OK
+#' * Human Immunodeficiency Virus (HIV) – AIDS - OK
+#' * Human Immunodeficiency Virus (HIV) – No AIDS - OK
+#' * Immunodeficiency - OK
+#' * Immunosuppressant Drug Therapy - OK
+#' * Organ Transplantation - OK
+#' * Multiple Myeloma - not supported
 #'
 #' At Risk (immunocompetent)
 #'
-#' * ✓ Asthma
-#' * ✓ Alcoholism
-#' * ✗ Celiac Disease
-#' * ✓ Chronic Liver Disease without Hepatic Failure
-#' * ✓ Chronic Liver Disease with Hepatic Failure
-#' * ✓ Chronic Obstructive Pulmonary Disease
-#' * ✗ Cochlear Implant
-#' * ✓ Congestive Heart Failure
-#' * ✓ Coronary Artery Disease (CAD)
-#' * ✓ Chronic Neurologic Diseases
-#' * ✗ Coagulation factor replacement therapy
-#' * ✗ CSF Leak
-#' * ✓ Diabetes Treated with Medication
-#' * ✓ Down syndrome
-#' * ✓ Institutionalized in nursing home or LTC facility (Nursing home or long-term care
+#' * Asthma - OK
+#' * Alcoholism - OK
+#' * Celiac Disease - not supported
+#' * Chronic Liver Disease without Hepatic Failure - OK
+#' * Chronic Liver Disease with Hepatic Failure - OK
+#' * Chronic Obstructive Pulmonary Disease - OK
+#' * Cochlear Implant - not supported
+#' * Congestive Heart Failure - OK
+#' * Coronary Artery Disease (CAD) - OK
+#' * Chronic Neurologic Diseases - OK
+#' * Coagulation factor replacement therapy - not supported
+#' * CSF Leak - not supported
+#' * Diabetes Treated with Medication - OK
+#' * Down syndrome - OK
+#' * Institutionalized in nursing home or LTC facility (Nursing home or long-term care
 #'   facility for those with disability or dependency on subject characteristics/risk
-#'   determinants eCRF page)
-#' * ✓ Occupational risk with exposure to metal fumes
-#' * ✓ Other Chronic Heart Disease
-#' * ✓ Other Chronic Lung Disease
-#' * ✓ Other pneumococcal disease risk factors
-#' * ✗ Previous Invasive Pneumococcal Disease
-#' * ✓ Tobacco smoking (Tobacco/E-Cigarettes)
+#'   determinants eCRF page) - OK
+#' * Occupational risk with exposure to metal fumes - OK
+#' * Other Chronic Heart Disease - OK
+#' * Other Chronic Lung Disease - OK
+#' * Other pneumococcal disease risk factors - OK
+#' * Previous Invasive Pneumococcal Disease - not supported
+#' * Tobacco smoking (Tobacco/E-Cigarettes) - OK
 #'
 #' Anything else is low risk
 #'
@@ -852,7 +880,7 @@ derive_pneumococcal_risk_category = function(df,v,...) {
 #' * 4: Hospitalised; no oxygen therapy
 #' * 5: Hospitalised; oxygen by mask or nasal prongs
 #' * 6: Hospitalised; oxygen by NIV or high flow
-#' * 7: Intubation and mechanical ventilation, pO2/FiO2 ≥150 or SpO2/FiO2 ≥200
+#' * 7: Intubation and mechanical ventilation, pO2/FiO2 >= 150 or SpO2/FiO2 >= 200
 #' * 8: Mechanical ventilation pO2/FIO2 <150 (SpO2/FiO2 <200) or vasopressors
 #' * 9: Mechanical ventilation pO2/FiO2 <150 and vasopressors, dialysis, or ECMO
 #' * 10: Dead
@@ -907,7 +935,8 @@ derive_WHO_outcome_score = function(df, v, ...) {
 #' * Confirmed death (any length follow up)
 #' * Any ICU admission
 #'
-#' described in aLRTD paper
+#' described in aLRTD paper.
+#' These outcomes are
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -926,6 +955,13 @@ derive_severe_disease_outcomes = function(df,v,...) {
           outcome.survival_duration <= 30 ~ "confirmed",
           TRUE ~ "not recorded"
         ) %>% factor(levels=c("confirmed","not recorded")),
+        outcome.death_within_1_year = dplyr::case_when(
+          !is.na(outcome.survival_duration) & outcome.survival_duration <= 30 ~ "confirmed",
+          !is.na(outcome.one_year_survival_duration) & outcome.one_year_survival_duration < 365 ~ "confirmed",
+          outcome.one_year_survival_complete != "Complete" ~ "not recorded",
+          TRUE ~ "not recorded"
+        ) %>% factor(levels=c("confirmed","not recorded")),
+        # TODO: proper survival censoring
         outcome.death_during_follow_up = dplyr::case_when(
           !is.na(outcome.survival_duration) ~ "confirmed",
           outcome.inpatient_death == v$outcome.inpatient_death$yes ~ "confirmed",
@@ -933,6 +969,102 @@ derive_severe_disease_outcomes = function(df,v,...) {
           TRUE ~ "not recorded"
         ) %>% factor(levels=c("confirmed","not recorded"))
       )
+}
+
+#' Survival outcomes
+#'
+#' Calculates:
+#'
+#' * A consistent length of stay - shortest of length of stay and 30 day and 1 yr survival duration
+#' * a 30 day survival duration and censoring status for survfit
+#' * a 1 year survival duration and censoring status for survfit
+#' * Hospital length of stay and censoring status for survfit
+#' * Categorical length of stay and 30 day survival 0-3, 4-6, 7-13, 14-29, gte 30
+#'
+#'
+#' time: for this is the follow up time to event.
+#'
+#' event: The event type indicator
+#' * 0=alive/censored,
+#' * 1=dead.
+#'
+#' or for length of stay
+#' * 0=still inpatient,
+#' * 1=discharged from hospital/ dead
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_survival_censoring = function(df,v,...) {
+  last_updated = min(c(
+    max(df$admin.enrollment_date)+30,
+    attributes(df)$date
+  ))
+  df %>%
+    dplyr::mutate(
+
+      survival.length_of_stay = pmin(
+        outcome.length_of_stay, outcome.survival_duration, outcome.one_year_survival_duration,na.rm = TRUE),
+
+      survival.length_of_stay_category =
+        avoncap::cut_integer(survival.length_of_stay, c(4,7,14,30), lower_limit = 0),
+
+      survival.30_day_death_time = dplyr::case_when(
+        # confirmed dead
+        outcome.survival_duration <= 30 ~ outcome.survival_duration,
+        outcome.one_year_survival_duration <= 30 ~ outcome.one_year_survival_duration,
+        # censored (assumed alive)
+        as.integer(key_dates$mortality_updated - admission.date) <= 30 ~ as.integer(key_dates$mortality_updated - admission.date),
+        TRUE ~ 30
+      ),
+      survival.30_day_death_event = dplyr::case_when(
+        # confirmed dead
+        outcome.survival_duration <= 30 ~ 1,
+        outcome.one_year_survival_duration <= 30 ~ 1,
+        # censored (assumed alive)
+        as.integer(key_dates$mortality_updated - admission.date) <= 30 ~ 0,
+        TRUE ~ 0
+      ),
+
+      survival.time_to_death_category =
+        avoncap::cut_integer(
+            dplyr::if_else(
+            # have to account for censored = not dead yet.
+            survival.30_day_death_event == 0,100,survival.30_day_death_time),
+          c(4,7,14,30), lower_limit = 0),
+
+      survival.1_yr_death_time = dplyr::case_when(
+        # confirmed dead
+        outcome.survival_duration <= 365 ~ outcome.survival_duration,
+        outcome.one_year_survival_duration <= 365 ~ outcome.one_year_survival_duration,
+        # censored (assumed alive)
+        as.integer(key_dates$mortality_updated - admission.date) <= 365 ~ as.integer(key_dates$mortality_updated - admission.date),
+        TRUE ~ 365
+      ),
+      survival.1_yr_death_event = dplyr::case_when(
+        # confirmed dead
+        outcome.survival_duration <= 365 ~ 1,
+        outcome.one_year_survival_duration <= 365 ~ 1,
+        # censored (assumed alive)
+        as.integer(key_dates$mortality_updated - admission.date) <= 365 ~ 0,
+        TRUE ~ 0
+      ),
+      survival.30_day_discharge_time = dplyr::case_when(
+        survival.length_of_stay <= 30 ~ survival.length_of_stay,
+        as.integer(last_updated - admission.date) <= 30 ~ as.integer(last_updated - admission.date),
+        TRUE ~ 30
+      ),
+      survival.30_day_discharge_event = dplyr::case_when(
+        # confirmed dead. discharge event is censored as we have no information
+        # about their discharge status after death.
+        survival.30_day_death_event == 1 ~ 0,
+        # confirmed discharged in less than 30 days
+        survival.length_of_stay <= 30 ~ 1,
+        # not discharged by 30 days (or last updated date)
+        as.integer(last_updated - admission.date) <= 30 ~ 0,
+        TRUE ~ 0
+      )
+    )
 }
 
 #' Binary outcomes for hospital burden
@@ -962,7 +1094,7 @@ derive_hospital_burden_outcomes = function(df,v,...) {
         # LOS within first 7 days
         day_7.los_gt_3 = ifelse(day_7.length_of_stay > v$day_7.length_of_stay$`3 days` & (is.na(outcome.survival_duration) | outcome.survival_duration > 3),"LOS>3 days","LOS<=3 days") %>% ordered(c("LOS<=3 days","LOS>3 days")),
         day_7.los_gt_5 = ifelse(day_7.length_of_stay > v$day_7.length_of_stay$`5 days` & (is.na(outcome.survival_duration) | outcome.survival_duration > 5),"LOS>5 days","LOS<=5 days") %>% ordered(c("LOS<=5 days","LOS>5 days")),
-        day_7.los_gt_7 = ifelse(day_7.length_of_stay > v$day_7.length_of_stay$`7 days` & (is.na(outcome.survival_duration) | outcome.survival_duration > 7),"LOS>7 days","LOS<=7 days") %>% ordered(c("LOS<=7 days","LOS>7 days"))
+        day_7.los_gt_7 = ifelse(day_7.length_of_stay > v$day_7.length_of_stay$`7 days` & (is.na(outcome.survival_duration) | outcome.survival_duration > 7),"LOS>7 days","LOS<=7 days") %>% ordered(c("LOS<=7 days","LOS>7 days")),
       )
 }
 

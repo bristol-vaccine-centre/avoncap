@@ -9,7 +9,7 @@ xglimpse(data, ...)
 \arguments{
 \item{data}{a dataframe}
 
-\item{...}{columns to cross-tabulate}
+\item{...}{columns or named expressions to cross-tabulate}
 }
 \value{
 the cross-tabulation

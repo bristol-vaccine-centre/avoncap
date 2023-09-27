@@ -121,6 +121,7 @@ map_avoncap_central = function() list(
     demog.age_in_march_2021, limits=c(0,120)),
   "imd" = .normalise_name(
     demog.imd_decile),
+  "gp_practice" = .normalise_name(admin.gp_practice),
 
 
   "smoking" = .normalise_list(
@@ -150,6 +151,10 @@ map_avoncap_central = function() list(
 
   "care_home" = .normalise_yesno(
     demog.care_home_resident),
+  "hapcovid_screening" = .normalise_yesno(
+    admission.non_lrtd_hospital_acquired_covid),
+  "hospital_covid" = .normalise_yesno(
+    admission.hospital_acquired_covid),
   "drugs" = .normalise_checkboxes(dplyr::vars(
     demog.no_drug_abuse,
     demog.alcohol_abuse,
@@ -429,6 +434,9 @@ map_avoncap_central = function() list(
       "Unknown"
     )
   ),
+  "survive_1yr" = .normalise_yesno(outcome.one_year_survival),
+  "survival_1yr_days" = .normalise_integer(outcome.one_year_survival_duration, limits = c(0,366)),
+  "yr_survival_complete" = .normalise_list(outcome.one_year_survival_complete, values = c("Incomplete","Unverified","Complete")),
 
   #### Symptoms ----
   "fever2" = .normalise_yesno_unknown(symptom.abnormal_temperature),
@@ -563,12 +571,37 @@ map_avoncap_central = function() list(
   #   diagnosis.admission_swab_old,
   #   values = c("COVID-19 positive","COVID-19 negative","Indeterminate","Known community/recent positive","Not performed")
   # ),
+
+  ## Preadmission therapy ----
+
   "ppv23" = .normalise_list(
     vaccination.pneumovax,
     c("Not received","PPV23","PCV13","Unknown"), codes=c(2,1,4,3)
   ),
+
   "flu_vaccine" = .normalise_list(
     vaccination.influenza_vaccination,
     c("Not received","Received","Unknown"), codes=c(2,1,3)
-  )
+  ),
+
+  "abx_14d_prior" = .normalise_yesno_unknown(admission.pre_admission_antibiotics_given),
+  "antibiotic_used" = .normalise_checkboxes_to_nested_list(
+    admission.pre_admission_antibiotic,
+    c("Amoxicillin",
+        "Co-amoxiclav (Augmentin)",
+        "Doxycycline",
+        "Trimethoprim",
+        "Nitrofurantoin",
+        "Clarithromycin/Erythromycin",
+        "Metronidazole",
+        "Septrin (Co-trimoxazole)",
+        "Penicillin V",
+        "Benzylpenicillin (BenPen)",
+        "Tazocin",
+        "Meropenem",
+        "Other"), nameCol = "antibiotic", valueCol = "given"
+    )
+
+    # TODO: antivirals but they are in different format.
+
 )

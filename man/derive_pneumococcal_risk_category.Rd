@@ -23,43 +23,43 @@ Original algorithm from B1851202 SAP defines a 3 class risk group
 \details{
 High-risk (immunocompromised)
 \itemize{
-\item ✗ Asplenia
-\item ✓ Cancer/Malignancy, Hematologic
-\item ✓ Cancer/Malignancy, Solid Tumor
-\item ✓ Chronic Kidney Disease
-\item ✓ Human Immunodeficiency Virus (HIV) – AIDS
-\item ✓ Human Immunodeficiency Virus (HIV) – No AIDS
-\item ✓ Immunodeficiency
-\item ✓ Immunosuppressant Drug Therapy
-\item ✓ Organ Transplantation
-\item ✗ Multiple Myeloma
+\item Asplenia - not supported
+\item Cancer/Malignancy, Hematologic - OK
+\item Cancer/Malignancy, Solid Tumor - OK
+\item Chronic Kidney Disease - OK
+\item Human Immunodeficiency Virus (HIV) – AIDS - OK
+\item Human Immunodeficiency Virus (HIV) – No AIDS - OK
+\item Immunodeficiency - OK
+\item Immunosuppressant Drug Therapy - OK
+\item Organ Transplantation - OK
+\item Multiple Myeloma - not supported
 }
 
 At Risk (immunocompetent)
 \itemize{
-\item ✓ Asthma
-\item ✓ Alcoholism
-\item ✗ Celiac Disease
-\item ✓ Chronic Liver Disease without Hepatic Failure
-\item ✓ Chronic Liver Disease with Hepatic Failure
-\item ✓ Chronic Obstructive Pulmonary Disease
-\item ✗ Cochlear Implant
-\item ✓ Congestive Heart Failure
-\item ✓ Coronary Artery Disease (CAD)
-\item ✓ Chronic Neurologic Diseases
-\item ✗ Coagulation factor replacement therapy
-\item ✗ CSF Leak
-\item ✓ Diabetes Treated with Medication
-\item ✓ Down syndrome
-\item ✓ Institutionalized in nursing home or LTC facility (Nursing home or long-term care
+\item Asthma - OK
+\item Alcoholism - OK
+\item Celiac Disease - not supported
+\item Chronic Liver Disease without Hepatic Failure - OK
+\item Chronic Liver Disease with Hepatic Failure - OK
+\item Chronic Obstructive Pulmonary Disease - OK
+\item Cochlear Implant - not supported
+\item Congestive Heart Failure - OK
+\item Coronary Artery Disease (CAD) - OK
+\item Chronic Neurologic Diseases - OK
+\item Coagulation factor replacement therapy - not supported
+\item CSF Leak - not supported
+\item Diabetes Treated with Medication - OK
+\item Down syndrome - OK
+\item Institutionalized in nursing home or LTC facility (Nursing home or long-term care
 facility for those with disability or dependency on subject characteristics/risk
-determinants eCRF page)
-\item ✓ Occupational risk with exposure to metal fumes
-\item ✓ Other Chronic Heart Disease
-\item ✓ Other Chronic Lung Disease
-\item ✓ Other pneumococcal disease risk factors
-\item ✗ Previous Invasive Pneumococcal Disease
-\item ✓ Tobacco smoking (Tobacco/E-Cigarettes)
+determinants eCRF page) - OK
+\item Occupational risk with exposure to metal fumes - OK
+\item Other Chronic Heart Disease - OK
+\item Other Chronic Lung Disease - OK
+\item Other pneumococcal disease risk factors - OK
+\item Previous Invasive Pneumococcal Disease - not supported
+\item Tobacco smoking (Tobacco/E-Cigarettes) - OK
 }
 
 Anything else is low risk

@@ -16,34 +16,34 @@
 # data_aug = data_norm %>% augment_data()
 #
 # canonical_admissions = load_data("AdmissionDateByStudyNumber") %>%
-#   mutate(
+#   dplyr::mutate(
 #     canonical.admission_date = as.Date(admission_date,"%d/%m/%Y"),
 #     canonical.study_week = study_week(canonical.admission_date),
 #     canonical.week_number = lubridate::epiweek(canonical.admission_date),
 #     canonical.year = lubridate::year(canonical.admission_date)
 #   )
 #
-# test_that("UoB raw data approx complete", {
-#   missing = canonical_admissions %>% anti_join(lrtd_data, by="record_number")
-#   # ggplot(missing,aes(x=canonical.admission_date))+geom_histogram(binwidth = 1)
-#   missing %>% select(record_number) %>% readr::write_csv(out("missing_in_UoB_RedCap.csv"))
+# testthat::test_that("UoB raw data approx complete", {
+#   missing = canonical_admissions %>% dplyr::anti_join(lrtd_data, by="record_number")
+#   # ggplot2::ggplot(missing,ggplot2::aes(x=canonical.admission_date))+ggplot2::geom_histogram(binwidth = 1)
+#   missing %>% dplyr::select(record_number) %>% readr::write_csv(out("missing_in_UoB_RedCap.csv"))
 #   testthat::expect(nrow(missing)/nrow(canonical_admissions) < 0.01, ">1% of cases are missing from the UoB data set")
 # })
 #
-# test_that("UoB date inference approx correct", {
-#   matches = canonical_admissions %>% inner_join(lrtd_aug, by=c("record_number"="..record_number"))
-#   matches = matches %>% mutate(
+# testthat::test_that("UoB date inference approx correct", {
+#   matches = canonical_admissions %>% dplyr::inner_join(lrtd_aug, by=c("record_number"="..record_number"))
+#   matches = matches %>% dplyr::mutate(
 #     delta = abs(canonical.study_week-admission.study_week),
-#     status = case_when(
+#     status = dplyr::case_when(
 #       is.na(delta) ~ "missing",
 #       delta > 1 ~ "mismatched",
 #       delta == 1 ~ "partial mismatch",
 #       TRUE ~ "matched"
 #     )
 #   )
-#   mismatch = matches %>% filter(status %in% c("missing","mismatched"))
-#   ggplot(mismatch,aes(x=canonical.admission_date, fill=as.factor(status)))+geom_histogram(binwidth = 1)+scale_x_date(date_breaks = "2 week")
-#   mismatch %>% select(
+#   mismatch = matches %>% dplyr::filter(status %in% c("missing","mismatched"))
+#   ggplot2::ggplot(mismatch,ggplot2::aes(x=canonical.admission_date, fill=as.factor(status)))+ggplot2::geom_histogram(binwidth = 1)+ggplot2::scale_x_date(date_breaks = "2 week")
+#   mismatch %>% dplyr::select(
 #     record_number, canonical.admission_date, canonical.week_number, canonical.year,
 #     status, actual.week_number = .week_number, ..enrollment_date,
 #     estimated.year = ..year,
@@ -52,12 +52,12 @@
 #   testthat::expect(nrow(mismatch)/nrow(matches) < 0.01, ">1% of cases are missing week_number or week_number is not consistent with admission_date")
 # })
 #
-# test_that("UoB ", {
-#   matches = canonical_admissions %>% inner_join(lrtd_aug, by=c("record_number"="..record_number"))
-#   admittedAfterEnrolled = matches %>% filter(
+# testthat::test_that("UoB ", {
+#   matches = canonical_admissions %>% dplyr::inner_join(lrtd_aug, by=c("record_number"="..record_number"))
+#   admittedAfterEnrolled = matches %>% dplyr::filter(
 #     canonical.admission_date > ..enrollment_date,
 #   )
-#   admittedAfterEnrolled %>% select(record_number, canonical.admission_date, ..enrollment_date) %>%
+#   admittedAfterEnrolled %>% dplyr::select(record_number, canonical.admission_date, ..enrollment_date) %>%
 #     readr::write_csv(out("enrolled_date_admission_date_inconsistent_in_UoB_RedCap.csv"))
 #   testthat::expect(nrow(admittedAfterEnrolled)/nrow(matches) < 0.01, ">1% of cases are missing week_no or week_no not consistent with admission_date")
 # })

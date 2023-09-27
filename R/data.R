@@ -40,3 +40,30 @@ NULL
 #'
 #' @name uad_pcv_map
 NULL
+
+
+#' Frameworks
+#'
+#' The list of validation, normalisation and augmentation frameworks.
+#' There should be one validation per data set. The may be mulitple
+#' normalisations and augmentations depending on the aspect of the data
+#' we are extracting (e.g. re-nesting flattened data.)
+#'
+#' @name frameworks
+NULL
+
+
+#' Key dates:
+#'
+#' A list of key dates:
+#' * mortality_updated - the last time the NHS mortality data was extracted and added to AvonCAP
+#' * min_alpha - earliest observation of the alpha variant
+#' * max_wuhan - last observation of the wuhan variant
+#' * min_delta - earliest observation of the delta variant
+#' * max_alpha - last observation of the alpha variant
+#' * min_omicron - earliest observation of the omicron variant
+#' * max_delta - last observation of the delta variant
+#'
+#' @name key_dates
+NULL
+

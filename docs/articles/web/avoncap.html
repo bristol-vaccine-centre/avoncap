@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,6 +136,10 @@
 <span><span class="co">#&gt; │   │   ├── central_y3.csv</span></span>
 <span><span class="co">#&gt; │   │   └── gp.csv</span></span>
 <span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">2023-07-24</span></span></span>
+<span><span class="co">#&gt; │   │   ├── central_y1.csv</span></span>
+<span><span class="co">#&gt; │   │   ├── central_y2.csv</span></span>
+<span><span class="co">#&gt; │   │   └── central_y3.csv</span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">2023-09-13</span></span></span>
 <span><span class="co">#&gt; │   │   ├── central_y1.csv</span></span>
 <span><span class="co">#&gt; │   │   ├── central_y2.csv</span></span>
 <span><span class="co">#&gt; │   │   └── central_y3.csv</span></span>
@@ -249,7 +253,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"missing"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; No suitable files matching "missing", before date: 2023-09-05. Try one of: </span></span>
+<span><span class="co">#&gt; No suitable files matching "missing", before date: 2023-09-27. Try one of: </span></span>
 <span><span class="co">#&gt; as an input to 'type'</span></span>
 <span><span class="co">#&gt; Error in avoncap::load_data("missing") : aborting.</span></span></code></pre></div>
 </div>
@@ -298,8 +302,8 @@
 <span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; validate data using: validate.nhs_extract.deltave</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.nhs_extract.deltave</span></span>
-<span><span class="co">#&gt; Some columns expected in the mappings were not present: consent_urine, consent_blood, consent_resp_samples1, what_was_the_first_surveil, np_swab, adm_np_type, np_date, days_adm_npswab, np_swab_2, adm_np_type_2, np_date_2, np_swab_3, adm_np_type_3, np_date_3, saliva, saliva_date, days_adm_saliva, sputum, sputum_date, days_adm_sputum, pt_ad_ur, adm_ur_taken, nourine_reason, adm_np_type_2, adm_ur_date, days_adm_urine, adm_serum_tak, adm_seru_date, days_adm_serum, adm_diagnosis</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-d1c7dea8d8da0abfcccfeb6ece1389d0.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; Some columns expected in the mappings were not present: consent_urine, consent_blood, consent_resp_samples1, what_was_the_first_surveil, gp_practice, hapcovid_screening, hospital_covid, np_swab, adm_np_type, np_date, days_adm_npswab, np_swab_2, adm_np_type_2, np_date_2, np_swab_3, adm_np_type_3, np_date_3, saliva, saliva_date, days_adm_saliva, sputum, sputum_date, days_adm_sputum, pt_ad_ur, adm_ur_taken, nourine_reason, adm_np_type_2, adm_ur_date, days_adm_urine, adm_serum_tak, adm_seru_date, days_adm_serum, adm_diagnosis, survive_1yr, survival_1yr_days, yr_survival_complete, abx_14d_prior, antibiotic_used</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-8097b469ba060da12ac12be68b8ad515.rda</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="mapping-columns">Mapping columns<a class="anchor" aria-label="anchor" href="#mapping-columns"></a>
@@ -318,19 +322,23 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">normData</span>,<span class="st">"missing"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "consent_urine"              "consent_blood"             </span></span>
 <span><span class="co">#&gt;  [3] "consent_resp_samples1"      "what_was_the_first_surveil"</span></span>
-<span><span class="co">#&gt;  [5] "np_swab"                    "adm_np_type"               </span></span>
-<span><span class="co">#&gt;  [7] "np_date"                    "days_adm_npswab"           </span></span>
-<span><span class="co">#&gt;  [9] "np_swab_2"                  "adm_np_type_2"             </span></span>
-<span><span class="co">#&gt; [11] "np_date_2"                  "np_swab_3"                 </span></span>
-<span><span class="co">#&gt; [13] "adm_np_type_3"              "np_date_3"                 </span></span>
-<span><span class="co">#&gt; [15] "saliva"                     "saliva_date"               </span></span>
-<span><span class="co">#&gt; [17] "days_adm_saliva"            "sputum"                    </span></span>
-<span><span class="co">#&gt; [19] "sputum_date"                "days_adm_sputum"           </span></span>
-<span><span class="co">#&gt; [21] "pt_ad_ur"                   "adm_ur_taken"              </span></span>
-<span><span class="co">#&gt; [23] "nourine_reason"             "adm_np_type_2"             </span></span>
-<span><span class="co">#&gt; [25] "adm_ur_date"                "days_adm_urine"            </span></span>
-<span><span class="co">#&gt; [27] "adm_serum_tak"              "adm_seru_date"             </span></span>
-<span><span class="co">#&gt; [29] "days_adm_serum"             "adm_diagnosis"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [5] "gp_practice"                "hapcovid_screening"        </span></span>
+<span><span class="co">#&gt;  [7] "hospital_covid"             "np_swab"                   </span></span>
+<span><span class="co">#&gt;  [9] "adm_np_type"                "np_date"                   </span></span>
+<span><span class="co">#&gt; [11] "days_adm_npswab"            "np_swab_2"                 </span></span>
+<span><span class="co">#&gt; [13] "adm_np_type_2"              "np_date_2"                 </span></span>
+<span><span class="co">#&gt; [15] "np_swab_3"                  "adm_np_type_3"             </span></span>
+<span><span class="co">#&gt; [17] "np_date_3"                  "saliva"                    </span></span>
+<span><span class="co">#&gt; [19] "saliva_date"                "days_adm_saliva"           </span></span>
+<span><span class="co">#&gt; [21] "sputum"                     "sputum_date"               </span></span>
+<span><span class="co">#&gt; [23] "days_adm_sputum"            "pt_ad_ur"                  </span></span>
+<span><span class="co">#&gt; [25] "adm_ur_taken"               "nourine_reason"            </span></span>
+<span><span class="co">#&gt; [27] "adm_np_type_2"              "adm_ur_date"               </span></span>
+<span><span class="co">#&gt; [29] "days_adm_urine"             "adm_serum_tak"             </span></span>
+<span><span class="co">#&gt; [31] "adm_seru_date"              "days_adm_serum"            </span></span>
+<span><span class="co">#&gt; [33] "adm_diagnosis"              "survive_1yr"               </span></span>
+<span><span class="co">#&gt; [35] "survival_1yr_days"          "yr_survival_complete"      </span></span>
+<span><span class="co">#&gt; [37] "abx_14d_prior"              "antibiotic_used"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="original-field-names-and-labels-">Original field names, and labels.<a class="anchor" aria-label="anchor" href="#original-field-names-and-labels-"></a>
@@ -807,82 +815,37 @@
 <code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
 <span><span class="va">augData</span> <span class="op">=</span> <span class="va">normData</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.nhs_extract.deltave</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-64df6d7cef407f0fb5a5d3dad5c82dad.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-887c17817f23acc686c75d060094a2cb.rda</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="loading-and-normalising-the-central-database">loading and normalising the central database<a class="anchor" aria-label="anchor" href="#loading-and-normalising-the-central-database"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawData2</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"avoncap-export"</span>,<span class="st">"central"</span>, merge<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-fdb2cb11473acaa313a2e09bec23b8af.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-68bb9735abb2a09414e0f62b2a85e8ce.rda</span></span>
 <span><span class="co"># without merge: currently: INCONSISTENT COLUMN(S) IN FILES: sars_cov2_antigen</span></span>
 <span><span class="co"># due to the fact it is mostly a numeric but some values "&gt;250"</span></span>
 <span></span>
 <span><span class="co"># devtools::load_all()</span></span>
 <span><span class="va">normData2</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/validate_data.html">validate_data</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; validate data using: validate.avoncap_export.central</span></span>
-<span><span class="co">#&gt; missing value in consented in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in ppc in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in include_patient in 35 rows</span></span>
-<span><span class="co">#&gt; missing value in hosp in 31 rows</span></span>
 <span><span class="co">#&gt; missing columns: ethnicity in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in hr in 60 rows</span></span>
-<span><span class="co">#&gt; missing value in systolic_bp in 73 rows</span></span>
-<span><span class="co">#&gt; missing value in diastolic_bp in 76 rows</span></span>
-<span><span class="co">#&gt; missing value in temperature in 50 rows</span></span>
-<span><span class="co">#&gt; missing value in rr in 61 rows</span></span>
-<span><span class="co">#&gt; missing value in pulse_ox in 58 rows</span></span>
-<span><span class="co">#&gt; missing value in fio2 in 61 rows</span></span>
-<span><span class="co">#&gt; missing value in news_2_total in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in crb_test_mai in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in care_home in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in ckd in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in liver_disease in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in diabetes in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in gastric_ulcers in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in pvd in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in ctd in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in immunodeficiency in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in other_pn_disease in 37 rows</span></span>
-<span><span class="co">#&gt; missing value in cancer in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in transplant in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in smoking in 33 rows</span></span>
-<span><span class="co">#&gt; missing value in gender in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in hospital_length_of_stay in 33 rows</span></span>
-<span><span class="co">#&gt; missing value in covid_19_diagnosis in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in lrtd_30d_outcome in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in week_number in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in year in 136 rows</span></span>
-<span><span class="co">#&gt; missing value in highest_level_care_require in 33 rows</span></span>
-<span><span class="co">#&gt; missing value in ventilatory_support in 33 rows</span></span>
-<span><span class="co">#&gt; missing value in psi_class in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in imd in 35 rows</span></span>
-<span><span class="co">#&gt; missing value in age_at_admission in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in acute_illness in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in covid19 in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in clinical_radio_diagnosis in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in fever2 in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in pleurtic_cp in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in cough2 in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in sput_prod in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in dyspnoea in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in tachypnoea2 in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in ausc_find in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in radiologic in 31 rows</span></span>
-<span><span class="co">#&gt; missing value in symptom_days_preadmit in 45 rows</span></span>
-<span><span class="co">#&gt; missing value in resp_disease in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in chd in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in neurological_disease in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in haem_malig in 32 rows</span></span>
-<span><span class="co">#&gt; missing value in final_soc_lrtd_diagnosis in 32 rows</span></span>
-<span><span class="co">#&gt; both pneumonia and NP-LRTI in final SOC dx in 4 rows</span></span>
-<span><span class="co">#&gt; missing value in dm_meds in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in current in 3 rows</span></span>
+<span><span class="co">#&gt; missing value in temperature in 1 rows</span></span>
+<span><span class="co">#&gt; missing value in rr in 3 rows</span></span>
+<span><span class="co">#&gt; missing value in pulse_ox in 1 rows</span></span>
+<span><span class="co">#&gt; missing value in fio2 in 1 rows</span></span>
+<span><span class="co">#&gt; missing value in other_pn_disease in 1 rows</span></span>
+<span><span class="co">#&gt; marked as survived in lrtd_30d_outcome but survival_days &lt;= 30 days in 136 rows</span></span>
+<span><span class="co">#&gt; 30 day and 1 yr survival duration different in 31 rows</span></span>
+<span><span class="co">#&gt; length of stay &gt; 30 day survival duration in 107 rows</span></span>
+<span><span class="co">#&gt; length of stay &gt; 1 yr survival duration in 62 rows</span></span>
+<span><span class="co">#&gt; marked as died lrtd_30d_outcome but survival_days &gt; 30 days in 2 rows</span></span>
+<span><span class="co">#&gt; missing value in current in 1 rows</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central</span></span>
 <span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-9e78c8c6974b935c1f39481c79dad211.rda</span></span>
 <span><span class="co">#&gt; Admission date is derived from study week and hence approximate.</span></span>
 <span><span class="co">#&gt; Some columns expected in the mappings were not present: nhs_number, np_swab_3, adm_np_type_3, covidvax_date, covidvax_dose_2, covidvax_dose_3, covidvax_dose_4, covidvax_dose_5, covidvax_dose_6, flu_date, ppv23_date, previousinfection_date</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-d213773967e9e74bcb6577765d31e56a.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-9313bb6e8098e108491b99cf32c54e7d.rda</span></span>
 <span><span class="va">failures</span> <span class="op">=</span> <span class="va">normData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/write_issues.html">write_issues</a></span><span class="op">(</span><span class="st">"~/avoncap-issues"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tmp</span> <span class="op">=</span> <span class="va">failures</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> </span>
@@ -891,18 +854,20 @@
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">.variable</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">n</span><span class="op">(</span><span class="op">)</span><span class="op">&gt;</span><span class="fl">20</span><span class="op">)</span></span>
 <span>  </span>
-<span>    </span>
-<span><span class="fu">ggplot</span><span class="op">(</span><span class="va">tmp</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">enrollment_date</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">hosp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">geom_histogram</span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">7</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">scale_x_date</span><span class="op">(</span>date_breaks <span class="op">=</span> <span class="st">"1 month"</span>, date_labels <span class="op">=</span> <span class="st">"%m-%Y"</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">theme</span><span class="op">(</span>axis.text.x.bottom <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust<span class="op">=</span><span class="fl">0.5</span>, hjust<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">.variable</span>,scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1643 rows containing non-finite values (`stat_bin()`).</span></span></code></pre></div>
-<p><img src="avoncap_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span>  </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="va">tmp</span>, <span class="fu">aes</span><span class="op">(</span>x<span class="op">=</span><span class="va">enrollment_date</span>, fill<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">hosp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>    <span class="fu">geom_histogram</span><span class="op">(</span>binwidth <span class="op">=</span> <span class="fl">7</span><span class="op">)</span><span class="op">+</span></span>
+<span>    <span class="fu">scale_x_date</span><span class="op">(</span>date_breaks <span class="op">=</span> <span class="st">"1 month"</span>, date_labels <span class="op">=</span> <span class="st">"%m-%Y"</span><span class="op">)</span><span class="op">+</span></span>
+<span>    <span class="fu">theme</span><span class="op">(</span>axis.text.x.bottom <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">90</span>, vjust<span class="op">=</span><span class="fl">0.5</span>, hjust<span class="op">=</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>    <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">.variable</span>,scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"No quality checked variables with more than 20 missing items"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; No quality checked variables with more than 20 missing items</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normMicro</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"micro"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.micro</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b1452b07c5b368fef65b90881bbe0087-65996dd6886c9e5b1d979e11e427e856.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b1452b07c5b368fef65b90881bbe0087-18683aa2a8d5d4a57c2cdcc531166ac9.rda</span></span>
 <span></span>
 <span><span class="va">normMicro</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">micro.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">micro.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">micro.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pathogen</span>,<span class="va">detected</span>,  useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                   detected</span></span>
@@ -989,7 +954,7 @@
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normVirol</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"virol"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.virol</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b6f8ed1851f16d8282d50544e149e955-65996dd6886c9e5b1d979e11e427e856.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b6f8ed1851f16d8282d50544e149e955-18683aa2a8d5d4a57c2cdcc531166ac9.rda</span></span>
 <span></span>
 <span><span class="va">normVirol</span>  <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">virol.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">virol.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">virol.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pathogen</span>,<span class="va">detected</span>,  useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                          detected</span></span>
@@ -1038,7 +1003,7 @@
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normRadio</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"radio"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.radio</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-ebbd016b214d0a4b408623ae4e2c8e3c-65996dd6886c9e5b1d979e11e427e856.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-ebbd016b214d0a4b408623ae4e2c8e3c-18683aa2a8d5d4a57c2cdcc531166ac9.rda</span></span>
 <span></span>
 <span><span class="co"># old format tmp3  %&gt;% filter(radio.test_performed=="yes") %&gt;% with(table(radio.test_type, radio.lung_malignancy))</span></span>
 <span><span class="va">normRadio</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">radio.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">radio.alrtd_finding</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">radio.alrtd_finding</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">finding</span>,<span class="va">present</span>,  useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
@@ -1077,10 +1042,10 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normHaem</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"haem"</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.haem</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-bac1ba0bf95954527c63ff4673e6ef5a.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-e0d54e84723053f40df7cb08c6d34b6e.rda</span></span>
 <span><span class="va">augHaem</span> <span class="op">=</span> <span class="va">normHaem</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.avoncap_export.central.haem</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-9092aeb9b611bf6b30c9d87b89cab8f1.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-ff4dc2a7bcb974de06558872aa9a6847.rda</span></span>
 <span></span>
 <span><span class="va">augHaem</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">haem.troponin_level</span>, <span class="va">haem.d_dimer_level</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                   haem.troponin_level</span></span>
@@ -1105,13 +1070,13 @@
 <code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
 <span><span class="va">augData2</span> <span class="op">=</span> <span class="va">normData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.avoncap_export.central</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-12850dd824be250cff85eb25e095a158.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-61cceff5b1af0b8eddff83da7d277b6b.rda</span></span>
 <span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.category</span>,  <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admission.category</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class Confirmed SARS-CoV-2 No evidence SARS-CoV-2</span></span>
-<span><span class="co">#&gt;               Pneumonia                        5187                   9580</span></span>
-<span><span class="co">#&gt;               NP-LRTI                          4493                   6636</span></span>
+<span><span class="co">#&gt;               Pneumonia                        5186                   9580</span></span>
+<span><span class="co">#&gt;               NP-LRTI                          4494                   6636</span></span>
 <span><span class="co">#&gt;               No evidence LRTI                   67                      0</span></span>
 <span><span class="co">#&gt;               &lt;NA&gt;                                0                      0</span></span>
 <span><span class="co">#&gt;                               admission.category</span></span>
@@ -1119,12 +1084,12 @@
 <span><span class="co">#&gt;               Pneumonia                    0    0</span></span>
 <span><span class="co">#&gt;               NP-LRTI                      0    0</span></span>
 <span><span class="co">#&gt;               No evidence LRTI          4997    0</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;                         0 1164</span></span>
+<span><span class="co">#&gt;               &lt;NA&gt;                         0 1132</span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.covid_pcr_result</span>,  <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admission.covid_pcr_result</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class SARS-CoV-2 PCR negative SARS-CoV-2 PCR positive</span></span>
-<span><span class="co">#&gt;               Pneumonia                           8933                    5126</span></span>
-<span><span class="co">#&gt;               NP-LRTI                             6013                    4415</span></span>
+<span><span class="co">#&gt;               Pneumonia                           8933                    5125</span></span>
+<span><span class="co">#&gt;               NP-LRTI                             6013                    4416</span></span>
 <span><span class="co">#&gt;               No evidence LRTI                    4285                      51</span></span>
 <span><span class="co">#&gt;               &lt;NA&gt;                                   0                       0</span></span>
 <span><span class="co">#&gt;                               admission.covid_pcr_result</span></span>
@@ -1132,28 +1097,28 @@
 <span><span class="co">#&gt;               Pneumonia         708</span></span>
 <span><span class="co">#&gt;               NP-LRTI           701</span></span>
 <span><span class="co">#&gt;               No evidence LRTI  728</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;             1164</span></span>
+<span><span class="co">#&gt;               &lt;NA&gt;             1132</span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.infective_cause</span>,  <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admission.infective_cause</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class Non-infective Infective  &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;               Pneumonia                    0     14767     0</span></span>
-<span><span class="co">#&gt;               NP-LRTI                      0     11129     0</span></span>
+<span><span class="co">#&gt;               Pneumonia                    0     14766     0</span></span>
+<span><span class="co">#&gt;               NP-LRTI                      0     11130     0</span></span>
 <span><span class="co">#&gt;               No evidence LRTI          4997        67     0</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;                         0         0  1164</span></span>
+<span><span class="co">#&gt;               &lt;NA&gt;                         0         0  1132</span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.infective_cause</span>,  <span class="va">admission.is_covid</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         admission.infective_cause</span></span>
 <span><span class="co">#&gt; admission.is_covid       Non-infective Infective  &lt;NA&gt;</span></span>
 <span><span class="co">#&gt;   Confirmed SARS-CoV-2               0      9747     0</span></span>
 <span><span class="co">#&gt;   No evidence SARS-CoV-2          4997     16216     0</span></span>
-<span><span class="co">#&gt;   &lt;NA&gt;                               0         0  1164</span></span>
+<span><span class="co">#&gt;   &lt;NA&gt;                               0         0  1132</span></span>
 <span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admin.consent_withheld</span>, <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admin.consent_withheld</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class    no   yes</span></span>
-<span><span class="co">#&gt;               Pneumonia        14767     0</span></span>
-<span><span class="co">#&gt;               NP-LRTI          11129     0</span></span>
+<span><span class="co">#&gt;               Pneumonia        14766     0</span></span>
+<span><span class="co">#&gt;               NP-LRTI          11130     0</span></span>
 <span><span class="co">#&gt;               No evidence LRTI  5064     0</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;                 0  1164</span></span></code></pre></div>
+<span><span class="co">#&gt;               &lt;NA&gt;                 0  1132</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

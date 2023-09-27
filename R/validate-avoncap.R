@@ -111,7 +111,8 @@ validate.avoncap_export.central = function(rawData, ...) {
     .conflicting_values(include_patient==0, withdrawal == 1, label = "withdrawal of unconsented") %>%
     .active_col(include_patient == 1, "only actively consented") %>%
     .not_empty(c("withdrawal")) %>%
-    # consent not declined and not withdrawn
+
+    # CONSENTED PATIENTS ONLY: consent not declined and not withdrawn
     .active_col(!(include_patient == 1 & withdrawal == 1) & consented != 2 & ppc != 2, "consent for data", na.rm = FALSE) %>%
     .not_empty(
       c("hr", "systolic_bp", "diastolic_bp", "temperature", "rr", "pulse_ox",
@@ -133,6 +134,7 @@ validate.avoncap_export.central = function(rawData, ...) {
     ) %>%
     .conflicting_values(gender == 1, pregnancy!=1, label = "pregnant male") %>%
     .conflicting_values(age_at_admission > 70, pregnancy!=1, label = "pregnant >70 year old") %>%
+
     .conflicting_values(
       final_soc_lrtd_diagnosis___4==1,
       final_soc_lrtd_diagnosis___1==1 | final_soc_lrtd_diagnosis___2==1 | final_soc_lrtd_diagnosis___3==1 | final_soc_lrtd_diagnosis___5==1,
@@ -142,8 +144,25 @@ validate.avoncap_export.central = function(rawData, ...) {
     #   final_soc_lrtd_diagnosis___1==1 | final_soc_lrtd_diagnosis___2==1 | final_soc_lrtd_diagnosis___3==1 | final_soc_lrtd_diagnosis___5==1 | final_soc_lrtd_diagnosis___4==1,
     #   label = "non infectious and either pneumonia or NP-LRTI in final SOC dx") %>%
 
+    .conflicting_values(lrtd_30d_outcome > 1 & survival_days <= 30, label = "marked as survived in lrtd_30d_outcome but survival_days <= 30 days") %>%
+    .conflicting_values(survival_1yr_days != survival_days, label = "30 day and 1 yr survival duration different") %>%
+    .conflicting_values(hospital_length_of_stay > survival_days, label = "length of stay > 30 day survival duration") %>%
+    .conflicting_values(hospital_length_of_stay > survival_1yr_days, label = "length of stay > 1 yr survival duration") %>%
+
+    # NOT HOSPTIAL ACQUIRED
+    .active_col(
+      !(include_patient == 1 & withdrawal == 1) & consented != 2 & ppc != 2 &
+        hapcovid_screening == 0 & hospital_covid ==0, "Non hospital acquired cohort") %>%
+    .conflicting_values(lrtd_30d_outcome == 1 & survival_days > 30, label = "marked as died lrtd_30d_outcome but survival_days > 30 days") %>%
+
+
+    # DIABETICS ONLY
     .active_col(diabetes != 1, "diabetics") %>% .not_empty(c("dm_meds")) %>%
+
+    # COVID POSITIVES ONLY
     .active_col(covid19 == 1 & enrollment_date > "2021-03-15", "covid+ after 15/3/21") %>% .not_empty(c("current")) %>%
+
+    # CONSENTED WOMEN ONLY
     .active_col(
       !(include_patient == 1 & withdrawal == 1) & consented != 2 & ppc != 2 &
       gender == 2 & age_at_admission<70, "consented women under 70" ) %>% .not_empty(c("pregnancy")) %>%

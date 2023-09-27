@@ -26,7 +26,7 @@ We generally cant tell the difference between 7 and 8.
 \item 4: Hospitalised; no oxygen therapy
 \item 5: Hospitalised; oxygen by mask or nasal prongs
 \item 6: Hospitalised; oxygen by NIV or high flow
-\item 7: Intubation and mechanical ventilation, pO2/FiO2 ≥150 or SpO2/FiO2 ≥200
+\item 7: Intubation and mechanical ventilation, pO2/FiO2 >= 150 or SpO2/FiO2 >= 200
 \item 8: Mechanical ventilation pO2/FIO2 <150 (SpO2/FiO2 <200) or vasopressors
 \item 9: Mechanical ventilation pO2/FiO2 <150 and vasopressors, dialysis, or ECMO
 \item 10: Dead
