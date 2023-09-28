@@ -37,7 +37,8 @@ Imports:
     rappdirs,
     binom,
     scales,
-    survival
+    survival,
+    data.tree
 Suggests: 
     knitr,
     rmarkdown,

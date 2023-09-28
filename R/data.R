@@ -48,7 +48,7 @@ NULL
 #' There should be one validation per data set. The may be mulitple
 #' normalisations and augmentations depending on the aspect of the data
 #' we are extracting (e.g. re-nesting flattened data.)
-#'
+#' @importFrom data.tree as.Node
 #' @name frameworks
 NULL
 

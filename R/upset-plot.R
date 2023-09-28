@@ -79,7 +79,7 @@ upset_plot = function(df, boolean_cols, categorical_col, lbl_size=5) {
   # category.
   p2 = utmp2 %>%
     dplyr::group_by(category, total_in_category, primary) %>%
-    dplyr::summarise(n=dplyr::n(),, .groups="drop_last") %>%
+    dplyr::summarise(n=dplyr::n(), .groups="drop_last") %>%
     tidyr::complete(primary, fill=list(n=0)) %>%
     dplyr::mutate(binom::binom.confint(n, total_in_category, methods = "wilson")) %>%
     dplyr::mutate(label = sprintf("%d/%d",x,n))
