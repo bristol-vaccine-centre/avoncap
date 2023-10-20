@@ -13,11 +13,11 @@
 #' @export
 get_value_sets = function(df) {
   v = lapply(colnames(df), function(x) {
-    if (all(is.na(df[[x]]))) {
-      node = list(empty = TRUE)
-    } else if (is.factor(df[[x]])) {
+    if (is.factor(df[[x]])) {
       node = as.list(levels(df[[x]]))
       names(node) = node
+    } else if (all(is.na(df[[x]]))) {
+      node = list(empty = TRUE)
     } else if (is.character(df[[x]])) {
       tmp = unique(df[[x]])
       # TODO: sort by frequency

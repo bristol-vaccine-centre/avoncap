@@ -21,6 +21,12 @@ NULL
 #' @name serotype_data
 NULL
 
+#' Pneumococcal UAD serotypes
+#'
+#' A somewhat complete list of pneumococcal serotypes as seen in Bristol
+#' @name phe_serotypes
+NULL
+
 #' Pneumococcal serotype PCV groups
 #'
 #' @name serotype_pcv_map

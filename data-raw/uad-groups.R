@@ -10,6 +10,10 @@ pcv_xr = readxl::read_excel("~/Git/avoncap/data-raw/serotype-data.xlsx",sheet = 
 pcv_uad = readxl::read_excel("~/Git/avoncap/data-raw/serotype-data.xlsx",sheet = "uad")
 pcv_grps = readxl::read_excel("~/Git/avoncap/data-raw/serotype-data.xlsx",sheet = "group-names")
 pcv_names = readxl::read_excel("~/Git/avoncap/data-raw/serotype-data.xlsx",sheet = "layout-one")
+phe_serotypes = readxl::read_excel("~/Git/avoncap/data-raw/serotype-data.xlsx",sheet = "full-list") %>%
+  dplyr::mutate(serotype = forcats::as_factor(serotype))
+
+usethis::use_data(phe_serotypes, overwrite=TRUE)
 
 serotype_data = list(
   map = pcv_map,

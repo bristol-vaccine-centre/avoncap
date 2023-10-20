@@ -18,6 +18,7 @@ a dataframe
 \description{
 Hospital acquired COVID is recorded explicitly in 2 places for some patients.
 A large difference between admission date and enrollment date (<21 days) is
-suggestive in other cases
+suggestive in other cases. The data is probably only collected in COVID cases
+so shoudl be treated with caution.
 }
 \concept{derived}

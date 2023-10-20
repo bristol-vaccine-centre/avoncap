@@ -1,5 +1,8 @@
+# IMPORTANT:
+# any new functions in this file need to
+# added to the `dispatch-augment.R` in the appropriate place.
 
-# TODO: ----
+# TODO:
 # derive_variant_probability - list variants of interest. calculate probability
 # using multinomial (with other category) using COGUK data.
 
@@ -9,23 +12,24 @@
 # derive_natural_immunity_probability - N-gene antigen probability from SPI-M data?
 # age and time locfit model?
 
-# derive_force_of_infection - growth rates from case data matched to .
+# derive_force_of_infection - growth rates from case data matched to time.
 
+# Admin ----
 
 #' Categorical scores for continuous variables
 #'
 #' Typically used in regression models with non-linear effects over splines
 #'
 #' * Age category - UK demographic data ends at 85, and 65 key cut off in 5 year
-#'   bands, so 10 year bands
-#'   age categories end at 85 (N.b.) there is a more principled reason here.
-#'   Boundaries fall approx 0.1, 0.2, 0.4, 0.6, 0.8 quantiles. Could merge first
-#'   two groups but outcomes are usually different.
-#'   Covid vaccination cohorts were in 5 year age groups, but vaccination prioirty
+#' bands, so 10 year bands age categories end at 85 (N.b.) there is a more
+#' principled reason here. Boundaries fall approx 0.1, 0.2, 0.4, 0.6, 0.8
+#' quantiles. Could merge first two groups but outcomes are usually different.
+#' Covid vaccination cohorts were in 5 year age groups, but vaccination
+#' prioirity was in these groups approximately.
 #' * 65+ Age of pneumovax eligibility
 #' * CCI - 4 bands as defined in https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891119/#:~:text=Based%20on%20the%20CCI%20score,with%20CCI%20scores%20%E2%89%A55.and
 #'   similar in https://link.springer.com/article/10.1007/s10654-021-00802-z
-#' * Rockwood score - independent versus dependent frailty
+#' * Rockwood score - independent versus dependent frailty levels.
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -50,12 +54,12 @@ derive_continuous_categories = function(df,v,...) {
     )
 }
 
-#' Create a unique patient level id if it does not already exist
+#' Create a unique patient level id (if it does not already exist)
 #'
-#' The patient identifier is
-#'
-#' Derived from the record number or the first record number (ensuring it
-#' matches) an entry in the record number.
+#' The patient identifier is derived from the record number or the first record
+#' number (ensuring it matches) an entry in the record number. This deals with
+#' multiple admissions in the data set. In the patient identifiable NHS data
+#' this is the NHS number.
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -90,7 +94,7 @@ derive_admission_episode = function(df,v) {
     dplyr::ungroup()
 }
 
-#' Identify patients from surgeries in linked GP study
+#' Identify patients from the GP surgeries in linked primary care study
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -115,10 +119,14 @@ derive_gp_linkage = function(df,v) {
 #'
 #' and generate some summary values
 #'
-#' * any chronic resp dx: asthma, bronchiectasis, chronic pleural disease, COPD,
+#' * simple DM without insulin dependence
+#' * Solid / Haematological / Any cancer present binary indicators
+#' * any chronic resp dx: i.e. any of asthma, bronchiectasis, chronic pleural disease, COPD,
 #' interstitial lung dx, cyctic fibrosis, other chronic resp dx
 #' * any chronic heart disease: pulmonary htn, CCF, IHD, previous MI, congential
 #' heart dx, hypertension, AF, other arrythmia, other heart dx, other other heart dx
+#' * Stroke or TIA binary
+#' * Any immune compromise binary (immunodeficient or on immune suppressants)
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -228,8 +236,8 @@ derive_presumed_diagnosis_categories = function(df,v) {
 #'
 #' Hospital acquired COVID is recorded explicitly in 2 places for some patients.
 #' A large difference between admission date and enrollment date (<21 days) is
-#' suggestive in other cases
-#'
+#' suggestive in other cases. The data is probably only collected in COVID cases
+#' so shoudl be treated with caution.
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -253,8 +261,6 @@ derive_nosocomial_status = function(df,v) {
 }
 
 # Diagnostic ----
-
-
 
 #' Determine if an admission is proven SARS-CoV-2 PCR positive
 #'
@@ -315,7 +321,6 @@ derive_covid_status = function(df,v,...) {
 }
 
 
-
 #' Create 4 non exclusive diagnostic categories
 #'
 #' Pneumonia if one of:
@@ -326,7 +331,7 @@ derive_covid_status = function(df,v,...) {
 #' NP-LRTI if:
 #' * Not pneumonia and Standard of care LTRI diagnosis
 #'
-#' Exascerbation of CRDE:
+#' Exacerbation of CRDE:
 #' * Standard of care exacerbation COPD
 #' * Standard of care exacerbation Non-COPD
 #' * (N.B. may be pneumonia or NP-LRTI)
@@ -372,11 +377,11 @@ derive_diagnosis_categories = function(df,v) {
 #' * pneumonias
 #' * NP-LRTI
 #' * laboratory confirmed COVID diagnosis
-#' * admission swab covid positive
+#' * admission swab COVID positive
 #'
 #' Infective admissions are excluded if:
-#' * Standard of care non-infectious process
-#' * SOC non-LRTI (and none of the other categoories above)
+#' * Standard of care states non-infectious process
+#' * SOC non-LRTI (and none of the other categories above)
 #'
 #' Any unknowns are defined as non-Infective
 #'
@@ -463,6 +468,8 @@ derive_nosocomial_covid_status = function(df, v, ...) {
       dplyr::case_when(
         is.na(admission.covid_pcr_result) ~ NA_character_,
         admission.covid_pcr_result == "SARS-CoV-2 PCR negative" ~ NA_character_,
+        admission.hospital_acquired_covid == "yes" ~ "Possible nosocomial",
+        admission.non_lrtd_hospital_acquired_covid == "yes" ~ "Possible nosocomial",
         is.na(diagnosis.first_COVID_positive_swab_date) ~ "Unknown",
         diagnosis.first_COVID_positive_swab_date < admission.date ~ "Community",
         diagnosis.first_COVID_positive_swab_date < admission.date+7 ~ "Probable community",
@@ -473,21 +480,6 @@ derive_nosocomial_covid_status = function(df, v, ...) {
   )
 }
 
-minAlpha = as.Date("2020-12-05")
-maxWuhan = as.Date("2021-02-13")
-minDelta = as.Date("2021-05-15")
-# maxAlpha = as.Date("2021-06-26") # officially according to sanger but there were very low levels of Alpha prior to this
-maxAlpha = as.Date("2021-06-01") # unofficially this cutoff was used in the Delta Omicron paper.
-# minOmicron = as.Date("2021-11-27") # according to sanger
-minOmicron = as.Date("2021-11-07")
-# according to in hospital data this was the earliest admission with Omicron but
-# this could be a nosicomially acquired case
-# i.e. df %>% dplyr::filter(genomic.variant == "Omicron") %>% dplyr::summarise(min = min(admission.date)) %>% dplyr::pull(min)
-# maxDelta = as.Date("2022-01-15") # according to sanger
-maxDelta = as.Date("2022-02-07") # according to in hospital results
-# i.e. df %>% dplyr::filter(genomic.variant == "Delta") %>% dplyr::summarise(max = max(admission.date)) %>% dplyr::pull(max)
-
-.fdmy = function(date) format(date,"%d %b %Y")
 
 # COVID ----
 
@@ -500,10 +492,10 @@ maxDelta = as.Date("2022-02-07") # according to in hospital results
 #'
 #' [Sanger centre data](https://covid19.sanger.ac.uk/lineages/raw?date=2021-07-24&area=E06000023&lineageView=1&lineages=A%2CB%2CB.1.1.7%2CB.1.617.2%2CB.1.1.529&colours=7%2C3%2C1%2C6%2C2)
 #'
-#' * Pre-alpha before `r .fdmy(minAlpha)`
-#' * Alpha between `r .fdmy(maxWuhan)` and `r .fdmy(minDelta)`
-#' * Delta between `r .fdmy(maxAlpha)` and `r .fdmy(minOmicron)`
-#' * Omicron from `r .fdmy(maxDelta)` to present
+#' * Pre-alpha before `r .fdmy(key_dates$min_alpha)`
+#' * Alpha between `r .fdmy(key_dates$max_wuhan)` and `r .fdmy(key_dates$min_delta)`
+#' * Delta between `r .fdmy(key_dates$max_alpha)` and `r .fdmy(key_dates$min_omicron)`
+#' * Omicron from `r .fdmy(key_dates$max_delta)` to present
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -517,10 +509,10 @@ derive_genomic_variant = function(df,v,...) {
       is.na(admission.covid_pcr_result) ~ NA_character_,
       admission.covid_pcr_result == "SARS-CoV-2 PCR negative" ~ NA_character_,
       !is.na(genomic.variant) & genomic.variant != "unknown" ~ as.character(genomic.variant),
-      admission.date < minAlpha ~ "Pre-alpha",
-      admission.date > maxWuhan & admission.date < minDelta ~ "Alpha",
-      admission.date > maxAlpha & admission.date < minOmicron ~ "Delta",
-      admission.date > maxDelta ~ "Omicron",
+      admission.date < key_dates$min_alpha ~ "Pre-alpha",
+      admission.date > key_dates$max_wuhan & admission.date < key_dates$min_delta ~ "Alpha",
+      admission.date > key_dates$max_alpha & admission.date < key_dates$min_omicron ~ "Delta",
+      admission.date > key_dates$max_delta ~ "Omicron",
       TRUE ~ NA_character_
     ) %>% factor(levels = c("Pre-alpha","Alpha","Delta","Omicron"))
   )
@@ -697,8 +689,9 @@ derive_vaccine_combinations = function(df,v,...) {
 #'   * NP-LRTI - non-pneumonic lower respiratory tract infection
 #'   * No evidence LRTI - believed to be non-infective at admission, this last
 #'   group is usually discarded from analysis, however it only really describes
-#'   people without a clinical diagnosis of infection on admission. There could
-#'   still be undiagnosed infection there.
+#'   people without a clinical diagnosis of LRTI on admission. There could
+#'   still be undiagnosed infection there, and some of these patients have
+#'   COVID (possibly without lower respiratory symptoms?).
 #'
 #'
 #' @inherit derive_template
@@ -768,7 +761,7 @@ derive_pneumococcal_high_risk = function(df,v,...) {
 
 #' Determine pneumococcal risk group
 #'
-#' Original algorithm from B1851202 SAP defines a 3 class risk group
+#' Original algorithm from B1851202 SAP defines a 3 class risk group:
 #'
 #' High-risk (immunocompromised)
 #'
@@ -875,7 +868,7 @@ derive_pneumococcal_risk_category = function(df,v,...) {
 #'
 #' Scores 0-3 are for community cases.
 #'
-#' We generally cant tell the difference between 7 and 8.
+#' We generally can't tell the difference between 7 and 8.
 #'
 #' * 4: Hospitalised; no oxygen therapy
 #' * 5: Hospitalised; oxygen by mask or nasal prongs
@@ -932,6 +925,9 @@ derive_WHO_outcome_score = function(df, v, ...) {
 #' Binary outcomes for severe disease
 #'
 #' * Confirmed death within 30 days (subject to potential censoring)
+#' * Confirmed death within 1 year (subject to potential censoring). The
+#'   date of censoring depends on when the mortality data was updated. Currently
+#'   this is `r .fdmy(key_dates$mortality_updated)`
 #' * Confirmed death (any length follow up)
 #' * Any ICU admission
 #'
@@ -971,31 +967,23 @@ derive_severe_disease_outcomes = function(df,v,...) {
       )
 }
 
-#' Survival outcomes
+
+#' Survival analysis times
+#'
+#' Fixes a data issue with length of stay and survival duration being filled in
+#' across 2 columns. and missing last observation dates so that we can calculate
+#' survival censoring consistently in other data sets.
 #'
 #' Calculates:
 #'
 #' * A consistent length of stay - shortest of length of stay and 30 day and 1 yr survival duration
-#' * a 30 day survival duration and censoring status for survfit
-#' * a 1 year survival duration and censoring status for survfit
-#' * Hospital length of stay and censoring status for survfit
-#' * Categorical length of stay and 30 day survival 0-3, 4-6, 7-13, 14-29, gte 30
-#'
-#'
-#' time: for this is the follow up time to event.
-#'
-#' event: The event type indicator
-#' * 0=alive/censored,
-#' * 1=dead.
-#'
-#' or for length of stay
-#' * 0=still inpatient,
-#' * 1=discharged from hospital/ dead
+#' * A consistent uncensored time to death - shortest of 30 day and 1 yr survival duration
+#' * A consistent time to last observation
 #'
 #' @inherit derive_template
 #' @concept derived
 #' @export
-derive_survival_censoring = function(df,v,...) {
+derive_survival_times_avoncap = function(df,v,...) {
   last_updated = min(c(
     max(df$admin.enrollment_date)+30,
     attributes(df)$date
@@ -1003,69 +991,45 @@ derive_survival_censoring = function(df,v,...) {
   df %>%
     dplyr::mutate(
 
+      # death status is recorded if the patient is in hospital.
+      # A NA LOS and NA time to death is current up to last updates
+
+      # If the patient is discharged we lose sight of them until the mortality
+      # data has been updated (intermittently)
+      # A non NA LOS and NA time to death is censored at the latest of discharge
+      # date and mortality update date.
+
+      # length of stay in hospital until death or discharge.
+      # NA implies not discharged (or potentially record not updated)
+      # N.B. pmax and pmin return NA if all the parallel elements are NA even for na.rm = TRUE.
       survival.length_of_stay = pmin(
         outcome.length_of_stay, outcome.survival_duration, outcome.one_year_survival_duration,na.rm = TRUE),
 
-      survival.length_of_stay_category =
-        avoncap::cut_integer(survival.length_of_stay, c(4,7,14,30), lower_limit = 0),
+      # time to death.
+      # NA implies not died or not yet recorded as having died.
+      survival.uncensored_time_to_death = pmin(
+        outcome.survival_duration, outcome.one_year_survival_duration, na.rm = TRUE),
 
-      survival.30_day_death_time = dplyr::case_when(
-        # confirmed dead
-        outcome.survival_duration <= 30 ~ outcome.survival_duration,
-        outcome.one_year_survival_duration <= 30 ~ outcome.one_year_survival_duration,
-        # censored (assumed alive)
-        as.integer(key_dates$mortality_updated - admission.date) <= 30 ~ as.integer(key_dates$mortality_updated - admission.date),
-        TRUE ~ 30
-      ),
-      survival.30_day_death_event = dplyr::case_when(
-        # confirmed dead
-        outcome.survival_duration <= 30 ~ 1,
-        outcome.one_year_survival_duration <= 30 ~ 1,
-        # censored (assumed alive)
-        as.integer(key_dates$mortality_updated - admission.date) <= 30 ~ 0,
-        TRUE ~ 0
-      ),
-
-      survival.time_to_death_category =
-        avoncap::cut_integer(
-            dplyr::if_else(
-            # have to account for censored = not dead yet.
-            survival.30_day_death_event == 0,100,survival.30_day_death_time),
-          c(4,7,14,30), lower_limit = 0),
-
-      survival.1_yr_death_time = dplyr::case_when(
-        # confirmed dead
-        outcome.survival_duration <= 365 ~ outcome.survival_duration,
-        outcome.one_year_survival_duration <= 365 ~ outcome.one_year_survival_duration,
-        # censored (assumed alive)
-        as.integer(key_dates$mortality_updated - admission.date) <= 365 ~ as.integer(key_dates$mortality_updated - admission.date),
-        TRUE ~ 365
-      ),
-      survival.1_yr_death_event = dplyr::case_when(
-        # confirmed dead
-        outcome.survival_duration <= 365 ~ 1,
-        outcome.one_year_survival_duration <= 365 ~ 1,
-        # censored (assumed alive)
-        as.integer(key_dates$mortality_updated - admission.date) <= 365 ~ 0,
-        TRUE ~ 0
-      ),
-      survival.30_day_discharge_time = dplyr::case_when(
-        survival.length_of_stay <= 30 ~ survival.length_of_stay,
-        as.integer(last_updated - admission.date) <= 30 ~ as.integer(last_updated - admission.date),
-        TRUE ~ 30
-      ),
-      survival.30_day_discharge_event = dplyr::case_when(
-        # confirmed dead. discharge event is censored as we have no information
-        # about their discharge status after death.
-        survival.30_day_death_event == 1 ~ 0,
-        # confirmed discharged in less than 30 days
-        survival.length_of_stay <= 30 ~ 1,
-        # not discharged by 30 days (or last updated date)
-        as.integer(last_updated - admission.date) <= 30 ~ 0,
-        TRUE ~ 0
+      # last time of update for los / time to death
+      # death status of NA means alive up to this date, after this censoring
+      # is active.
+      survival.last_observed_event = pmax(
+        # in hospital up to end of data
+        ifelse(is.na(survival.uncensored_time_to_death) & is.na(survival.length_of_stay),
+               last_updated - admission.date, NA),
+        # discharged or died at this point
+        survival.length_of_stay,
+        # discharged and not died but mortality checked, alive can be inferred
+        # This is negative if admission is after mortality updated
+        # in this case it is not an observation.
+        (key_dates$mortality_updated - admission.date) %>% ifelse(. < 0, NA, .),
+        na.rm = TRUE
       )
     )
 }
+
+
+
 
 #' Binary outcomes for hospital burden
 #'

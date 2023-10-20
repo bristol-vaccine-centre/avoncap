@@ -21,14 +21,14 @@ Infective admissions are defined as any of:
 \item pneumonias
 \item NP-LRTI
 \item laboratory confirmed COVID diagnosis
-\item admission swab covid positive
+\item admission swab COVID positive
 }
 }
 \details{
 Infective admissions are excluded if:
 \itemize{
-\item Standard of care non-infectious process
-\item SOC non-LRTI (and none of the other categoories above)
+\item Standard of care states non-infectious process
+\item SOC non-LRTI (and none of the other categories above)
 }
 
 Any unknowns are defined as non-Infective

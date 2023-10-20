@@ -23,15 +23,15 @@ Typically used in regression models with non-linear effects over splines
 \details{
 \itemize{
 \item Age category - UK demographic data ends at 85, and 65 key cut off in 5 year
-bands, so 10 year bands
-age categories end at 85 (N.b.) there is a more principled reason here.
-Boundaries fall approx 0.1, 0.2, 0.4, 0.6, 0.8 quantiles. Could merge first
-two groups but outcomes are usually different.
-Covid vaccination cohorts were in 5 year age groups, but vaccination prioirty
+bands, so 10 year bands age categories end at 85 (N.b.) there is a more
+principled reason here. Boundaries fall approx 0.1, 0.2, 0.4, 0.6, 0.8
+quantiles. Could merge first two groups but outcomes are usually different.
+Covid vaccination cohorts were in 5 year age groups, but vaccination
+prioirity was in these groups approximately.
 \item 65+ Age of pneumovax eligibility
 \item CCI - 4 bands as defined in https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891119/#:~:text=Based\%20on\%20the\%20CCI\%20score,with\%20CCI\%20scores\%20\%E2\%89\%A55.and
 similar in https://link.springer.com/article/10.1007/s10654-021-00802-z
-\item Rockwood score - independent versus dependent frailty
+\item Rockwood score - independent versus dependent frailty levels.
 }
 }
 \concept{derived}

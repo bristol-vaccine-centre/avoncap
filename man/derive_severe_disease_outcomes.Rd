@@ -20,6 +20,9 @@ a dataframe
 \description{
 \itemize{
 \item Confirmed death within 30 days (subject to potential censoring)
+\item Confirmed death within 1 year (subject to potential censoring). The
+date of censoring depends on when the mortality data was updated. Currently
+this is 31 Mar 2023
 \item Confirmed death (any length follow up)
 \item Any ICU admission
 }

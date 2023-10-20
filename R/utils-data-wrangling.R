@@ -1,4 +1,13 @@
+.fdmy = function(date) format(date,"%d %b %Y")
 
+.restore_attributes = function(new_df, old_df) {
+  # copy old attributes to new data
+  old_attr = setdiff(
+    names(attributes(old_df)),
+    # these structural attributes are from dplyr group
+    c(names(attributes(new_df)),"row.names","names","groups"))
+  new_df %>% magrittr::set_attributes( c(attributes(new_df), attributes(old_df)[old_attr] ) )
+}
 
 ## Study dates and weeks ----
 

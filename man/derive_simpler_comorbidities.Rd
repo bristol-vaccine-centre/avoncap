@@ -22,10 +22,14 @@ and generate some summary values
 }
 \details{
 \itemize{
-\item any chronic resp dx: asthma, bronchiectasis, chronic pleural disease, COPD,
+\item simple DM without insulin dependence
+\item Solid / Haematological / Any cancer present binary indicators
+\item any chronic resp dx: i.e. any of asthma, bronchiectasis, chronic pleural disease, COPD,
 interstitial lung dx, cyctic fibrosis, other chronic resp dx
 \item any chronic heart disease: pulmonary htn, CCF, IHD, previous MI, congential
 heart dx, hypertension, AF, other arrythmia, other heart dx, other other heart dx
+\item Stroke or TIA binary
+\item Any immune compromise binary (immunodeficient or on immune suppressants)
 }
 }
 \concept{derived}

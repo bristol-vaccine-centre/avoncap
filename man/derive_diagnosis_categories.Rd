@@ -29,7 +29,7 @@ NP-LRTI if:
 \item Not pneumonia and Standard of care LTRI diagnosis
 }
 
-Exascerbation of CRDE:
+Exacerbation of CRDE:
 \itemize{
 \item Standard of care exacerbation COPD
 \item Standard of care exacerbation Non-COPD

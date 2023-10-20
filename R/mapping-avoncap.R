@@ -8,10 +8,10 @@
 # nhs_extract, pneumococcal
 
 
-keys_avoncap_central = function() list(
+keys_avoncap_central = function() {list(
   "admit" = "{admin.record_number}",
   "consent" = "{admin.consented_record_number}"
-)
+)}
 
 #' Core avoncap consent
 #'
@@ -20,7 +20,7 @@ keys_avoncap_central = function() list(
 #' @concept map
 #' @return a list
 #' @export
-map_avoncap_consent = function() list(
+map_avoncap_consent = function() {list(
   "consented" = .normalise_list(
     admin.consented,
     c("Not approached","Yes","Declined consent"), zeroValue = TRUE
@@ -35,7 +35,7 @@ map_avoncap_consent = function() list(
   "consent_urine" = .normalise_yesno(admin.consent_for_urine),
   "consent_blood" = .normalise_yesno(admin.consent_for_blood),
   "consent_resp_samples1" = .normalise_yesno(admin.consent_for_respiratory_samples)
-)
+)}
 
 #' Core avoncap normalisation
 #'
@@ -44,7 +44,7 @@ map_avoncap_consent = function() list(
 #' @concept map
 #' @return a list
 #' @export
-map_avoncap_central = function() list(
+map_avoncap_central = function() {list(
 
   # TODO:
   # 1) "did_the_patient_have_respi" = .normalise_yesno, actually 4 options, not clear what they are
@@ -604,4 +604,4 @@ map_avoncap_central = function() list(
 
     # TODO: antivirals but they are in different format.
 
-)
+)}

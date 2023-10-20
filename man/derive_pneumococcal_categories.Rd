@@ -29,8 +29,9 @@ The 4 category disjoint classification.
 \item NP-LRTI - non-pneumonic lower respiratory tract infection
 \item No evidence LRTI - believed to be non-infective at admission, this last
 group is usually discarded from analysis, however it only really describes
-people without a clinical diagnosis of infection on admission. There could
-still be undiagnosed infection there.
+people without a clinical diagnosis of LRTI on admission. There could
+still be undiagnosed infection there, and some of these patients have
+COVID (possibly without lower respiratory symptoms?).
 }
 }
 }

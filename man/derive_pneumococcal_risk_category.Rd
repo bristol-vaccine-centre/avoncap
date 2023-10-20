@@ -18,7 +18,7 @@ set can be explicitly supplied with \code{v = get_value_sets(df)}}
 a dataframe
 }
 \description{
-Original algorithm from B1851202 SAP defines a 3 class risk group
+Original algorithm from B1851202 SAP defines a 3 class risk group:
 }
 \details{
 High-risk (immunocompromised)

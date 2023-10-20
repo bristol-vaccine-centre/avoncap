@@ -1,30 +1,4 @@
-#' Get vaccine coverage group for known serotype
-#'
-#' For the longitudinal oneumocococcal data, a range of useful serotype groups
-#' is defined in the list `uad_groups`. The `default_pcv_map` gives a set of
-#' mappings to group headings that gives the overall serotype distribution by
-#' vaccine.
-#'
-#' @param df the normalised longitudinal pneumococcal data
-#' @param ... ignored
-#' @param pcv_map a 2 column data frame mapping `group` to `serotype`
-#' @param not_matched what to call the column of non-matched serotypes? Default is
-#' `Other`, but `Non vaccine type` might be preferred.
-#' @param col_name the target column name for the pcv grouping (defaults
-#' to `pneumo.phe_pcv_group`)
-#'
-#' @concept derived
-#' @return an augmented data frame with an additional column defined by `col_name`
-#' @export
-derive_phe_pcv_group = function(df, ..., pcv_map = serotype_pcv_map, not_matched="Other", col_name = "pneumo.phe_pcv_group") {
 
-  col_name = rlang::ensym(col_name)
-
-  df %>%
-    dplyr::left_join(pcv_map, by=c("pneumo.phe_serotype"="serotype")) %>%
-    dplyr::mutate(group = forcats::fct_drop(forcats::fct_na_value_to_level( group, level=not_matched))) %>%
-    dplyr::rename(!!col_name := group)
-}
 
 #' Group pneumo serotypes according to e.g. vaccine coverage
 #'

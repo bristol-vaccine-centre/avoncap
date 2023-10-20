@@ -21,7 +21,7 @@ a dataframe
 Scores 0-3 are for community cases.
 }
 \details{
-We generally cant tell the difference between 7 and 8.
+We generally can't tell the difference between 7 and 8.
 \itemize{
 \item 4: Hospitalised; no oxygen therapy
 \item 5: Hospitalised; oxygen by mask or nasal prongs

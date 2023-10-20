@@ -2,58 +2,6 @@
   if (is.null(x)) default else x
 }
 
-# Dispatch normalisation based on data type and subtype ---
-
-#' Sanitise AvonCap data columns
-#'
-#' AvonCap data has lots of columns which are named in a difficult to remember
-#' fashion, composed of data items that have enumerated values with no
-#' semantics. This makes displaying them difficult and any filtering done on the
-#' raw data inscrutable. Depending on the source of the data some different
-#' columns may be present due to differences in the NHS and UoB data sets. The
-#' redcap database has some options that may be checklists and some that are
-#' radio buttons, both of these end up with mysterious names in the data.
-#'
-#' This function maps the data into a tidy dataframe with consistently named
-#' columns, and named factors where appropriate. If not present in the data the
-#' ethnicity
-#'
-#' files Most of the sanitisation code is held in the
-#' `zzz-avoncap-mappings.R` file.
-#'
-#' @param rawData - the raw data from `load_data()`
-#' @param instrument the numeric instrument number if applicable
-#' @inheritDotParams normalise_generic
-#'
-#' @return a tracked dataframe with
-#' @export
-normalise_data = function(
-    rawData,
-    instrument=NULL,
-    ...
-) {
-
-  type = attr(rawData,"type")
-  subtype = attr(rawData,"subtype")
-  norm_fn = c("normalise",type,subtype,instrument) %>% stringr::str_replace("-","_") %>% paste0(collapse=".")
-  message("Normalising data using: ",norm_fn)
-  norm_fn = tryCatch(
-    # utils::getFromNamespace(norm_fn,"avoncap"),
-    get(norm_fn),
-    error = function(e) {
-      message("No data normalisation defined for ",norm_fn)
-      return(function(x, ...) x)
-    }
-  )
-  # dispatch the call to the specific subtype of the call
-  # or to a noop function if there is no specific method
-  norm_fn(rawData, ...) %>%
-    .restore_attributes(rawData) %>%
-    magrittr::set_attr("instrument", instrument)
-
-}
-
-
 # Dataset specific normalisation recipes ----
 
 # # the generic
@@ -88,13 +36,7 @@ normalise.avoncap_export.central = function(rawData, ...) {
     .wipe_non_consented_data()
 }
 
-.repeat_instrument = function(data, names) {
-  data %>% dplyr::select(tidyselect::starts_with(names)) %>%
-    colnames() %>%
-    stringr::str_extract("[0-9]+$") %>%
-    unique() %>%
-    stats::na.omit()
-}
+
 
 normalise.avoncap_export.central.micro = function(rawData, ...) {
   .cached({
@@ -210,10 +152,15 @@ normalise.urine_antigens.binax = function(rawData, ...) {
 }
 
 
-# Helper preprocessing steps ----
-# These are reusable bits of logic to fix specific deficiencies in the
-# different avoncap extracts
-# TO
+# Mapping manipulation ----
+
+.repeat_instrument = function(data, names) {
+  data %>% dplyr::select(tidyselect::starts_with(names)) %>%
+    colnames() %>%
+    stringr::str_extract("[0-9]+$") %>%
+    unique() %>%
+    stats::na.omit()
+}
 
 .rename_mapping = function(mapping, ...) {
   r = rlang::list2(...)
@@ -225,6 +172,10 @@ normalise.urine_antigens.binax = function(rawData, ...) {
   }
   return(mapping)
 }
+
+# Helper preprocessing steps ----
+# These are reusable bits of logic to fix specific deficiencies in the
+# different avoncap extracts
 
 .merge_ethnicity = function(rawData, ethn = try(avoncap::load_data("ethnicity",reproduce_at = Sys.Date()),silent = TRUE), ...) {
   if (!"record_number" %in% colnames(rawData)) {
@@ -341,7 +292,7 @@ normalise.urine_antigens.binax = function(rawData, ...) {
 
 # Consent postprocessing steps (avoncap) ----
 
-# Admin ----
+## Admin ----
 
 .derive_consent_flag = function(df) {
   df = df %>% dplyr::mutate(
@@ -383,7 +334,7 @@ normalise.urine_antigens.binax = function(rawData, ...) {
 
 }
 
-# Non consented patients ----
+## Non consented patients ----
 #
 # # fct = factor(c("a","b","c","a")) %>% magrittr::set_attr("test",1)
 # # .ifelsefct(fct=="a",NA,fct)

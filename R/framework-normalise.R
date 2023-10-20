@@ -1,15 +1,60 @@
 ## Generic data normalisation infrastructure ----
 # This applies a set of mappings
 
-#' Sanitise RedCap data columns
+# Dispatch normalisation based on data type and subtype ---
+
+#' Sanitise AvonCap data columns
 #'
+#' AvonCap data has lots of columns which are named in a difficult to remember
+#' fashion, composed of data items that have enumerated values with no
+#' semantics. This makes displaying them difficult and any filtering done on the
+#' raw data inscrutable. Depending on the source of the data some different
+#' columns may be present due to differences in the NHS and UoB data sets. The
 #' redcap database has some options that may be checklists and some that are
 #' radio buttons, both of these end up with mysterious names in the data.
 #'
 #' This function maps the data into a tidy dataframe with consistently named
-#' columns, and named factors where appropriate. If not present in the data the
-#' ethnicity
+#' columns, and named factors where appropriate. The mapping is defined in data.
 #'
+#' files Most of the sanitisation code is held in the
+#' `normalise-xxx.R` file. but these in turn may depend on the `mapping-xxx.R`
+#' files
+#'
+#' @param rawData - the raw data from `load_data()`
+#' @param instrument the numeric instrument number if applicable
+#' @inheritDotParams normalise_generic
+#'
+#' @return a tracked dataframe with n
+#' @export
+normalise_data = function(
+    rawData,
+    instrument=NULL,
+    ...
+) {
+
+  type = attr(rawData,"type")
+  subtype = attr(rawData,"subtype")
+  norm_fn = c("normalise",type,subtype,instrument) %>% stringr::str_replace("-","_") %>% paste0(collapse=".")
+  message("Normalising data using: ",norm_fn)
+  norm_fn = tryCatch(
+    # utils::getFromNamespace(norm_fn,"avoncap"),
+    get(norm_fn),
+    error = function(e) {
+      message("No data normalisation defined for ",norm_fn)
+      return(function(x, ...) x)
+    }
+  )
+  # dispatch the call to the specific subtype of the call
+  # or to a noop function if there is no specific method
+  norm_fn(rawData, ...) %>%
+    .restore_attributes(rawData) %>%
+    magrittr::set_attr("instrument", instrument)
+
+}
+
+#' Sanitise RedCap data columns
+#'
+#' @keywords internal
 #' @param rawData - the raw data from `load_data()`
 #' @param remove_mapped gets rid of original columns for which we have a mapping
 #'   (leaving the new versions)
@@ -22,8 +67,7 @@
 #' @param ... passed onto `.cached(...)`. e.g. `nocache = TRUE` can be used to
 #'   defeat caching.
 #'
-#' @return a tracked dataframe with
-#' @export
+#' @return a tracked dataframe with mappings applied
 normalise_generic = function(
     rawData,
     mappings,
@@ -103,14 +147,6 @@ normalise_generic = function(
   return(tmp2)
 }
 
-.restore_attributes = function(new_df, old_df) {
-  # copy old attributes to new data
-  old_attr = setdiff(
-    names(attributes(old_df)),
-    # these structural attributes are from dplyr group
-    c(names(attributes(new_df)),"row.names","names","groups"))
-  new_df %>% magrittr::set_attributes( c(attributes(new_df), attributes(old_df)[old_attr] ) )
-}
 
 ## Keys ----
 

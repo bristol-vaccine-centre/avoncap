@@ -2,7 +2,7 @@
 % Please edit documentation in R/column-labelling.R
 \name{extract_dependencies}
 \alias{extract_dependencies}
-\title{Extract the}
+\title{Get provenance of data column}
 \usage{
 extract_dependencies(data, col, original = TRUE)
 }
@@ -19,5 +19,7 @@ a named list of dependencies and original column names for a given
 column
 }
 \description{
-Extract the
+When a data set is normalised or augmented the original column names are
+stored as metadata. This helps us determine how a particular item was created.
+In future this will be useful for documentation.
 }

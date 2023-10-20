@@ -27,9 +27,21 @@ stacked_barplot = function(data, mapping, ...) {
     ggplot2::ylab("proportion")
 }
 
-
+#' Dodged bar and whiskers proportions
+#'
+#' This function plots a stacked bar of proportions for an input set of data
+#'
+#' @param data the data
+#' @param mapping a aes mapping with at least `x` and `fill`. If facetting then
+#'   `group` must contain the facet variable
+#' @param ... passed to `geom_bar`
+#' @param width width of position dodge
+#' @param size the bar size
+#'
+#' @return a ggplot
+#' @export
 binomial_proportion_points = function(data, mapping, ..., width = 0.8, size=0.5) {
-  tmp = .summary_binomial(data,mapping,.x)
+  tmp = .summary_binomial(data %>% ungroup(),mapping,.x)
   ggplot2::ggplot(tmp$data, tmp$mapping)+
     ggplot2::geom_point(mapping=ggplot2::aes(y=mean), position=ggplot2::position_dodge(width=width), size=size, ...)+
     ggplot2::geom_errorbar(mapping=ggplot2::aes(ymin=lower, ymax=upper), position=ggplot2::position_dodge(width=width), width=width*0.9, ...)+
@@ -78,7 +90,7 @@ gg_label_size = function(pts) {
 
   tmp3 = tmp2 %>%
     dplyr::mutate(binom::binom.confint(count, total, methods="wilson")) %>%
-    dplyr::rename(!!!rename)
+    dplyr::mutate(!!!rename)
   # TODO: this does not handle NaNs as produced by 0/0 groups.
   # These are probably stripped out by ggplot.
 

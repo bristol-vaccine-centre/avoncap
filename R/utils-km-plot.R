@@ -10,6 +10,7 @@
 #' @param maxtime the longest x value to plot
 #' @param ylab the y axis label
 #' @param xlab the x axis label
+#' @param facetlab a label to add as a facet title
 #' @param ylim the range to show on the KM plot
 #' @param n_breaks number of x axis breaks to display this also determines the
 #'   timing and number of "at risk" counts to display.
@@ -18,10 +19,12 @@
 #'
 #' @return a ggplot patchwork.
 #' @export
-km_plot = function(df, coxmodel, facet=NULL, ...,
+km_plot = function(df, coxmodel,
+                   facet=NULL, ...,
                    maxtime = max(sfit$time),
                    ylab=if (!invert) "surviving (%)" else "affected (%)",
                    xlab="time (days)",
+                   facetlab = NULL,
                    ylim=c(NA,100),
                    n_breaks=5,
                    heights = c(10,1),
@@ -47,7 +50,7 @@ km_plot = function(df, coxmodel, facet=NULL, ...,
     surv.lower = c(sfit$lower, rep(1,length(lvl))),
     surv.upper = c(sfit$upper, rep(1,length(lvl))),
     std.error = c(sfit$std.err, rep(0,length(lvl)))
-  ) %>% dplyr::arrange(strata, time) %>%
+  ) %>% dplyr::arrange(strata, time, n.event) %>%
     dplyr::group_by(strata) %>%
     # needed to get the end of the rectangles.
     dplyr::mutate(next.time = dplyr::lead(time))
@@ -74,6 +77,11 @@ km_plot = function(df, coxmodel, facet=NULL, ...,
     ggplot2::theme(axis.text.x.bottom = ggplot2::element_blank())
 
   times = scales::breaks_extended(n=n_breaks)(0:maxtime)
+
+  if (!is.null(facetlab)) {
+    form = stats::as.formula(sprintf(" ~ \"%s\" ",facetlab))
+    p1 = p1 + ggplot2::facet_wrap(form)
+  }
 
   # at risk table.
 

@@ -52,7 +52,7 @@ readable_label = function(columnVar, colNames = default_column_names()) {
   "CCI","CKD","ICU","BMI","NEWS2","COVID","LRTI","aLRTI","IMD","CURB65","MI",
   "FiO2","PEEP","BP","HIV","AIDS","AF","PE","STEMI","NSTEMI","LOS","WHO",
   "IHD","CCF","TIA","CVA","DVT","CXR","COPD","ARF","ACS","VTE","eGFR","pH",
-  "CRP","CURB","CRB")
+  "CRP","CURB","CRB","PPV23","PCV20","PCV15","PCV13","PCV7")
 ) {
   out = strings
   for(acronym in acronyms) {
@@ -121,7 +121,7 @@ readable_label_mapping.default = function(x, colNames = default_column_names(...
   return(tmp)
 }
 
-# Extract column metadata ----
+# Extract column provenance metadata ----
 
 #' Get the mapping of transformed columns back to original
 #'
@@ -162,7 +162,11 @@ find_new_field_names = function(normalised, fields) {
   return(tmp)
 }
 
-#' Extract the
+#' Get provenance of data column
+#'
+#' When a data set is normalised or augmented the original column names are
+#' stored as metadata. This helps us determine how a particular item was created.
+#' In future this will be useful for documentation.
 #'
 #' @param data the dataframe
 #' @param col the column as a symbol
@@ -181,6 +185,7 @@ extract_dependencies = function(data, col, original = TRUE) {
   }
 }
 
+# recursive function.
 .extract_dependencies = function(data, col, d, max_d) {
   if (d==0) return(character())
   col = rlang::ensym(col)

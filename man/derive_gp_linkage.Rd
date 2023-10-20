@@ -2,7 +2,7 @@
 % Please edit documentation in R/augment-avoncap.R
 \name{derive_gp_linkage}
 \alias{derive_gp_linkage}
-\title{Identify patients from surgeries in linked GP study}
+\title{Identify patients from the GP surgeries in linked primary care study}
 \usage{
 derive_gp_linkage(df, v)
 }
@@ -16,6 +16,6 @@ set can be explicitly supplied with \code{v = get_value_sets(df)}}
 a dataframe
 }
 \description{
-Identify patients from surgeries in linked GP study
+Identify patients from the GP surgeries in linked primary care study
 }
 \concept{derived}

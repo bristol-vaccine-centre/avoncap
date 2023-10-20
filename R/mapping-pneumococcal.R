@@ -12,7 +12,7 @@ keys_avoncap_pneumococcal  = function(instrument) {
 #' @concept map
 #' @return a list
 #' @export
-map_avoncap_pneumococcal = function() list(
+map_avoncap_pneumococcal = function() {list(
 
   "participant_number" = .normalise_name(admin.record_number),
   "hospital" = .normalise_list(admin.hospital, c("BRI", "Southmead", "RUH")),
@@ -27,7 +27,7 @@ map_avoncap_pneumococcal = function() list(
   "serotype" = .normalise_pneumo_serotype(pneumo.phe_serotype),
   # "pcv13_serotype",
   # "pcr_sample",
-  "smoker" = .normalise_list(demog.smoker, c("Non-smoker", "Ex-smoker", "Current smoker"), zeroValue = TRUE),
+  "smoker" = .normalise_list(demog.smoker, c("Non-smoker", "Ex-smoker", "Current"), zeroValue = TRUE),
   "resp_disease" = .normalise_checkboxes(dplyr::vars(
     comorbid.no_resp_dx,
     comorbid.copd,
@@ -149,9 +149,13 @@ map_avoncap_pneumococcal = function() list(
   "systolic_bp" = .normalise_double(admission.systolic_bp),
   "diastolic_bp" = .normalise_double(admission.diastolic_bp),
   # "age_65_plus",
-  #"confusion" ,
-  "crb65_score"  = .normalise_double(admission.crb65),
-  "curb65_score"  = .normalise_double(admission.curb65),
+  # "confusion" ,
+  # "crb65_score"  = .normalise_double(admission.crb65),
+  "crb65_score" = .normalise_list(
+    admission.crb_65_severity_score,c("0-Very Low","1-Low","2-Moderate","3-Severe","4-Severe","5-Severe"),ordered=TRUE),
+  #"curb65_score"  = .normalise_double(admission.curb65),
+  "curb65_score" = .normalise_list(
+    admission.curb_65_severity_score,c("0-Very Low","1-Low","2-Moderate","3-Severe","4-Severe","5-Severe"),ordered=TRUE),
   "antibiotic_route" = .normalise_list(outcome.antibiotic_route, c("no antibiotic prescribed", "oral (PO)", "intravenous (IV)")),
   # This needs a bit of further processing as is often a combination of Abx.
   # "initial_antibiotic" = .normalise_text_to_factor(admission.first_antibiotic),
@@ -218,6 +222,6 @@ map_avoncap_pneumococcal = function() list(
   "imd_decile" = .normalise_name(demog.imd_decile)
 
 
-)
+)}
 
 
