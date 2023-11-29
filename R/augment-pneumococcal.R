@@ -12,7 +12,7 @@
 #' @concept derived
 #' @export
 derive_pneumo_polyfill = function(df, ...) {
-  df %>% mutate(
+  df %>% dplyr::mutate(
     comorbid.chronic_pleural_dx = NA %>% factor(c("no","yes")),
     comorbid.interstitial_lung_dx = NA %>% factor(c("no","yes")),
     comorbid.cystic_fibrosis = NA %>% factor(c("no","yes")),
@@ -46,7 +46,7 @@ derive_phe_pcv_group = function(df, v, ...) {
   serotype_groups = avoncap::serotype_data$map %>%
     dplyr::transmute(
       pneumo.phe_serotype=serotype,
-      pneumo.pcv_group = case_when(
+      pneumo.pcv_group = dplyr::case_when(
         PCV7 ~ "PCV7",
         PCV13 ~ "PCV13-7",
         PCV15 ~ "PCV15-13",
@@ -91,8 +91,8 @@ derive_phe_pcv_group = function(df, v, ...) {
 derive_invasive_status = function(df, ...) {
 
   df %>%
-    mutate(
-      pneumo.invasive_status = case_when(
+    dplyr::mutate(
+      pneumo.invasive_status = dplyr::case_when(
         admission.infection_site == "Meningitis" ~ "Invasive disease",
         admission.infection_site == "Septic arthritis" ~ "Invasive disease",
         pneumo.test_type != "Binax only" ~ "Invasive disease",
@@ -120,8 +120,8 @@ derive_invasive_status = function(df, ...) {
 #' @concept derived
 #' @export
 derive_pneumo_clinical_syndrome = function(df,v,...) {
-  df %>% mutate(
-    pneumo.clinical_syndrome = case_when(
+  df %>% dplyr::mutate(
+    pneumo.clinical_syndrome = dplyr::case_when(
       admission.infection_site == "Meningitis" ~ "Meningitis",
       outcome.pleural_effusion == "yes" | outcome.empyema == "yes" ~ "Effusion/Empyema",
       admission.infection_site == "Lung"  ~ "LRTI",
@@ -144,7 +144,7 @@ derive_pneumo_clinical_syndrome = function(df,v,...) {
 derive_continuous_categories_pneumo = function(df,v,...) {
   df %>%
     dplyr::mutate(
-  ) %>% mutate(
+  ) %>% dplyr::mutate(
     demog.age_category = cut(demog.age,breaks = c(0,35,50,65,75,85,Inf), labels = c("18-34","35-49","50-64","65-74","75-84","85+"), include.lowest = FALSE, ordered_result = TRUE),
     demog.age_eligible = cut(demog.age,breaks = c(0,65,Inf), labels = c("18-64","65+"),ordered_result = TRUE),
     admission.cci_category = cut(admission.charlson_comorbidity_index, breaks = c(-Inf,0,2,4,Inf), labels=c("None (0)","Mild (1-2)","Moderate (3-4)","Severe (5+)"), include.lowest = FALSE, ordered_result = TRUE),

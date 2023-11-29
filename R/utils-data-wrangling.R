@@ -108,3 +108,38 @@ cut_integer = function(x, cut_points, glue = "{label}", lower_limit = -Inf, uppe
     cut(x,include.lowest = TRUE,breaks = breaks, labels=labels$label2, ordered_result = TRUE, right=FALSE)
   )
 }
+
+## Case_when error helper ----
+
+# iris %>% select(-Sepal.Length) %>% mutate(test = case_when(
+#   Sepal.Width < 0.5 ~ "<0.5",
+#   if ("Sepal.Length" %in% colnames(.)) expr(Sepal.Length > 0.5 ~ "LONG") else NULL,
+#   Sepal.Width > 0.5 ~ ">0.5"
+# ))
+#
+# .ifpresent = function(form, df=.) {
+#   v = all.vars(rlang::f_lhs(form))
+#   if (all(v %in% colnames(df))) {
+#     return(form)
+#   } else {
+#     return(NULL)
+#   }
+# }
+
+.safe = function(expr) {
+  v = try(expr,silent = TRUE)
+  if (inherits(v,"try-error")) return(FALSE)
+  v
+}
+
+# iris %>% select(-Sepal.Length) %>% mutate(test = case_when(
+#   Sepal.Width < 0.5 ~ "<0.5",
+#   .safe(Sepal.Length > 0.5) ~ "LONG",
+#   Sepal.Width > 0.5 ~ ">0.5"
+# ))
+
+
+# TODO: use this more?
+.opt = function(...) {
+  tryCatch(rlang::eval_tidy(...), error=function(e) rlang::eval_tidy(FALSE))
+}

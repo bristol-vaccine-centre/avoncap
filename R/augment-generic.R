@@ -17,7 +17,7 @@ derive_quintile_category = function(col, labels = c("1-short","2","3","4","5-lon
     df %>% dplyr::mutate(
         !!outcol := cut(
           !!col,
-          quantile(!!col, seq(0,1,by=1/n),na.rm=TRUE),
+          stats::quantile(!!col, seq(0,1,by=1/n),na.rm=TRUE),
           labels=labels
         ) %>% ordered(levels = labels)
     )
@@ -52,12 +52,12 @@ derive_reordered_factors = function(referents = list(demog.gender = "Female")) {
 derive_pandemic_timings = function(date_col, prefix) {
   date_col = rlang::ensym(date_col)
   .p = function(s) {
-    as.symbol(sprintf("%s.%s", prefix, rlang::as_label(ensym(s))))
+    as.symbol(sprintf("%s.%s", prefix, rlang::as_label(rlang::ensym(s))))
   }
   return(function(df, ...) {
     df %>% dplyr::mutate(
       !!.p(pre_covid) := factor(ifelse(!!date_col<"2020-03-01","Pre-COVID","Post-COVID"),c("Pre-COVID","Post-COVID")),
-      !!.p(pandemic_period) := case_when(
+      !!.p(pandemic_period) := dplyr::case_when(
         is.na(!!date_col) ~ NA,
         !!date_col<"2018-03-01" ~ "Pre Mar 18",
         !!date_col<"2018-09-01" ~ "Mar 18-Aug 18",
@@ -71,7 +71,7 @@ derive_pandemic_timings = function(date_col, prefix) {
         !!date_col<"2022-09-01" ~ "Mar 22-Aug 22",
         TRUE ~ "Post Aug 22"
       ) %>% factor(c("Pre Mar 18","Mar 18-Aug 18","Sep 18-Feb 19","Mar 19-Aug 19","Sep 19-Feb 20","Mar 20-Aug 20","Sep 20-Feb 21","Mar 21-Aug 21","Sep 21-Feb 22","Mar 22-Aug 22","Post Aug 22")),
-      !!.p(pcv_vaccine_period) := case_when(
+      !!.p(pcv_vaccine_period) := dplyr::case_when(
         is.na(!!date_col) ~ NA,
         !!date_col<"2010-01-01" ~ "2006-2009",
         !!date_col<"2016-01-01" ~ "2010-2015",

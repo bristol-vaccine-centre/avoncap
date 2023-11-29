@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
     <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
@@ -84,8 +85,9 @@ set can be explicitly supplied with <code>v = get_value_sets(df)</code></p></dd>
 <li><p>NP-LRTI - non-pneumonic lower respiratory tract infection</p></li>
 <li><p>No evidence LRTI - believed to be non-infective at admission, this last
 group is usually discarded from analysis, however it only really describes
-people without a clinical diagnosis of infection on admission. There could
-still be undiagnosed infection there.</p></li>
+people without a clinical diagnosis of LRTI on admission. There could
+still be undiagnosed infection there, and some of these patients have
+COVID (possibly without lower respiratory symptoms?).</p></li>
 </ul></li>
 </ul></div>
 

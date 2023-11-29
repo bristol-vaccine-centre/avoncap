@@ -44,7 +44,7 @@ map_avoncap_virol = function(instrument) {
     "viroldays" = .normalise_pos_integer(virol.test_days_from_admission),
     "specimen_type" = .normalise_list(virol.test_type,c("Sputum", "Saliva", "Bronchoalveolar lavage (BAL)", "Pleural Fluid", "Swabbed material", "Blood")),
     "virus_isolated" = .normalise_yesno(virol.pathogen_detected),
-    "test_type" = .normalise_list(virol.test_type,c("PCR - COVID only", "PCR - Respiratory panel", "PCR Respiratory (Biofire)", "Viral Culture", "Lateral Flow - COVID only", "POCT Test (Abbott)")),
+    "test_type" = .normalise_list(virol.test_type,c("PCR - COVID only", "PCR - Respiratory panel", "Viral Culture", "Lateral Flow - COVID only","PCR Respiratory (Biofire)",  "POCT Test (Abbott)","PCR Quad Panel" )),
     "virus_pathogen" = .normalise_checkboxes_to_nested_list(virol.pathogen, .virol_isolate_list, "pathogen", "detected"),
     # "viral_other", text
     "virol_patient_lab" = .normalise_list(virol.test_provenance,c("Laboratory confirmed report (i.e. on ICE or Open Net)", "Patient reported (e.g. COVID-19 community testing)"))

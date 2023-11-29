@@ -14,6 +14,25 @@
 
 # derive_force_of_infection - growth rates from case data matched to time.
 
+#' Polyfill data
+#'
+#' Some basic context to allow comparison to ED data.
+#'
+#' * All of the patients admitted
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_polyfill_central = function(df,v,...) {
+  df %>%
+    dplyr::mutate(
+
+      outcome.admitted_to_hospital = factor("yes", levels=c("no","yes")),
+
+    )
+}
+
+
 # Admin ----
 
 #' Categorical scores for continuous variables
@@ -290,35 +309,37 @@ derive_nosocomial_status = function(df,v) {
 derive_covid_status = function(df,v,...) {
   # This part works in the UoB data set (lrti incidence)
   df %>% dplyr::mutate(
-    admission.covid_pcr_result = dplyr::case_when(
+      admission.covid_pcr_result = dplyr::case_when(
 
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed` ~ "SARS-CoV-2 PCR positive",
-      diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` & diagnosis.test_type == v$diagnosis.test_type$`PCR Confirmed` ~ "SARS-CoV-2 PCR positive",
+        diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed` ~ "SARS-CoV-2 PCR positive",
 
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - patient reported test` ~ "SARS-CoV-2 PCR negative",
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - clinical diagnosis (but negative test)` ~ "SARS-CoV-2 PCR negative",
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - negative test, unlikely COVID-19 disease` ~ "SARS-CoV-2 PCR negative",
-      diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 negative` ~ "SARS-CoV-2 PCR negative",
+        .safe(diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` & diagnosis.test_type == v$diagnosis.test_type$`PCR Confirmed`) ~ "SARS-CoV-2 PCR positive",
 
-      diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`No test performed` ~ NA_character_,
+        diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - patient reported test` ~ "SARS-CoV-2 PCR negative",
+        diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - clinical diagnosis (but negative test)` ~ "SARS-CoV-2 PCR negative",
+        diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - negative test, unlikely COVID-19 disease` ~ "SARS-CoV-2 PCR negative",
+        .safe(diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 negative`) ~ "SARS-CoV-2 PCR negative",
 
-      TRUE ~ NA_character_
-    ),
+        diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`No test performed` ~ NA_character_,
 
-    admission.is_covid = dplyr::case_when(
+        TRUE ~ NA_character_
+      ),
 
-      admission.covid_pcr_result == "SARS-CoV-2 PCR positive" ~ "Confirmed SARS-CoV-2",
-      # admission swabs field includes LFT results
-      diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` ~ "Confirmed SARS-CoV-2",
-      TRUE ~ "No evidence SARS-CoV-2"
+      admission.is_covid = dplyr::case_when(
+
+        admission.covid_pcr_result == "SARS-CoV-2 PCR positive" ~ "Confirmed SARS-CoV-2",
+        # admission swabs field includes LFT results
+        .safe(diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive`) ~ "Confirmed SARS-CoV-2",
+        TRUE ~ "No evidence SARS-CoV-2"
 
 
-    ) %>% factor(levels = c("Confirmed SARS-CoV-2","No evidence SARS-CoV-2"))
+      ) %>% factor(levels = c("Confirmed SARS-CoV-2","No evidence SARS-CoV-2"))
 
   )
 
-
 }
+
+
 
 
 #' Create 4 non exclusive diagnostic categories
@@ -468,12 +489,12 @@ derive_nosocomial_covid_status = function(df, v, ...) {
       dplyr::case_when(
         is.na(admission.covid_pcr_result) ~ NA_character_,
         admission.covid_pcr_result == "SARS-CoV-2 PCR negative" ~ NA_character_,
-        admission.hospital_acquired_covid == "yes" ~ "Possible nosocomial",
-        admission.non_lrtd_hospital_acquired_covid == "yes" ~ "Possible nosocomial",
-        is.na(diagnosis.first_COVID_positive_swab_date) ~ "Unknown",
-        diagnosis.first_COVID_positive_swab_date < admission.date ~ "Community",
-        diagnosis.first_COVID_positive_swab_date < admission.date+7 ~ "Probable community",
-        diagnosis.first_COVID_positive_swab_date < admission.date+28 ~ "Possible nosocomial",
+        .safe(admission.hospital_acquired_covid == "yes") ~ "Possible nosocomial",
+        .safe(admission.non_lrtd_hospital_acquired_covid == "yes") ~ "Possible nosocomial",
+        .safe(is.na(diagnosis.first_COVID_positive_swab_date)) ~ "Unknown",
+        .safe(diagnosis.first_COVID_positive_swab_date < admission.date) ~ "Community",
+        .safe(diagnosis.first_COVID_positive_swab_date < admission.date+7) ~ "Probable community",
+        .safe(diagnosis.first_COVID_positive_swab_date < admission.date+28) ~ "Possible nosocomial",
         TRUE ~ NA_character_
       ) %>% factor(levels = c("Community","Probable community","Possible nosocomial","Unknown"))
     # )
@@ -984,6 +1005,9 @@ derive_severe_disease_outcomes = function(df,v,...) {
 #' @concept derived
 #' @export
 derive_survival_times_avoncap = function(df,v,...) {
+  # any given record should be updated at 30 days post enrollment unless
+  # this has not happened yet, in which case the date of the file is used as a
+  # latest possible date.
   last_updated = min(c(
     max(df$admin.enrollment_date)+30,
     attributes(df)$date
@@ -1195,7 +1219,7 @@ derive_haematology_categories= function(df,v,...) {
 #   #     admission.infective_cause = dplyr::case_when(
 #   #       diagnosis.pneumonia == "yes" ~ "Infective",
 #   #       diagnosis.LRTI == "yes" ~ "Infective",
-#   #       .opt(diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed`) ~ "Infective",
+#   #       .safe(diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed`) ~ "Infective",
 #   #       diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` ~ "Infective",
 #   #       diagnosis.SOC_non_infectious_process == v$diagnosis.SOC_non_infectious_process$yes ~ "Non-infective",
 #   #       diagnosis.SOC_non_LRTI == v$diagnosis.SOC_non_LRTI$yes ~ "Non-infective",
@@ -1208,7 +1232,7 @@ derive_haematology_categories= function(df,v,...) {
 #   #   tmp2 %>% dplyr::mutate(
 #   #     admission.infective_cause = dplyr::case_when(
 #   #       diagnosis.admission_swab == v$diagnosis.admission_swab$`COVID-19 positive` ~ "Infective",
-#   #       .opt(diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed`) ~ "Infective",
+#   #       .safe(diagnosis.covid_19_diagnosis == v$diagnosis.covid_19_diagnosis$`COVID-19 - laboratory confirmed`) ~ "Infective",
 #   #       diagnosis.standard_of_care_COVID_diagnosis == v$diagnosis.standard_of_care_COVID_diagnosis$Pneumonia ~ "Infective",
 #   #       diagnosis.standard_of_care_COVID_diagnosis == v$diagnosis.standard_of_care_COVID_diagnosis$LRTI ~ "Infective",
 #   #

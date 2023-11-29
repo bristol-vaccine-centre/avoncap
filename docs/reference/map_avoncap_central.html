@@ -7,6 +7,7 @@ ac_study_number -&amp;gt; admin.consented_record_number (study_id)
 nhs_number -&amp;gt; admin.patient_identifier (ppi)
 duplicate -&amp;gt; admin.duplicate (yesno)
 enrollment_date -&amp;gt; admin.enrollment_date (date)
+admission_type -&amp;gt; admission.admission_route (list)
 study_year -&amp;gt; admin.study_year (name)
 file -&amp;gt; admin.data_file (name)
 week_number -&amp;gt; admin.week_number (name)
@@ -98,7 +99,7 @@ diastolic_bp -&amp;gt; admission.diastolic_bp (name)
 hr -&amp;gt; admission.heart_rate (name)
 temperature -&amp;gt; admission.temperature (list)
 symptom_days_preadmit -&amp;gt; admission.duration_symptoms (double)
-previous_infection -&amp;gt; admission.previous_covid_infection (list)
+previous_infection -&amp;gt; admission.previous_covid_infection (yesno_unknown)
 previousinfection_date -&amp;gt; admission.previous_covid_infection_date (date)
 c19d_preadm -&amp;gt; admission.time_since_covid_diagnosis (name)
 rockwood -&amp;gt; admission.rockwood_score (name)
@@ -118,8 +119,8 @@ c19_ionotropes -&amp;gt; day_7.ionotropes_needed (yesno)
 c19_complication -&amp;gt; day_7.PE, day_7.DVT, day_7.ARF, day_7.NSTEMI, day_7.STEMI, day_7.cardiac_failure, day_7.new_AF, day_7.new_other_arrythmia, day_7.inpatient_fall, day_7.other_complication, day_7.no_complication (checkboxes)
 c19_death7d -&amp;gt; day_7.death (yesno)
 c19_meds -&amp;gt; treatment.dexamethasone, treatment.remdesevir, treatment.tocilizumab, treatment.sarilumab, treatment.in_drug_trial, treatment.no_drug_treatment, treatment.sotrovimab (checkboxes)
-hospital_length_of_stay -&amp;gt; outcome.length_of_stay (name)
-survival_days -&amp;gt; outcome.survival_duration (double)
+hospital_length_of_stay -&amp;gt; outcome.length_of_stay, floor (integer)
+survival_days -&amp;gt; outcome.survival_duration, round (integer)
 ip_death -&amp;gt; outcome.inpatient_death (yesno)
 days_in_icu -&amp;gt; outcome.icu_duration (double)
 did_the_patient_have_respi -&amp;gt; outcome.respiratory_support_needed (yesno)
@@ -129,17 +130,18 @@ renal_replacement_therapy -&amp;gt; outcome.renal_support_duration (double)
 complications -&amp;gt; outcome.acute_renal_failure, outcome.liver_dysfunction, outcome.hospital_acquired_infection, outcome.acute_respiratory_distress_syndrome, outcome.NSTEMI, outcome.STEMI, outcome.new_AF, outcome.new_other_arrhthmia, outcome.stroke, outcome.DVT, outcome.PE, outcome.heart_failure, outcome.fall_in_hospital, outcome.reduced_mobility, outcome.increasing_care_requirement, outcome.no_complications (checkboxes)
 ventilatory_support -&amp;gt; outcome.highest_level_ventilatory_support (list)
 did_the_patient_receive_ec -&amp;gt; outcome.received_ecmo (yesno)
-inotropic_support_required -&amp;gt; outcome.received_ionotropes (yesno)
+inotropic_support_required -&amp;gt; outcome.received_ionotropes (yesno_unknown)
 lrtd_30d_outcome -&amp;gt; outcome.functional_status (list)
 survive_1yr -&amp;gt; outcome.one_year_survival (yesno)
 survival_1yr_days -&amp;gt; outcome.one_year_survival_duration (integer)
 yr_survival_complete -&amp;gt; outcome.one_year_survival_complete (list)
-fever2 -&amp;gt; symptom.abnormal_temperature (yesno_unknown)
-pleurtic_cp -&amp;gt; symptom.pleuritic_chest_pain (yesno_unknown)
-cough2 -&amp;gt; symptom.cough (yesno_unknown)
-sput_prod -&amp;gt; symptom.productive_sputum (yesno_unknown)
-dyspnoea -&amp;gt; symptom.dyspnoea (yesno_unknown)
-tachypnoea2 -&amp;gt; symptom.tachypnoea (yesno_unknown)
+fever2 -&amp;gt; symptom.abnormal_temperature (yesno)
+pleurtic_cp -&amp;gt; symptom.pleuritic_chest_pain (yesno)
+cough2 -&amp;gt; symptom.cough (yesno)
+sput_prod -&amp;gt; symptom.productive_sputum (yesno)
+dyspnoea -&amp;gt; symptom.dyspnoea (yesno)
+tachypnoea2 -&amp;gt; symptom.tachypnoea (yesno)
+confusion -&amp;gt; symptom.confusion (yesno)
 anosmia -&amp;gt; symptom.anosmia (yesno_unknown)
 ageusia -&amp;gt; symptom.ageusia (yesno_unknown)
 dysgeusia -&amp;gt; symptom.dysguesia (yesno_unknown)
@@ -189,6 +191,7 @@ ac_study_number -&amp;gt; admin.consented_record_number (study_id)
 nhs_number -&amp;gt; admin.patient_identifier (ppi)
 duplicate -&amp;gt; admin.duplicate (yesno)
 enrollment_date -&amp;gt; admin.enrollment_date (date)
+admission_type -&amp;gt; admission.admission_route (list)
 study_year -&amp;gt; admin.study_year (name)
 file -&amp;gt; admin.data_file (name)
 week_number -&amp;gt; admin.week_number (name)
@@ -280,7 +283,7 @@ diastolic_bp -&amp;gt; admission.diastolic_bp (name)
 hr -&amp;gt; admission.heart_rate (name)
 temperature -&amp;gt; admission.temperature (list)
 symptom_days_preadmit -&amp;gt; admission.duration_symptoms (double)
-previous_infection -&amp;gt; admission.previous_covid_infection (list)
+previous_infection -&amp;gt; admission.previous_covid_infection (yesno_unknown)
 previousinfection_date -&amp;gt; admission.previous_covid_infection_date (date)
 c19d_preadm -&amp;gt; admission.time_since_covid_diagnosis (name)
 rockwood -&amp;gt; admission.rockwood_score (name)
@@ -300,8 +303,8 @@ c19_ionotropes -&amp;gt; day_7.ionotropes_needed (yesno)
 c19_complication -&amp;gt; day_7.PE, day_7.DVT, day_7.ARF, day_7.NSTEMI, day_7.STEMI, day_7.cardiac_failure, day_7.new_AF, day_7.new_other_arrythmia, day_7.inpatient_fall, day_7.other_complication, day_7.no_complication (checkboxes)
 c19_death7d -&amp;gt; day_7.death (yesno)
 c19_meds -&amp;gt; treatment.dexamethasone, treatment.remdesevir, treatment.tocilizumab, treatment.sarilumab, treatment.in_drug_trial, treatment.no_drug_treatment, treatment.sotrovimab (checkboxes)
-hospital_length_of_stay -&amp;gt; outcome.length_of_stay (name)
-survival_days -&amp;gt; outcome.survival_duration (double)
+hospital_length_of_stay -&amp;gt; outcome.length_of_stay, floor (integer)
+survival_days -&amp;gt; outcome.survival_duration, round (integer)
 ip_death -&amp;gt; outcome.inpatient_death (yesno)
 days_in_icu -&amp;gt; outcome.icu_duration (double)
 did_the_patient_have_respi -&amp;gt; outcome.respiratory_support_needed (yesno)
@@ -311,17 +314,18 @@ renal_replacement_therapy -&amp;gt; outcome.renal_support_duration (double)
 complications -&amp;gt; outcome.acute_renal_failure, outcome.liver_dysfunction, outcome.hospital_acquired_infection, outcome.acute_respiratory_distress_syndrome, outcome.NSTEMI, outcome.STEMI, outcome.new_AF, outcome.new_other_arrhthmia, outcome.stroke, outcome.DVT, outcome.PE, outcome.heart_failure, outcome.fall_in_hospital, outcome.reduced_mobility, outcome.increasing_care_requirement, outcome.no_complications (checkboxes)
 ventilatory_support -&amp;gt; outcome.highest_level_ventilatory_support (list)
 did_the_patient_receive_ec -&amp;gt; outcome.received_ecmo (yesno)
-inotropic_support_required -&amp;gt; outcome.received_ionotropes (yesno)
+inotropic_support_required -&amp;gt; outcome.received_ionotropes (yesno_unknown)
 lrtd_30d_outcome -&amp;gt; outcome.functional_status (list)
 survive_1yr -&amp;gt; outcome.one_year_survival (yesno)
 survival_1yr_days -&amp;gt; outcome.one_year_survival_duration (integer)
 yr_survival_complete -&amp;gt; outcome.one_year_survival_complete (list)
-fever2 -&amp;gt; symptom.abnormal_temperature (yesno_unknown)
-pleurtic_cp -&amp;gt; symptom.pleuritic_chest_pain (yesno_unknown)
-cough2 -&amp;gt; symptom.cough (yesno_unknown)
-sput_prod -&amp;gt; symptom.productive_sputum (yesno_unknown)
-dyspnoea -&amp;gt; symptom.dyspnoea (yesno_unknown)
-tachypnoea2 -&amp;gt; symptom.tachypnoea (yesno_unknown)
+fever2 -&amp;gt; symptom.abnormal_temperature (yesno)
+pleurtic_cp -&amp;gt; symptom.pleuritic_chest_pain (yesno)
+cough2 -&amp;gt; symptom.cough (yesno)
+sput_prod -&amp;gt; symptom.productive_sputum (yesno)
+dyspnoea -&amp;gt; symptom.dyspnoea (yesno)
+tachypnoea2 -&amp;gt; symptom.tachypnoea (yesno)
+confusion -&amp;gt; symptom.confusion (yesno)
 anosmia -&amp;gt; symptom.anosmia (yesno_unknown)
 ageusia -&amp;gt; symptom.ageusia (yesno_unknown)
 dysgeusia -&amp;gt; symptom.dysguesia (yesno_unknown)
@@ -374,7 +378,7 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -389,6 +393,7 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
     <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
@@ -418,6 +423,7 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
 <li><p>nhs_number -&gt; admin.patient_identifier (ppi)</p></li>
 <li><p>duplicate -&gt; admin.duplicate (yesno)</p></li>
 <li><p>enrollment_date -&gt; admin.enrollment_date (date)</p></li>
+<li><p>admission_type -&gt; admission.admission_route (list)</p></li>
 <li><p>study_year -&gt; admin.study_year (name)</p></li>
 <li><p>file -&gt; admin.data_file (name)</p></li>
 <li><p>week_number -&gt; admin.week_number (name)</p></li>
@@ -509,7 +515,7 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
 <li><p>hr -&gt; admission.heart_rate (name)</p></li>
 <li><p>temperature -&gt; admission.temperature (list)</p></li>
 <li><p>symptom_days_preadmit -&gt; admission.duration_symptoms (double)</p></li>
-<li><p>previous_infection -&gt; admission.previous_covid_infection (list)</p></li>
+<li><p>previous_infection -&gt; admission.previous_covid_infection (yesno_unknown)</p></li>
 <li><p>previousinfection_date -&gt; admission.previous_covid_infection_date (date)</p></li>
 <li><p>c19d_preadm -&gt; admission.time_since_covid_diagnosis (name)</p></li>
 <li><p>rockwood -&gt; admission.rockwood_score (name)</p></li>
@@ -529,8 +535,8 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
 <li><p>c19_complication -&gt; day_7.PE, day_7.DVT, day_7.ARF, day_7.NSTEMI, day_7.STEMI, day_7.cardiac_failure, day_7.new_AF, day_7.new_other_arrythmia, day_7.inpatient_fall, day_7.other_complication, day_7.no_complication (checkboxes)</p></li>
 <li><p>c19_death7d -&gt; day_7.death (yesno)</p></li>
 <li><p>c19_meds -&gt; treatment.dexamethasone, treatment.remdesevir, treatment.tocilizumab, treatment.sarilumab, treatment.in_drug_trial, treatment.no_drug_treatment, treatment.sotrovimab (checkboxes)</p></li>
-<li><p>hospital_length_of_stay -&gt; outcome.length_of_stay (name)</p></li>
-<li><p>survival_days -&gt; outcome.survival_duration (double)</p></li>
+<li><p>hospital_length_of_stay -&gt; outcome.length_of_stay, floor (integer)</p></li>
+<li><p>survival_days -&gt; outcome.survival_duration, round (integer)</p></li>
 <li><p>ip_death -&gt; outcome.inpatient_death (yesno)</p></li>
 <li><p>days_in_icu -&gt; outcome.icu_duration (double)</p></li>
 <li><p>did_the_patient_have_respi -&gt; outcome.respiratory_support_needed (yesno)</p></li>
@@ -540,17 +546,18 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
 <li><p>complications -&gt; outcome.acute_renal_failure, outcome.liver_dysfunction, outcome.hospital_acquired_infection, outcome.acute_respiratory_distress_syndrome, outcome.NSTEMI, outcome.STEMI, outcome.new_AF, outcome.new_other_arrhthmia, outcome.stroke, outcome.DVT, outcome.PE, outcome.heart_failure, outcome.fall_in_hospital, outcome.reduced_mobility, outcome.increasing_care_requirement, outcome.no_complications (checkboxes)</p></li>
 <li><p>ventilatory_support -&gt; outcome.highest_level_ventilatory_support (list)</p></li>
 <li><p>did_the_patient_receive_ec -&gt; outcome.received_ecmo (yesno)</p></li>
-<li><p>inotropic_support_required -&gt; outcome.received_ionotropes (yesno)</p></li>
+<li><p>inotropic_support_required -&gt; outcome.received_ionotropes (yesno_unknown)</p></li>
 <li><p>lrtd_30d_outcome -&gt; outcome.functional_status (list)</p></li>
 <li><p>survive_1yr -&gt; outcome.one_year_survival (yesno)</p></li>
 <li><p>survival_1yr_days -&gt; outcome.one_year_survival_duration (integer)</p></li>
 <li><p>yr_survival_complete -&gt; outcome.one_year_survival_complete (list)</p></li>
-<li><p>fever2 -&gt; symptom.abnormal_temperature (yesno_unknown)</p></li>
-<li><p>pleurtic_cp -&gt; symptom.pleuritic_chest_pain (yesno_unknown)</p></li>
-<li><p>cough2 -&gt; symptom.cough (yesno_unknown)</p></li>
-<li><p>sput_prod -&gt; symptom.productive_sputum (yesno_unknown)</p></li>
-<li><p>dyspnoea -&gt; symptom.dyspnoea (yesno_unknown)</p></li>
-<li><p>tachypnoea2 -&gt; symptom.tachypnoea (yesno_unknown)</p></li>
+<li><p>fever2 -&gt; symptom.abnormal_temperature (yesno)</p></li>
+<li><p>pleurtic_cp -&gt; symptom.pleuritic_chest_pain (yesno)</p></li>
+<li><p>cough2 -&gt; symptom.cough (yesno)</p></li>
+<li><p>sput_prod -&gt; symptom.productive_sputum (yesno)</p></li>
+<li><p>dyspnoea -&gt; symptom.dyspnoea (yesno)</p></li>
+<li><p>tachypnoea2 -&gt; symptom.tachypnoea (yesno)</p></li>
+<li><p>confusion -&gt; symptom.confusion (yesno)</p></li>
 <li><p>anosmia -&gt; symptom.anosmia (yesno_unknown)</p></li>
 <li><p>ageusia -&gt; symptom.ageusia (yesno_unknown)</p></li>
 <li><p>dysgeusia -&gt; symptom.dysguesia (yesno_unknown)</p></li>

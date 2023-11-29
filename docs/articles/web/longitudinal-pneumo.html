@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
     <a class="dropdown-item" href="../../articles/web/quality-assurance.html">Quality assurance</a>
@@ -95,7 +96,115 @@ subfolder</p>
 <span><span class="va">normPn</span> <span class="op">=</span> <span class="va">rawPn</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.nhs_extract.pneumococcal</span></span>
 <span><span class="co">#&gt; Some columns expected in the mappings were not present: hb</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-061bef6892ac5e394efabaf301b1cadb.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-785f8cd86535fb785f470a4a817c1e09.rda</span></span>
+<span><span class="co">#&gt; mapping .participant_number to admin.record_number</span></span>
+<span><span class="co">#&gt; mapping .hospital to admin.hospital</span></span>
+<span><span class="co">#&gt; mapping .nhs_number to admin.patient_identifier</span></span>
+<span><span class="co">#&gt; mapping .age_at_admission to demog.age</span></span>
+<span><span class="co">#&gt; mapping .sex to demog.gender</span></span>
+<span><span class="co">#&gt; mapping .test_date to pneumo.test_date</span></span>
+<span><span class="co">#&gt; mapping .test to pneumo.test_type</span></span>
+<span><span class="co">#&gt; mapping .serotype to pneumo.phe_serotype</span></span>
+<span><span class="co">#&gt; mapping .smoker to demog.smoker</span></span>
+<span><span class="co">#&gt; mapping .resp_disease___1 to comorbid.no_resp_dx</span></span>
+<span><span class="co">#&gt; mapping .resp_disease___2 to comorbid.copd</span></span>
+<span><span class="co">#&gt; mapping .resp_disease___3 to comorbid.asthma</span></span>
+<span><span class="co">#&gt; mapping .resp_disease___4 to comorbid.bronchiectasis</span></span>
+<span><span class="co">#&gt; mapping .resp_disease___5 to comorbid.pulmonary_fibrosis</span></span>
+<span><span class="co">#&gt; mapping .resp_disease___6 to comorbid.resp_other</span></span>
+<span><span class="co">#&gt; mapping .chd___1 to comorbid.no_heart_dx</span></span>
+<span><span class="co">#&gt; mapping .chd___2 to comorbid.ccf</span></span>
+<span><span class="co">#&gt; mapping .chd___3 to comorbid.ihd</span></span>
+<span><span class="co">#&gt; mapping .chd___4 to comorbid.hypertension</span></span>
+<span><span class="co">#&gt; mapping .chd___5 to comorbid.af</span></span>
+<span><span class="co">#&gt; mapping .chd___6 to comorbid.other_heart_dx</span></span>
+<span><span class="co">#&gt; mapping .mi to comorbid.previous_mi</span></span>
+<span><span class="co">#&gt; mapping .ckd to comorbid.ckd</span></span>
+<span><span class="co">#&gt; mapping .liver_disease to comorbid.liver_disease</span></span>
+<span><span class="co">#&gt; mapping .diabetes to comorbid.diabetes</span></span>
+<span><span class="co">#&gt; mapping .dm_meds to comorbid.diabetes_medications</span></span>
+<span><span class="co">#&gt; mapping .dementia___1 to comorbid.no_dementia</span></span>
+<span><span class="co">#&gt; mapping .dementia___2 to comorbid.dementia</span></span>
+<span><span class="co">#&gt; mapping .dementia___3 to comorbid.cognitive_impairment</span></span>
+<span><span class="co">#&gt; mapping .neurological_disease___1 to comorbid.neuro_other</span></span>
+<span><span class="co">#&gt; mapping .neurological_disease___2 to comorbid.cva</span></span>
+<span><span class="co">#&gt; mapping .neurological_disease___3 to comorbid.tia</span></span>
+<span><span class="co">#&gt; mapping .neurological_disease___4 to comorbid.hemiplegia</span></span>
+<span><span class="co">#&gt; mapping .neurological_disease___5 to comorbid.paraplegia</span></span>
+<span><span class="co">#&gt; mapping .neurological_disease___6 to comorbid.no_neuro_dx</span></span>
+<span><span class="co">#&gt; mapping .gastric_ulcers to comorbid.gastric_ulcers</span></span>
+<span><span class="co">#&gt; mapping .dysphagia to comorbid.dysphagia</span></span>
+<span><span class="co">#&gt; mapping .pvd to comorbid.periph_vasc_dx</span></span>
+<span><span class="co">#&gt; mapping .ctd to comorbid.connective_tissue_dx</span></span>
+<span><span class="co">#&gt; mapping .immunodeficiency to comorbid.immunodeficiency</span></span>
+<span><span class="co">#&gt; mapping .other_pn_disease to comorbid.other_pneumococcal_risks</span></span>
+<span><span class="co">#&gt; mapping .hiv___1 to comorbid.no_HIV</span></span>
+<span><span class="co">#&gt; mapping .hiv___2 to comorbid.HIV</span></span>
+<span><span class="co">#&gt; mapping .hiv___3 to comorbid.AIDS</span></span>
+<span><span class="co">#&gt; mapping .cancer to comorbid.solid_cancer</span></span>
+<span><span class="co">#&gt; mapping .haem_malig___1 to comorbid.no_haemotological_cancer</span></span>
+<span><span class="co">#&gt; mapping .haem_malig___2 to comorbid.leukaemia</span></span>
+<span><span class="co">#&gt; mapping .haem_malig___3 to comorbid.lymphoma</span></span>
+<span><span class="co">#&gt; mapping .recent_chemo to comorbid.recent_chemotherapy</span></span>
+<span><span class="co">#&gt; mapping .recent_radiotherapy to comorbid.recent_radiotherapy</span></span>
+<span><span class="co">#&gt; mapping .transplant to comorbid.transplant_recipient</span></span>
+<span><span class="co">#&gt; mapping .pregnancy to comorbid.pregnancy</span></span>
+<span><span class="co">#&gt; mapping .drugs___1 to demog.no_drug_abuse</span></span>
+<span><span class="co">#&gt; mapping .drugs___2 to demog.alcohol_abuse</span></span>
+<span><span class="co">#&gt; mapping .drugs___3 to demog.ivdu_abuse</span></span>
+<span><span class="co">#&gt; mapping .drugs___4 to demog.marijuana_abuse</span></span>
+<span><span class="co">#&gt; mapping .drugs___5 to demog.other_inhaled_drug_abuse</span></span>
+<span><span class="co">#&gt; mapping .immsup to admission.on_immunosuppression</span></span>
+<span><span class="co">#&gt; mapping .weight_problem to comorbid.bmi_status</span></span>
+<span><span class="co">#&gt; mapping .concomittant_flu to comorbid.influenza_infection</span></span>
+<span><span class="co">#&gt; mapping .hcv to comorbid.hepatitis_c</span></span>
+<span><span class="co">#&gt; mapping .ppv23 to vaccination.ppv23_vaccination</span></span>
+<span><span class="co">#&gt; mapping .flu_vaccine to vaccination.flu</span></span>
+<span><span class="co">#&gt; mapping .cci_total_score to admission.charlson_comorbidity_index</span></span>
+<span><span class="co">#&gt; mapping .los_days to outcome.length_of_stay</span></span>
+<span><span class="co">#&gt; mapping .amts to admission.triage_score</span></span>
+<span><span class="co">#&gt; mapping .resp_rate to admission.respiratory_rate</span></span>
+<span><span class="co">#&gt; mapping .sats_ra to admission.saturations_on_room_air</span></span>
+<span><span class="co">#&gt; mapping .systolic_bp to admission.systolic_bp</span></span>
+<span><span class="co">#&gt; mapping .diastolic_bp to admission.diastolic_bp</span></span>
+<span><span class="co">#&gt; mapping .crb65_score to admission.crb_65_severity_score</span></span>
+<span><span class="co">#&gt; mapping .curb65_score to admission.curb_65_severity_score</span></span>
+<span><span class="co">#&gt; mapping .antibiotic_route to outcome.antibiotic_route</span></span>
+<span><span class="co">#&gt; mapping .antibiotic_days to outcome.antibiotic_duration</span></span>
+<span><span class="co">#&gt; mapping .infection_site to admission.infection_site</span></span>
+<span><span class="co">#&gt; mapping .deranged_lfts to outcome.abnormal_lft</span></span>
+<span><span class="co">#&gt; mapping .aki to outcome.acute_kidney_injury</span></span>
+<span><span class="co">#&gt; mapping .pleural_effusion to outcome.pleural_effusion</span></span>
+<span><span class="co">#&gt; mapping .empyema to outcome.empyema</span></span>
+<span><span class="co">#&gt; mapping .discharge_destination to outcome.discharge_to</span></span>
+<span><span class="co">#&gt; mapping .icu to outcome.admitted_icu</span></span>
+<span><span class="co">#&gt; mapping .niv to outcome.non_invasive_ventilation</span></span>
+<span><span class="co">#&gt; mapping .intubation to outcome.intubation</span></span>
+<span><span class="co">#&gt; mapping .recurrent_pneumonia to outcome.recurrent_pneumonia</span></span>
+<span><span class="co">#&gt; mapping .ecmo to outcome.received_ecmo</span></span>
+<span><span class="co">#&gt; mapping .inotropes to outcome.received_ionotropes</span></span>
+<span><span class="co">#&gt; mapping .trachy to outcome.tracheostomy</span></span>
+<span><span class="co">#&gt; mapping .inpatient_death to outcome.inpatient_death</span></span>
+<span><span class="co">#&gt; mapping .death_30days to outcome.death_within_30_days</span></span>
+<span><span class="co">#&gt; mapping .death_1year to outcome.death_within_1_year</span></span>
+<span><span class="co">#&gt; mapping .survival_days to outcome.survival_duration</span></span>
+<span><span class="co">#&gt; mapping .albumin to haem.albumin</span></span>
+<span><span class="co">#&gt; mapping .wcc to haem.white_cell_count</span></span>
+<span><span class="co">#&gt; the input data set does not have a hb column (or column set)</span></span>
+<span><span class="co">#&gt; mapping .pmn to haem.neutrophils</span></span>
+<span><span class="co">#&gt; mapping .lymphocytes to haem.lymphocytes</span></span>
+<span><span class="co">#&gt; mapping .crp to haem.crp</span></span>
+<span><span class="co">#&gt; mapping .na_result to haem.sodium</span></span>
+<span><span class="co">#&gt; mapping .ur_result to haem.urea</span></span>
+<span><span class="co">#&gt; mapping .egfr to haem.egfr</span></span>
+<span><span class="co">#&gt; mapping .creatinine to haem.creatinine</span></span>
+<span><span class="co">#&gt; mapping .cxr_sides to radio.cxr_infection</span></span>
+<span><span class="co">#&gt; mapping .cxr_lobes to radio.cxr_lobar_changes</span></span>
+<span><span class="co">#&gt; mapping .death_5year to outcome.death_within_5_years</span></span>
+<span><span class="co">#&gt; mapping .survival_days_2 to outcome.5_yr_survival_duration</span></span>
+<span><span class="co">#&gt; mapping .imd_decile to demog.imd_decile</span></span>
+<span><span class="co">#&gt; Mapped 112 columns</span></span>
+<span><span class="co">#&gt; Did not map 69 columns</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="augment-the-data">Augment the data<a class="anchor" aria-label="anchor" href="#augment-the-data"></a>
@@ -103,7 +212,20 @@ subfolder</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">augPn</span> <span class="op">=</span> <span class="va">normPn</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.nhs_extract.pneumococcal</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-2862efded4cecb805df6a587c2405477.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-358f7932bec0af169b50d4ed7417b6f2.rda</span></span>
+<span><span class="co">#&gt; Created comorbid.chronic_pleural_dx, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.other_chronic_resp_dx, comorbid.pulmonary_hypertension, comorbid.congenital_heart_dx, comorbid.other_arrythmia, comorbid.other_other_heart_dx, demog.care_home_resident using:</span></span>
+<span><span class="co">#&gt; Created pneumo.vaccine_group, pneumo.serotype_status, pneumo.pcv_group using: pneumo.phe_serotype</span></span>
+<span><span class="co">#&gt; Created pneumo.pre_covid, pneumo.pandemic_period, pneumo.pcv_vaccine_period using:</span></span>
+<span><span class="co">#&gt; Created pneumo.invasive_status, pneumo.test_category using: admission.infection_site, pneumo.test_type</span></span>
+<span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.curb_65_severity_score</span></span>
+<span><span class="co">#&gt; Created pneumo.clinical_syndrome using: admission.infection_site, outcome.pleural_effusion, outcome.empyema</span></span>
+<span><span class="co">#&gt; Created survival.length_of_stay, survival.uncensored_time_to_death, survival.last_observed_event using: pneumo.test_date, outcome.length_of_stay, outcome.survival_duration, outcome.5_yr_survival_duration</span></span>
+<span><span class="co">#&gt; Created survival.length_of_stay_category, survival.30_day_death_time, survival.30_day_death_event, survival.1_yr_death_time, survival.1_yr_death_event, survival.30_day_discharge_time, survival.30_day_discharge_event using:</span></span>
+<span><span class="co">#&gt; Created survival.length_of_stay_quintile using:</span></span>
+<span><span class="co">#&gt; Created comorbid.diabetes_type, comorbid.solid_cancer_present, comorbid.haemotological_cancer_present, comorbid.any_cancer_present, comorbid.any_chronic_lung_disease, comorbid.any_chronic_heart_disease, comorbid.cva_or_tia, comorbid.any_immune_compromise using: comorbid.diabetes, comorbid.solid_cancer, comorbid.leukaemia, comorbid.lymphoma, comorbid.no_haemotological_cancer, comorbid.asthma, comorbid.bronchiectasis, comorbid.copd, comorbid.ccf, comorbid.ihd, comorbid.previous_mi, comorbid.hypertension, comorbid.af, comorbid.other_heart_dx, comorbid.cva, comorbid.tia, comorbid.immunodeficiency, admission.on_immunosuppression</span></span>
+<span><span class="co">#&gt; Created admission.pneumococcal_high_risk using: demog.age, comorbid.other_pneumococcal_risks, comorbid.copd, comorbid.hypertension, comorbid.ccf, comorbid.ihd, comorbid.ckd, comorbid.liver_disease, comorbid.diabetes, comorbid.immunodeficiency, comorbid.asthma, admission.on_immunosuppression</span></span>
+<span><span class="co">#&gt; Created admission.pneumococcal_risk_classification using: comorbid.cva, comorbid.immunodeficiency, comorbid.leukaemia, comorbid.lymphoma, comorbid.no_haemotological_cancer, admission.on_immunosuppression, comorbid.transplant_recipient, comorbid.ckd, comorbid.HIV, comorbid.solid_cancer, demog.smoker, demog.age, demog.alcohol_abuse, comorbid.diabetes, comorbid.diabetes_medications, comorbid.paraplegia, comorbid.copd, comorbid.asthma, comorbid.liver_disease, comorbid.ccf, comorbid.ihd, comorbid.other_pneumococcal_risks</span></span>
+<span><span class="co">#&gt; Created  using:</span></span></code></pre></div>
 <p>Augmented IPD dataset format:</p>
 <ul>
 <li>admin.record_number: numeric</li>
@@ -176,8 +298,8 @@ subfolder</p>
 <li>admission.saturations_on_room_air: numeric</li>
 <li>admission.systolic_bp: numeric</li>
 <li>admission.diastolic_bp: numeric</li>
-<li>admission.crb65: numeric</li>
-<li>admission.curb65: numeric</li>
+<li>admission.crb_65_severity_score: ordered</li>
+<li>admission.curb_65_severity_score: ordered</li>
 <li>outcome.antibiotic_route: factor</li>
 <li>outcome.antibiotic_duration: numeric</li>
 <li>admission.infection_site: factor</li>
@@ -217,20 +339,20 @@ subfolder</p>
 <code class="sourceCode R"><span><span class="va">augPn</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">admission.infection_site</span>, <span class="va">pneumo.test_type</span>,useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         pneumo.test_type</span></span>
 <span><span class="co">#&gt; admission.infection_site Blood culture only Binax only Blood culture and Binax</span></span>
-<span><span class="co">#&gt;         Lung                           6316       2017                    1458</span></span>
-<span><span class="co">#&gt;         Meningitis                      443         46                      94</span></span>
-<span><span class="co">#&gt;         Septic arthritis                129          5                      34</span></span>
-<span><span class="co">#&gt;         ENT                              81          2                       0</span></span>
-<span><span class="co">#&gt;         Myositis                          4          0                       0</span></span>
-<span><span class="co">#&gt;         Otitis externa                    8          0                       0</span></span>
-<span><span class="co">#&gt;         Abdominal                        16          1                       5</span></span>
-<span><span class="co">#&gt;         Unclear/unknown                  19          0                       0</span></span>
-<span><span class="co">#&gt;         Other                           136         13                       4</span></span>
+<span><span class="co">#&gt;         Lung                           1153       2017                     266</span></span>
+<span><span class="co">#&gt;         Meningitis                       90         46                      23</span></span>
+<span><span class="co">#&gt;         Septic arthritis                 27          5                       4</span></span>
+<span><span class="co">#&gt;         ENT                              14          2                       0</span></span>
+<span><span class="co">#&gt;         Myositis                          1          0                       0</span></span>
+<span><span class="co">#&gt;         Otitis externa                    1          0                       0</span></span>
+<span><span class="co">#&gt;         Abdominal                         4          1                       1</span></span>
+<span><span class="co">#&gt;         Unclear/unknown                   3          0                       0</span></span>
+<span><span class="co">#&gt;         Other                            32         13                       1</span></span>
 <span><span class="co">#&gt;         &lt;NA&gt;                              0          0                       0</span></span>
 <span><span class="co">#&gt;                         pneumo.test_type</span></span>
 <span><span class="co">#&gt; admission.infection_site CSF PCR Blood PCR &lt;NA&gt;</span></span>
 <span><span class="co">#&gt;         Lung                   0         0    0</span></span>
-<span><span class="co">#&gt;         Meningitis             8         9    0</span></span>
+<span><span class="co">#&gt;         Meningitis             8         5    0</span></span>
 <span><span class="co">#&gt;         Septic arthritis       0         0    0</span></span>
 <span><span class="co">#&gt;         ENT                    0         0    0</span></span>
 <span><span class="co">#&gt;         Myositis               0         0    0</span></span>

@@ -10,8 +10,8 @@ validate.avoncap_export.uad_controls = function(rawData, ...) {
   # TODO
 }
 
-validate.avoncap_export.central = function(rawData, ...) {
-  rawData %>%
+validate.avoncap_export.central = function(rawData, ..., dq = avoncap::load_data("avoncap-data-quality")) {
+  tmp = rawData %>%
     .not_empty(
       c("consented","ppc","include_patient", "hosp")
     ) %>%
@@ -22,8 +22,8 @@ validate.avoncap_export.central = function(rawData, ...) {
     .active_col(include_patient == 1, "only actively consented") %>%
     .not_empty(c("withdrawal")) %>%
 
-    # CONSENTED PATIENTS ONLY: consent not declined and not withdrawn
-    .active_col(!(include_patient == 1 & withdrawal == 1) & consented != 2 & ppc != 2, "consent for data", na.rm = FALSE) %>%
+    # CONSENTED PATIENTS ONLY: consent falg present not declined and not withdrawn
+    .active_col(!(include_patient == 1 & withdrawal == 1) & !is.na(consented) & consented != 2 & ppc != 2, "consent for data", na.rm = FALSE) %>%
     .not_empty(
       c("hr", "systolic_bp", "diastolic_bp", "temperature", "rr", "pulse_ox",
         "fio2", "news_2_total", "crb_test_mai", "care_home",
@@ -47,7 +47,7 @@ validate.avoncap_export.central = function(rawData, ...) {
 
     .conflicting_values(
       final_soc_lrtd_diagnosis___4==1,
-      final_soc_lrtd_diagnosis___1==1 | final_soc_lrtd_diagnosis___2==1 | final_soc_lrtd_diagnosis___3==1 | final_soc_lrtd_diagnosis___5==1,
+      final_soc_lrtd_diagnosis___1==1 | final_soc_lrtd_diagnosis___2==1 | final_soc_lrtd_diagnosis___3==1,
       label = "both pneumonia and NP-LRTI in final SOC dx") %>%
     # .conflicting_values(
     #   final_soc_lrtd_diagnosis___9==1,
@@ -79,12 +79,15 @@ validate.avoncap_export.central = function(rawData, ...) {
 
     # CONSENTED WOMEN ONLY
     .active_col(
-      !(include_patient == 1 & withdrawal == 1) & consented != 2 & ppc != 2 &
+      !(include_patient == 1 & withdrawal == 1) & !is.na(consented) & consented != 2 & ppc != 2 &
         gender == 2 & age_at_admission<70, "consented women under 70" ) %>%
     .not_empty(c("pregnancy")) %>%
     .clear_active() %>%
 
-    .copy_identifiers(c("record_number","study_year","hosp"))
+
+    # finalised the issues data and remove known issues
+    .copy_identifiers(c("record_number","study_year","hosp")) %>%
+    .remove_known_issues(dq, by=c("record_number",".variable"))
 }
 
 validate.nhs_extract.deltave = function(rawData, ...) {

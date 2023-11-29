@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
     <a class="dropdown-item" href="../../articles/web/quality-assurance.html">Quality assurance</a>
@@ -177,7 +178,9 @@ relevant</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">augUA</span> <span class="op">=</span> <span class="va">normUA</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.urine_antigens.serotype</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-c0a6188e8e5ceeed5c7f302b593a85fd-6e6fd7c403bfa3774af1a9a6712c5f13.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-449ced232f5e22f9557fdf86328939bd.rda</span></span>
+<span><span class="co">#&gt; Created pneumo.pcv_group using: key.sample, pneumo.urine_antigen</span></span>
+<span><span class="co">#&gt; Created pneumo.non_uad_panel_result, pneumo.uad1_panel_result, pneumo.uad2_panel_result, pneumo.serotype_summary_result, pneumo.serotype_positive_count, pneumo.serotype_results_complete using: key.sample, pneumo.urine_antigen</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># augUA %&gt;% filter(pneumo.serotype_results_complete) %&gt;% </span></span>

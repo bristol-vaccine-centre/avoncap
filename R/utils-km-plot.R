@@ -7,7 +7,7 @@
 #' @param facet the division to highlight in the KM strata. Defaults to first
 #'   term on the lhs of the cox model formula
 #' @inheritDotParams survival::survfit
-#' @param maxtime the longest x value to plot
+#' @param maxtime the longest x value to plot (optional)
 #' @param ylab the y axis label
 #' @param xlab the x axis label
 #' @param facetlab a label to add as a facet title
@@ -16,27 +16,56 @@
 #'   timing and number of "at risk" counts to display.
 #' @param heights the relative height between the KM plot and the "at risk" table
 #' @param invert reverse survival statistics to count number of affected
+#' @param show_label show the label on the at risk table ( which is somewhat
+#'   redundant as items are coloured)
+#' @param show_legend show the legend for the strata. (This is sometimes redundant
+#'   if the at risk table is labelled)
 #'
 #' @return a ggplot patchwork.
 #' @export
+#' @examples
+#'
+#' cox = survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno +
+#'   diagtime + age + prior , data = survival::veteran)
+#'
+#' km_plot(survival::veteran, cox)
+#' km_plot(survival::veteran, cox, facet = 1)
+#'
+#' km_plot(survival::veteran, cox, "celltype", show_label=TRUE) &
+#'    ggplot2::theme(legend.position="bottom")
+#'
+#' km_plot(survival::veteran, cox, "trt", show_label=TRUE) &
+#'    ggplot2::theme(legend.position="bottom")
+#'
 km_plot = function(df, coxmodel,
                    facet=NULL, ...,
-                   maxtime = max(sfit$time),
+                   maxtime = NULL,
                    ylab=if (!invert) "surviving (%)" else "affected (%)",
                    xlab="time (days)",
                    facetlab = NULL,
-                   ylim=c(NA,100),
+                   ylim=(if (invert) c(0,NA) else c(NA,100)),
                    n_breaks=5,
                    heights = c(10,1),
-                   invert=FALSE) {
+                   invert=FALSE,
+                   show_label=FALSE,
+                   show_legend=TRUE
+                   ) {
 
   if (is.null(facet)) facet = all.vars(rlang::f_rhs(coxmodel$formula))[[1]]
+  if (is.null(facetlab) & facet != 1) facetlab = facet
 
   form = stats::update(coxmodel$formula, stats::as.formula(sprintf(". ~ %s",facet)))
   sfit = survival::survfit(formula = form, data = df, ...)
 
+  if (is.null(maxtime)) maxtime = max(sfit$time)
+
   # get the level names from the strata.
   lvl = names(sfit$strata) %>% stringr::str_extract("=(.*)",1)
+  if (length(lvl) == 0) {
+    lvl = "At risk"
+    show_label = TRUE
+    show_legend = FALSE
+  }
 
   # adds on a zero time point for all levels.
   ci = tibble::tibble(
@@ -53,7 +82,7 @@ km_plot = function(df, coxmodel,
   ) %>% dplyr::arrange(strata, time, n.event) %>%
     dplyr::group_by(strata) %>%
     # needed to get the end of the rectangles.
-    dplyr::mutate(next.time = dplyr::lead(time))
+    dplyr::mutate(next.time = dplyr::lead(time,default = maxtime))
 
   # flip survival probability into failure probability
   if (invert) {
@@ -67,8 +96,8 @@ km_plot = function(df, coxmodel,
   }
 
   p1 = ggplot2::ggplot(ci) +
-    ggplot2::geom_step(ggplot2::aes(x = time, y = surv.estimate*100, color = strata))+
-    ggplot2::geom_rect(ggplot2::aes(xmin = time,xmax = next.time, ymin = surv.lower*100, ymax = surv.upper*100, fill = strata), alpha=0.2)+
+    ggplot2::geom_step(ggplot2::aes(x = time, y = surv.estimate*100, color = strata),show.legend = show_legend)+
+    ggplot2::geom_rect(data = ci %>% dplyr::filter(!is.na(surv.lower)), ggplot2::aes(xmin = time,xmax = next.time, ymin = surv.lower*100, ymax = surv.upper*100, fill = strata), alpha=0.2,show.legend = show_legend)+
     ggplot2::ylab(ylab)+
     ggplot2::xlab(NULL)+
     ggplot2::coord_cartesian(ylim = ylim, xlim = c(0,maxtime))+
@@ -82,6 +111,8 @@ km_plot = function(df, coxmodel,
     form = stats::as.formula(sprintf(" ~ \"%s\" ",facetlab))
     p1 = p1 + ggplot2::facet_wrap(form)
   }
+
+
 
   # at risk table.
 
@@ -100,11 +131,17 @@ km_plot = function(df, coxmodel,
     ggplot2::geom_text(ggplot2::aes(label = n.risk),show.legend = FALSE) +
     ggplot2::scale_x_continuous(breaks = times)+
     ggplot2::coord_cartesian(xlim = c(0,maxtime))+
-    ggplot2::theme(panel.grid = ggplot2::element_blank())+
+    ggplot2::theme(
+      panel.grid = ggplot2::element_blank()
+    )+
     ggplot2::ylab(NULL)+
     ggplot2::xlab(xlab)
 
-  out = p1+t+patchwork::plot_layout(ncol=1, guides = "collect",heights = heights)
+  if (!show_label) {
+    t = t + ggplot2::theme(axis.text.y = ggplot2::element_blank())
+  }
+
+  out = patchwork::wrap_plots(p1,t,ncol=1, guides = "collect",heights = heights)
 
   return(out)
 

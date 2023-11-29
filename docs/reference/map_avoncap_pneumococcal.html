@@ -46,8 +46,8 @@ resp_rate -&amp;gt; admission.respiratory_rate (double)
 sats_ra -&amp;gt; admission.saturations_on_room_air (double)
 systolic_bp -&amp;gt; admission.systolic_bp (double)
 diastolic_bp -&amp;gt; admission.diastolic_bp (double)
-crb65_score -&amp;gt; admission.crb65 (double)
-curb65_score -&amp;gt; admission.curb65 (double)
+crb65_score -&amp;gt; admission.crb_65_severity_score (list)
+curb65_score -&amp;gt; admission.curb_65_severity_score (list)
 antibiotic_route -&amp;gt; outcome.antibiotic_route (list)
 antibiotic_days -&amp;gt; outcome.antibiotic_duration (double)
 infection_site -&amp;gt; admission.infection_site (list)
@@ -130,8 +130,8 @@ resp_rate -&amp;gt; admission.respiratory_rate (double)
 sats_ra -&amp;gt; admission.saturations_on_room_air (double)
 systolic_bp -&amp;gt; admission.systolic_bp (double)
 diastolic_bp -&amp;gt; admission.diastolic_bp (double)
-crb65_score -&amp;gt; admission.crb65 (double)
-curb65_score -&amp;gt; admission.curb65 (double)
+crb65_score -&amp;gt; admission.crb_65_severity_score (list)
+curb65_score -&amp;gt; admission.curb_65_severity_score (list)
 antibiotic_route -&amp;gt; outcome.antibiotic_route (list)
 antibiotic_days -&amp;gt; outcome.antibiotic_duration (double)
 infection_site -&amp;gt; admission.infection_site (list)
@@ -178,7 +178,7 @@ imd_decile -&amp;gt; demog.imd_decile (name)
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -193,6 +193,7 @@ imd_decile -&amp;gt; demog.imd_decile (name)
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
     <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
@@ -261,8 +262,8 @@ imd_decile -&amp;gt; demog.imd_decile (name)
 <li><p>sats_ra -&gt; admission.saturations_on_room_air (double)</p></li>
 <li><p>systolic_bp -&gt; admission.systolic_bp (double)</p></li>
 <li><p>diastolic_bp -&gt; admission.diastolic_bp (double)</p></li>
-<li><p>crb65_score -&gt; admission.crb65 (double)</p></li>
-<li><p>curb65_score -&gt; admission.curb65 (double)</p></li>
+<li><p>crb65_score -&gt; admission.crb_65_severity_score (list)</p></li>
+<li><p>curb65_score -&gt; admission.curb_65_severity_score (list)</p></li>
 <li><p>antibiotic_route -&gt; outcome.antibiotic_route (list)</p></li>
 <li><p>antibiotic_days -&gt; outcome.antibiotic_duration (double)</p></li>
 <li><p>infection_site -&gt; admission.infection_site (list)</p></li>

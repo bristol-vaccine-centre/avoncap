@@ -59,6 +59,7 @@ map_avoncap_central = function() {list(
   "enrollment_date" = .normalise_date(
     admin.enrollment_date
   ),
+  "admission_type" = .normalise_list(admission.admission_route, c("Emergency Department","Other")),
   "study_year" = .normalise_name(admin.study_year),
   "file" = .normalise_name(admin.data_file),
   "week_number" = .normalise_name(admin.week_number),
@@ -114,7 +115,7 @@ map_avoncap_central = function() {list(
 
   #### Demographics ----
   "gender" = .normalise_list(
-    demog.gender, c("Male","Female")),
+    demog.gender, c("Male","Female"), referrent="Female"),
   "age_at_admission" = .normalise_double(
     demog.age, limits=c(0,120)),
   "age_march" = .normalise_double(
@@ -314,8 +315,8 @@ map_avoncap_central = function() {list(
     admission.temperature, c("Normal","Fever (T>38.0\u00B0C)","Hypothermia (T< 35.5\u00B0C)","Not recorded"), codes = c(3,1,2,4)),
   "symptom_days_preadmit" = .normalise_double(
     admission.duration_symptoms),
-  "previous_infection" = .normalise_list(
-    admission.previous_covid_infection, c("yes","no","unknown")),
+  "previous_infection" = .normalise_yesno_unknown(
+    admission.previous_covid_infection),
   "previousinfection_date" = .normalise_date(
     admission.previous_covid_infection_date),
   "c19d_preadm" = .normalise_name(
@@ -385,10 +386,10 @@ map_avoncap_central = function() {list(
   )),
 
   #### Long term follow up ----
-  "hospital_length_of_stay" = .normalise_name(
-    outcome.length_of_stay),
-  "survival_days" = .normalise_double(
-    outcome.survival_duration),
+  "hospital_length_of_stay" = .normalise_integer(
+    outcome.length_of_stay, convert_fn=floor),
+  "survival_days" = .normalise_integer(
+    outcome.survival_duration, convert_fn=round),
   "ip_death" = .normalise_yesno(
     outcome.inpatient_death),
   "days_in_icu" = .normalise_double(
@@ -423,7 +424,7 @@ map_avoncap_central = function() {list(
     outcome.highest_level_ventilatory_support, c("Intubation","BiPAP","CPAP","High-Flow Nasal Cannulae","None"),ordered=TRUE
   ),
   "did_the_patient_receive_ec" = .normalise_yesno(outcome.received_ecmo),
-  "inotropic_support_required" = .normalise_yesno(outcome.received_ionotropes),
+  "inotropic_support_required" = .normalise_yesno_unknown(outcome.received_ionotropes),
   "lrtd_30d_outcome" = .normalise_list(
     outcome.functional_status,c(
       "Deceased",
@@ -439,12 +440,14 @@ map_avoncap_central = function() {list(
   "yr_survival_complete" = .normalise_list(outcome.one_year_survival_complete, values = c("Incomplete","Unverified","Complete")),
 
   #### Symptoms ----
-  "fever2" = .normalise_yesno_unknown(symptom.abnormal_temperature),
-  "pleurtic_cp" = .normalise_yesno_unknown(symptom.pleuritic_chest_pain),
-  "cough2" = .normalise_yesno_unknown(symptom.cough),
-  "sput_prod" = .normalise_yesno_unknown(symptom.productive_sputum),
-  "dyspnoea" = .normalise_yesno_unknown(symptom.dyspnoea),
-  "tachypnoea2" = .normalise_yesno_unknown(symptom.tachypnoea),
+  "fever2" = .normalise_yesno(symptom.abnormal_temperature),
+  "pleurtic_cp" = .normalise_yesno(symptom.pleuritic_chest_pain),
+  "cough2" = .normalise_yesno(symptom.cough),
+  "sput_prod" = .normalise_yesno(symptom.productive_sputum),
+  "dyspnoea" = .normalise_yesno(symptom.dyspnoea),
+  "tachypnoea2" = .normalise_yesno(symptom.tachypnoea),
+  "confusion" = .normalise_yesno(symptom.confusion),
+
   "anosmia" = .normalise_yesno_unknown(symptom.anosmia),
   "ageusia" = .normalise_yesno_unknown(symptom.ageusia),
   "dysgeusia" = .normalise_yesno_unknown(symptom.dysguesia),
@@ -455,6 +458,7 @@ map_avoncap_central = function() {list(
   "malaise" = .normalise_yesno_unknown(symptom.malaise),
   "wheeze" = .normalise_yesno_unknown(symptom.wheeze),
   "myalgia" = .normalise_yesno_unknown(symptom.myalgia),
+
   "worse_confusion" = .normalise_yesno_unknown(symptom.worsening_confusion),
   "general_det" = .normalise_yesno_unknown(symptom.general_deterioration),
   "ox_on_admission" = .normalise_yesno_unknown(symptom.oxygen_required_on_admission),
@@ -603,5 +607,6 @@ map_avoncap_central = function() {list(
     )
 
     # TODO: antivirals but they are in different format.
+    # TODO: readmissions? - 4 possible blocks?
 
 )}

@@ -1,9 +1,5 @@
 ## Standard data manipulation post load ----
 
-# TODO: use this more?
-.opt = function(...) {
-  tryCatch(rlang::eval_tidy(...), error=function(e) rlang::eval_tidy(FALSE))
-}
 
 # Apply an augmentation to the dataframe
 
@@ -69,7 +65,7 @@ augment_generic = function(df, ...) {
       })
     }
     tmp
-  }, df, deparse1(fns), params, .prefix = "augment") %>% return()
+  }, df, deparse1(fns), params, .prefix = "augment", ...) %>% return()
 }
 
 #' Derived data function template

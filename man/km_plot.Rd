@@ -9,14 +9,16 @@ km_plot(
   coxmodel,
   facet = NULL,
   ...,
-  maxtime = max(sfit$time),
+  maxtime = NULL,
   ylab = if (!invert) "surviving (\%)" else "affected (\%)",
   xlab = "time (days)",
   facetlab = NULL,
-  ylim = c(NA, 100),
+  ylim = (if (invert) c(0, NA) else c(NA, 100)),
   n_breaks = 5,
   heights = c(10, 1),
-  invert = FALSE
+  invert = FALSE,
+  show_label = FALSE,
+  show_legend = TRUE
 )
 }
 \arguments{
@@ -33,7 +35,7 @@ term on the lhs of the cox model formula}
     \item{\code{formula}}{either a formula or a previously fitted model}
   }}
 
-\item{maxtime}{the longest x value to plot}
+\item{maxtime}{the longest x value to plot (optional)}
 
 \item{ylab}{the y axis label}
 
@@ -49,10 +51,31 @@ timing and number of "at risk" counts to display.}
 \item{heights}{the relative height between the KM plot and the "at risk" table}
 
 \item{invert}{reverse survival statistics to count number of affected}
+
+\item{show_label}{show the label on the at risk table ( which is somewhat
+redundant as items are coloured)}
+
+\item{show_legend}{show the legend for the strata. (This is sometimes redundant
+if the at risk table is labelled)}
 }
 \value{
 a ggplot patchwork.
 }
 \description{
 Faceted Kaplan-Meier plot
+}
+\examples{
+
+cox = survival::coxph(survival::Surv(time, status) ~ trt + celltype + karno +
+  diagtime + age + prior , data = survival::veteran)
+
+km_plot(survival::veteran, cox)
+km_plot(survival::veteran, cox, facet = 1)
+
+km_plot(survival::veteran, cox, "celltype", show_label=TRUE) &
+   ggplot2::theme(legend.position="bottom")
+
+km_plot(survival::veteran, cox, "trt", show_label=TRUE) &
+   ggplot2::theme(legend.position="bottom")
+
 }

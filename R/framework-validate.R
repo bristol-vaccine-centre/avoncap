@@ -81,6 +81,8 @@ validate_data = function(
   return(tibble::tibble(.row_number=integer(),.error_type=character(), .variable=character(), .subgroup=character()))
 }
 
+
+
 .identify_failures = function(df, failure_expr, active_only=TRUE) {
   failure_expr = rlang::enexpr(failure_expr)
   tmp = df %>% .active_filter(active_only) %>% dplyr::filter(!!failure_expr)
@@ -178,6 +180,7 @@ validate_data = function(
       .variable = reason
     )
   df = .update_validation(df, tmp, label)
+  return(df)
 }
 
 # Update the
@@ -185,9 +188,18 @@ validate_data = function(
   tmp = .get_failures(df)
   meta = df %>% dplyr::select(tidyselect::any_of(retain),.row_number)
   tmp = meta %>% dplyr::inner_join(tmp, by=".row_number")
-  df %>% magrittr::set_attr("data_quality_failures", tmp)
+  df = df %>% magrittr::set_attr("data_quality_failures", tmp)
+  return(df)
 }
 
+
+.remove_known_issues = function(df, known_df, by) {
+
+  tmp = .get_failures(df)
+  tmp = tmp %>% dplyr::anti_join(known_df, by=by)
+  df = df %>% magrittr::set_attr("data_quality_failures", tmp)
+  return(df)
+}
 
 # Recover and export validation data ----
 

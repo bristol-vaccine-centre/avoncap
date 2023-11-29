@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
     <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
@@ -67,6 +68,16 @@
         <dd>Core avoncap consent</dd>
       </dl><dl><dt>
           
+          <code><a href="map_avoncap_ed.html">map_avoncap_ed()</a></code> 
+        </dt>
+        <dd>Avoncap ED normalisation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="map_avoncap_ed_consent.html">map_avoncap_ed_consent()</a></code> 
+        </dt>
+        <dd>ED consent</dd>
+      </dl><dl><dt>
+          
           <code><a href="map_avoncap_haem.html">map_avoncap_haem()</a></code> 
         </dt>
         <dd>Normalise the avoncap data haematology data</dd>
@@ -97,7 +108,7 @@
         <dd>Normalise the urinary antigen data</dd>
       </dl><dl><dt>
           
-          <code><a href="map_urine_binax.html">map_urine_binax()</a></code> 
+          <code><a href="map_urine_binax.html">map_urine_binax()</a></code> <code><a href="map_urine_binax.html">map_urine_binax()</a></code> 
         </dt>
         <dd>Normalise the urinary antigen data (binax results)</dd>
       </dl></div><div class="section level2">
@@ -138,6 +149,11 @@
         <dd>Categorical scores for continuous variables</dd>
       </dl><dl><dt>
           
+          <code><a href="derive_continuous_categories_pneumo.html">derive_continuous_categories_pneumo()</a></code> 
+        </dt>
+        <dd>Age and CURB score categories</dd>
+      </dl><dl><dt>
+          
           <code><a href="derive_covid_status.html">derive_covid_status()</a></code> 
         </dt>
         <dd>Determine if an admission is proven SARS-CoV-2 PCR positive</dd>
@@ -160,7 +176,7 @@
           
           <code><a href="derive_gp_linkage.html">derive_gp_linkage()</a></code> 
         </dt>
-        <dd>Identify patients from surgeries in linked GP study</dd>
+        <dd>Identify patients from the GP surgeries in linked primary care study</dd>
       </dl><dl><dt>
           
           <code><a href="derive_haematology_categories.html">derive_haematology_categories()</a></code> 
@@ -178,6 +194,11 @@
         <dd>Determine if an admission is due to an infective cause</dd>
       </dl><dl><dt>
           
+          <code><a href="derive_invasive_status.html">derive_invasive_status()</a></code> 
+        </dt>
+        <dd>Pneumococcal invasive status and binary test category</dd>
+      </dl><dl><dt>
+          
           <code><a href="derive_nosocomial_covid_status.html">derive_nosocomial_covid_status()</a></code> 
         </dt>
         <dd>Did the patient catch COVID in hospital</dd>
@@ -190,7 +211,7 @@
           
           <code><a href="derive_patient_identifier.html">derive_patient_identifier()</a></code> 
         </dt>
-        <dd>Create a unique patient level id if it does not already exist</dd>
+        <dd>Create a unique patient level id (if it does not already exist)</dd>
       </dl><dl><dt>
           
           <code><a href="derive_pcv_groupings.html">derive_pcv_groupings()</a></code> 
@@ -201,6 +222,16 @@
           <code><a href="derive_phe_pcv_group.html">derive_phe_pcv_group()</a></code> 
         </dt>
         <dd>Get vaccine coverage group for known serotype</dd>
+      </dl><dl><dt>
+          
+          <code><a href="derive_pneumo_clinical_syndrome.html">derive_pneumo_clinical_syndrome()</a></code> 
+        </dt>
+        <dd>Add in clinical syndrome indicator</dd>
+      </dl><dl><dt>
+          
+          <code><a href="derive_pneumo_polyfill.html">derive_pneumo_polyfill()</a></code> 
+        </dt>
+        <dd>Make pneumo data compatible with AvonCAP</dd>
       </dl><dl><dt>
           
           <code><a href="derive_pneumo_uad_panel.html">derive_pneumo_uad_panel()</a></code> 
@@ -228,6 +259,16 @@
         <dd>Determine pneumococcal risk group</dd>
       </dl><dl><dt>
           
+          <code><a href="derive_polyfill_central.html">derive_polyfill_central()</a></code> 
+        </dt>
+        <dd>Polyfill data</dd>
+      </dl><dl><dt>
+          
+          <code><a href="derive_polyfill_ed.html">derive_polyfill_ed()</a></code> 
+        </dt>
+        <dd>Polyfill ED data</dd>
+      </dl><dl><dt>
+          
           <code><a href="derive_presumed_diagnosis_categories.html">derive_presumed_diagnosis_categories()</a></code> 
         </dt>
         <dd>Create presumed diagnostic categories</dd>
@@ -251,6 +292,16 @@
           <code><a href="derive_survival_censoring.html">derive_survival_censoring()</a></code> 
         </dt>
         <dd>Survival outcomes</dd>
+      </dl><dl><dt>
+          
+          <code><a href="derive_survival_times_avoncap.html">derive_survival_times_avoncap()</a></code> 
+        </dt>
+        <dd>Survival analysis times</dd>
+      </dl><dl><dt>
+          
+          <code><a href="derive_survival_times_pneumo.html">derive_survival_times_pneumo()</a></code> 
+        </dt>
+        <dd>Survival analysis times</dd>
       </dl><dl><dt>
           
           <code><a href="derive_vaccination_timings.html">derive_vaccination_timings()</a></code> 
@@ -289,6 +340,11 @@
         <dd>Applies a set of functions to the whole dataframe</dd>
       </dl><dl><dt>
           
+          <code><a href="binomial_proportion_points.html">binomial_proportion_points()</a></code> 
+        </dt>
+        <dd>Dodged bar and whiskers proportions</dd>
+      </dl><dl><dt>
+          
           <code><a href="cut_integer.html">cut_integer()</a></code> 
         </dt>
         <dd>Cut and label an integer valued quantity</dd>
@@ -297,6 +353,16 @@
           <code><a href="default_column_names.html">default_column_names()</a></code> 
         </dt>
         <dd>default column naming mappings</dd>
+      </dl><dl><dt>
+          
+          <code><a href="derive_pandemic_timings.html">derive_pandemic_timings()</a></code> 
+        </dt>
+        <dd>Date columns</dd>
+      </dl><dl><dt>
+          
+          <code><a href="derive_quintile_category.html">derive_quintile_category()</a></code> 
+        </dt>
+        <dd>Split a continuous variable into quintiles</dd>
       </dl><dl><dt>
           
           <code><a href="derive_template.html">derive_template()</a></code> 
@@ -326,7 +392,7 @@
           
           <code><a href="extract_dependencies.html">extract_dependencies()</a></code> 
         </dt>
-        <dd>Extract the</dd>
+        <dd>Get provenance of data column</dd>
       </dl><dl><dt>
           
           <code><a href="find_new_field_names.html">find_new_field_names()</a></code> 
@@ -379,14 +445,14 @@
         <dd>Sanitise AvonCap data columns</dd>
       </dl><dl><dt>
           
-          <code><a href="normalise_generic.html">normalise_generic()</a></code> 
-        </dt>
-        <dd>Sanitise RedCap data columns</dd>
-      </dl><dl><dt>
-          
           <code><a href="original_field_names.html">original_field_names()</a></code> 
         </dt>
         <dd>Get the mapping of transformed columns back to original</dd>
+      </dl><dl><dt>
+          
+          <code><a href="phe_serotypes.html">phe_serotypes</a></code> 
+        </dt>
+        <dd>Pneumococcal UAD serotypes</dd>
       </dl><dl><dt>
           
           <code><a href="readable_label.html">readable_label()</a></code> 
@@ -399,9 +465,20 @@
         <dd>Get a readable label for the AvonCap data as a named list (for ggplot)</dd>
       </dl><dl><dt>
           
+          <code><a href="relevel_serotypes.html">relevel_serotypes()</a></code> 
+        </dt>
+        <dd>Relevel serotype data into an factor based on PCV group status
+and serotype name.</dd>
+      </dl><dl><dt>
+          
           <code><a href="save_data_source_info.html">save_data_source_info()</a></code> 
         </dt>
         <dd>Write file source information out to a text files</dd>
+      </dl><dl><dt>
+          
+          <code><a href="scale_fill_serotype.html">scale_fill_serotype()</a></code> 
+        </dt>
+        <dd>A ggplot scale for pneumococcal serotypes that keeps PCV groups together</dd>
       </dl><dl><dt>
           
           <code><a href="serotype_data.html">serotype_data</a></code> 

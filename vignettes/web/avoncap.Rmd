@@ -124,11 +124,14 @@ rawData2 = avoncap::load_data("avoncap-export","central", merge=TRUE)
 # due to the fact it is mostly a numeric but some values ">250"
 
 # devtools::load_all()
-normData2 = rawData2 %>% avoncap::validate_data() %>% avoncap::normalise_data()
-failures = normData2 %>% avoncap::write_issues("~/avoncap-issues")
+
+failures = rawData2 %>% avoncap::validate_data()  %>% avoncap::write_issues("~/avoncap-issues")
+
+normData2 = rawData2 %>% avoncap::normalise_data()
 
 tmp = failures %>% 
-    filter(.error_type %in% c("none checked in checkbox","missing value")) %>% 
+    filter(.error_type %in% c("none checked in checkbox","missing value")) %>%
+    filter(!.variable %in% c("consented","ppc","include_patient","hosp")) %>% 
     inner_join(rawData2, by="record_number", suffix=c("",".raw")) %>%
   group_by(.variable) %>%
   filter(n()>20)
@@ -140,7 +143,7 @@ if (nrow(tmp) != 0) {
     theme(axis.text.x.bottom = element_text(angle = 90, vjust=0.5, hjust=1))+
     facet_wrap(~.variable,scales = "free_y")
 } else {
-  message("No quality checked variables with more than 20 missing items")
+  message("No quality checked variables with more than 20 missing items (excluding consent flags)")
 }
 
 ```

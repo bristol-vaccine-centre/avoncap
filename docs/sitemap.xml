@@ -31,6 +31,9 @@
     <loc>/articles/web/avoncap.html</loc>
   </url>
   <url>
+    <loc>/articles/web/ed-data.html</loc>
+  </url>
+  <url>
     <loc>/articles/web/gp-data.html</loc>
   </url>
   <url>
@@ -58,6 +61,9 @@
     <loc>/reference/augment_generic.html</loc>
   </url>
   <url>
+    <loc>/reference/binomial_proportion_points.html</loc>
+  </url>
+  <url>
     <loc>/reference/cut_integer.html</loc>
   </url>
   <url>
@@ -80,6 +86,9 @@
   </url>
   <url>
     <loc>/reference/derive_continuous_categories.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_continuous_categories_pneumo.html</loc>
   </url>
   <url>
     <loc>/reference/derive_covid_status.html</loc>
@@ -106,10 +115,16 @@
     <loc>/reference/derive_infective_classification.html</loc>
   </url>
   <url>
+    <loc>/reference/derive_invasive_status.html</loc>
+  </url>
+  <url>
     <loc>/reference/derive_nosocomial_covid_status.html</loc>
   </url>
   <url>
     <loc>/reference/derive_nosocomial_status.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_pandemic_timings.html</loc>
   </url>
   <url>
     <loc>/reference/derive_patient_identifier.html</loc>
@@ -119,6 +134,12 @@
   </url>
   <url>
     <loc>/reference/derive_phe_pcv_group.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_pneumo_clinical_syndrome.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_pneumo_polyfill.html</loc>
   </url>
   <url>
     <loc>/reference/derive_pneumo_uad_panel.html</loc>
@@ -136,10 +157,19 @@
     <loc>/reference/derive_pneumococcal_risk_category.html</loc>
   </url>
   <url>
+    <loc>/reference/derive_polyfill_central.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_polyfill_ed.html</loc>
+  </url>
+  <url>
     <loc>/reference/derive_presumed_diagnosis_categories.html</loc>
   </url>
   <url>
     <loc>/reference/derive_qcovid.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_quintile_category.html</loc>
   </url>
   <url>
     <loc>/reference/derive_severe_disease_outcomes.html</loc>
@@ -149,6 +179,12 @@
   </url>
   <url>
     <loc>/reference/derive_survival_censoring.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_survival_times_avoncap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_survival_times_pneumo.html</loc>
   </url>
   <url>
     <loc>/reference/derive_template.html</loc>
@@ -226,6 +262,12 @@
     <loc>/reference/map_avoncap_consent.html</loc>
   </url>
   <url>
+    <loc>/reference/map_avoncap_ed.html</loc>
+  </url>
+  <url>
+    <loc>/reference/map_avoncap_ed_consent.html</loc>
+  </url>
+  <url>
     <loc>/reference/map_avoncap_haem.html</loc>
   </url>
   <url>
@@ -259,6 +301,9 @@
     <loc>/reference/original_field_names.html</loc>
   </url>
   <url>
+    <loc>/reference/phe_serotypes.html</loc>
+  </url>
+  <url>
     <loc>/reference/pipe.html</loc>
   </url>
   <url>
@@ -274,6 +319,9 @@
     <loc>/reference/readable_label_mapping.html</loc>
   </url>
   <url>
+    <loc>/reference/relevel_serotypes.html</loc>
+  </url>
+  <url>
     <loc>/reference/renameResult.html</loc>
   </url>
   <url>
@@ -281,6 +329,9 @@
   </url>
   <url>
     <loc>/reference/save_data_source_info.html</loc>
+  </url>
+  <url>
+    <loc>/reference/scale_fill_serotype.html</loc>
   </url>
   <url>
     <loc>/reference/serotype_data.html</loc>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
     <a class="dropdown-item" href="../articles/web/quality-assurance.html">Quality assurance</a>
@@ -79,10 +80,14 @@ set can be explicitly supplied with <code>v = get_value_sets(df)</code></p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     
-<ul><li><p>any chronic resp dx: asthma, bronchiectasis, chronic pleural disease, COPD,
+<ul><li><p>simple DM without insulin dependence</p></li>
+<li><p>Solid / Haematological / Any cancer present binary indicators</p></li>
+<li><p>any chronic resp dx: i.e. any of asthma, bronchiectasis, chronic pleural disease, COPD,
 interstitial lung dx, cyctic fibrosis, other chronic resp dx</p></li>
 <li><p>any chronic heart disease: pulmonary htn, CCF, IHD, previous MI, congential
 heart dx, hypertension, AF, other arrythmia, other heart dx, other other heart dx</p></li>
+<li><p>Stroke or TIA binary</p></li>
+<li><p>Any immune compromise binary (immunodeficient or on immune suppressants)</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

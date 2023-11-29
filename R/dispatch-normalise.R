@@ -23,6 +23,98 @@ normalise.avoncap_export.uad_controls = function(rawData, ...) {
     create_keys(keys_avoncap_central())
 }
 
+## ED ----
+
+normalise.avoncap_export.ed = function(rawData, ...) {
+  # Controls database has some naming inconsistencies:
+  rawData %>%
+    .reconstruct_admission_date(...) %>%
+    .reconstruct_hospital(...) %>%
+    normalise_generic(mappings=
+      c(
+        map_avoncap_ed_consent(),
+        map_avoncap_central(), # %>% .remove_mapping(c("hospital_length_of_stay")),
+        map_avoncap_ed()
+      ),
+      ...
+    ) %>%
+    create_keys(keys_avoncap_ed()) %>%
+    .derive_consent_flag_ed() %>%
+    .wipe_non_consented_data()
+}
+
+normalise.avoncap_export.ed.haem = function(rawData, ...) {
+  rawData %>%
+    normalise_generic(mappings = c(
+      map_avoncap_ed_consent(),
+      map_avoncap_haem()
+    ),...) %>%
+    create_keys(keys_avoncap_ed()) %>%
+    .derive_consent_flag_ed() %>%
+    .exclude_non_consented_patients()
+}
+
+normalise.avoncap_export.ed.micro = function(rawData, ...) {
+  .cached({
+    tmp = tibble::tibble()
+    for (i in .repeat_instrument(rawData, "micro")) {
+      tmp2 = rawData %>%
+        normalise_generic(mappings=c(
+          map_avoncap_ed_consent(),
+          map_avoncap_micro(i)
+        ), ...) %>%
+        create_keys(keys_avoncap_micro(i))
+      # dplyr::mutate(micro.test_id = paste0(admin.record_number,"_micro_",i))
+      tmp = tmp %>% dplyr::bind_rows(tmp2)
+    }
+    tmp %>%
+      create_keys(keys_avoncap_ed()) %>%
+      .derive_consent_flag_ed() %>%
+      .exclude_non_consented_patients()
+  },rawData,..., .prefix="norm")
+}
+
+normalise.avoncap_export.ed.virol = function(rawData, ...) {
+  .cached({
+    tmp = tibble::tibble()
+    for (i in .repeat_instrument(rawData, "virol")) {
+      tmp2 = rawData %>%
+        normalise_generic(mappings=c(
+          map_avoncap_ed_consent(),
+          map_avoncap_virol(i)
+        ), ...) %>%
+        create_keys(keys_avoncap_virol(i))
+      # dplyr::mutate(virol.test_id = paste0(admin.record_number,"_virol_",i))
+      tmp = tmp %>% dplyr::bind_rows(tmp2)
+    }
+    tmp %>% create_keys(keys_avoncap_ed()) %>%
+      .derive_consent_flag_ed() %>%
+      .exclude_non_consented_patients()
+  },rawData,..., .prefix="norm")
+}
+
+normalise.avoncap_export.ed.radio = function(rawData, ...) {
+  .cached({
+    tmp = tibble::tibble()
+    for (i in .repeat_instrument(rawData, "radio")) {
+      tmp2 = rawData %>%
+        normalise_generic(mappings=c(
+          map_avoncap_ed_consent(),
+          map_avoncap_radio(i)
+        ), ...) %>%
+        create_keys(keys_avoncap_radio(i))
+      # TODO:
+      # dplyr::mutate(radio.test_id = paste0(admin.record_number,"_radio_",i))
+      tmp = tmp %>% dplyr::bind_rows(tmp2)
+    }
+    tmp %>% create_keys(keys_avoncap_ed()) %>%
+      .derive_consent_flag_ed() %>%
+      .exclude_non_consented_patients()
+  },rawData,..., .prefix="norm")
+}
+
+## Central ----
+
 normalise.avoncap_export.central = function(rawData, ...) {
   rawData %>%
     .merge_ethnicity(...) %>%
@@ -152,32 +244,14 @@ normalise.urine_antigens.binax = function(rawData, ...) {
 }
 
 
-# Mapping manipulation ----
 
-.repeat_instrument = function(data, names) {
-  data %>% dplyr::select(tidyselect::starts_with(names)) %>%
-    colnames() %>%
-    stringr::str_extract("[0-9]+$") %>%
-    unique() %>%
-    stats::na.omit()
-}
-
-.rename_mapping = function(mapping, ...) {
-  r = rlang::list2(...)
-  for (k1 in names(r)) {
-    k2 = r[[k1]]
-    v = mapping[[k1]]
-    mapping[[k1]] = NULL
-    mapping[[k2]] = v
-  }
-  return(mapping)
-}
 
 # Helper preprocessing steps ----
 # These are reusable bits of logic to fix specific deficiencies in the
 # different avoncap extracts
 
 .merge_ethnicity = function(rawData, ethn = try(avoncap::load_data("ethnicity",reproduce_at = Sys.Date()),silent = TRUE), ...) {
+
   if (!"record_number" %in% colnames(rawData)) {
     message("Aborting attempt to assign ethnicity to a data set without a `record_number` identifier")
     return(rawData)
@@ -191,6 +265,10 @@ normalise.urine_antigens.binax = function(rawData, ...) {
     }
 
     if(!is.null(ethn)) {
+
+      # make sure unique in case we loaded data more than once.
+      ethn = ethn %>% dplyr::group_by(record_number) %>% dplyr::filter(dplyr::row_number()==1) %>% dplyr::ungroup()
+
       if (!"ethnicity2" %in% colnames(ethn)) ethn = ethn %>% dplyr::rename(ethnicity2 = ethnicity)
       rawData = rawData %>%
         dplyr::left_join(ethn %>% dplyr::select(record_number, ethnicity2) , by="record_number", suffix = c("",".ethn"))
@@ -293,6 +371,26 @@ normalise.urine_antigens.binax = function(rawData, ...) {
 # Consent postprocessing steps (avoncap) ----
 
 ## Admin ----
+
+.derive_consent_flag_ed = function(df) {
+  df = df %>% dplyr::mutate(
+    admin.consent_withheld = dplyr::case_when(
+      is.na(admin.opted_out) ~ "yes",
+      admin.opted_out == "yes" ~ "yes",
+      TRUE ~ "no"
+    ) %>% factor(levels = c("no","yes")),
+
+    admin.consent_type = dplyr::case_when(
+      is.na(admin.opted_out) ~ "Missing",
+      admin.opted_out == "yes" ~ "Declined",
+      TRUE ~ "Section 251"
+    ) %>% factor(levels = c("Explicit","Section 251","Declined","Withdrew","Missing")),
+
+    admin.consent_samples = factor("None", levels = c("All samples", "Urine & resp", "Urine only", "Resp only", "None"))
+  )
+
+  return(df)
+}
 
 .derive_consent_flag = function(df) {
   df = df %>% dplyr::mutate(

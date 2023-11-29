@@ -1,0 +1,61 @@
+---
+title: "The emergency department data set"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The emergency department data set}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(tidyverse)
+library(avoncap)
+```
+
+```{r setup}
+
+# The data input directory on my development machine:
+options("avoncap.input" = "~/Data/avoncap/")
+
+# library(avoncap)
+# devtools::load_all()
+
+```
+
+# Input data location
+
+* first level directories.
+* Filenames need some indication of database year (either as 20-21,21-22,... or as y1,y2,...)
+
+```{r}
+# The data input directory on my development machine:
+options("avoncap.input" = "~/Data/avoncap/")
+```
+
+
+```{r}
+avoncap::most_recent_files("avoncap-export","ed")
+```
+
+
+```{r}
+rawData = avoncap::load_data("avoncap-export","ed")
+```
+
+```{r}
+
+norm = avoncap::normalise_data(rawData,.nocache=TRUE)
+
+aug = avoncap::augment_data(norm,.nocache=TRUE)
+
+```
+
+
+```{r}
+aug %>% xglimpse(admission.category, admission.presentation_3_class)
+aug %>% xglimpse(pneumo.presentation_class, outcome.admitted_within_30_days)
+```

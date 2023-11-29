@@ -13,9 +13,48 @@ augment.avoncap_export.uad_controls = function(df,...) {
       , ...)
 }
 
+augment.avoncap_export.ed = function(df,...) {
+  df %>%
+    augment_generic(
+      derive_polyfill_ed,
+      derive_continuous_categories,
+      derive_patient_identifier,
+      derive_admission_episode,
+      derive_gp_linkage,
+      derive_simpler_comorbidities,
+
+      derive_presumed_diagnosis_categories,
+      derive_nosocomial_status,
+
+      derive_covid_status,
+      derive_diagnosis_categories,
+      derive_infective_classification, # must be after diagnosis categories and covid status
+      derive_aLRTD_categories,
+      derive_nosocomial_covid_status,
+
+      derive_genomic_variant,
+      derive_vaccination_timings,
+      derive_completed_vaccination_status,
+      derive_effective_vaccination_status,
+      derive_vaccine_combinations,
+
+      derive_pneumococcal_categories,
+      derive_pneumococcal_high_risk,
+      derive_pneumococcal_risk_category,
+
+      derive_WHO_outcome_score,
+      derive_severe_disease_outcomes,
+      derive_survival_times_avoncap,
+      derive_survival_censoring,
+      derive_reordered_factors(),
+      ...
+    )
+}
+
 augment.avoncap_export.central = function(df,...) {
   df %>%
     augment_generic(
+      derive_polyfill_central,
       derive_continuous_categories,
       derive_patient_identifier,
       derive_admission_episode,
@@ -49,7 +88,7 @@ augment.avoncap_export.central = function(df,...) {
       derive_hospital_burden_outcomes,
 
       derive_reordered_factors(),
-      ...,
+      ...
     ) %>%
     .wipe_non_consented_data()
 }

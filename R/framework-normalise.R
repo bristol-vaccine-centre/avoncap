@@ -147,6 +147,32 @@ normalise_generic = function(
   return(tmp2)
 }
 
+## Re-use / Mapping manipulation ----
+
+.repeat_instrument = function(data, names) {
+  data %>% dplyr::select(tidyselect::starts_with(names)) %>%
+    colnames() %>%
+    stringr::str_extract("[0-9]+$") %>%
+    unique() %>%
+    stats::na.omit()
+}
+
+.remove_mapping = function(mapping, ...) {
+  r = c(...)
+  mapping[r] = NULL
+  return(mapping)
+}
+
+.rename_mapping = function(mapping, ...) {
+  r = rlang::list2(...)
+  for (k1 in names(r)) {
+    k2 = r[[k1]]
+    v = mapping[[k1]]
+    mapping[[k1]] = NULL
+    mapping[[k2]] = v
+  }
+  return(mapping)
+}
 
 ## Keys ----
 
@@ -301,14 +327,18 @@ create_keys = function(df, key_spec = list("id"="{dplyr::row_number()}")) {
 
 # TODO: use labelled:: for column names
 
-.normalise_list = function(renameTo, values, ordered = FALSE, zeroValue=FALSE, codes=(1:length(values))-zeroValue) {
+.normalise_list = function(renameTo, values, ordered = FALSE, zeroValue=FALSE, codes=(1:length(values))-zeroValue, referrent = NULL) {
   renameTo=rlang::ensym(renameTo)
   return(function(df, valueCol) {
     valueCol = as.symbol(valueCol)
     message("mapping ",valueCol," to ",renameTo)
     # TODO: do we need to handle a NaN value (explicit unavailable) and if so how?
+    df = df %>%
+      dplyr::mutate(!!renameTo := !!valueCol %>% factor(levels=codes, labels=values, ordered = ordered))
+    if (!is.null(referrent)) {
+      df = df %>% dplyr::mutate(!!renameTo := forcats::fct_relevel(!!renameTo, referrent))
+    }
     df %>%
-      dplyr::mutate(!!renameTo := !!valueCol %>% factor(levels=codes, labels=values, ordered = ordered)) %>%
       .relocate_old(renameTo, valueCol)
   })
 }
@@ -320,7 +350,7 @@ create_keys = function(df, key_spec = list("id"="{dplyr::row_number()}")) {
 
 .normalise_yesno_unknown = function(renameTo) {
   #TODO: error checking
-  .normalise_list({{renameTo}}, c("yes","no","unknown"))
+  .normalise_list({{renameTo}}, c("yes","no","unknown"), referrent = "no")
 }
 
 .normalise_ppi = function(renameTo) {
@@ -346,7 +376,7 @@ create_keys = function(df, key_spec = list("id"="{dplyr::row_number()}")) {
   })
 }
 
-.normalise_integer = function(renameTo, limits=c(-Inf,Inf)) {
+.normalise_integer = function(renameTo, limits=c(-Inf,Inf), convert_fn=NULL) {
   renameTo=rlang::ensym(renameTo)
   return(function(df, valueCol) {
     message("mapping ",valueCol," to ",renameTo)
@@ -354,7 +384,13 @@ create_keys = function(df, key_spec = list("id"="{dplyr::row_number()}")) {
     valueCol = as.symbol(valueCol)
     df %>%
       dplyr::mutate(!!renameTo :=  suppressWarnings(as.numeric(!!valueCol))) %>%
-      dplyr::mutate(!!renameTo :=  dplyr::if_else(!!renameTo != round(!!renameTo), NA_real_,!!renameTo)) %>%
+      {
+        if (is.null(convert_fn)) {
+          dplyr::mutate(., !!renameTo :=  dplyr::if_else(!!renameTo != round(!!renameTo), NA_real_, !!renameTo))
+        } else {
+          dplyr::mutate(., !!renameTo :=  convert_fn(!!renameTo))
+        }
+      }  %>%
       dplyr::mutate(!!renameTo :=  dplyr::if_else(!!renameTo < limits[1] | !!renameTo > limits[2],NA_real_,!!renameTo)) %>%
       .relocate_old(renameTo, valueCol)
   })

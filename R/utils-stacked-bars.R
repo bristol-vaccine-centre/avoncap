@@ -41,7 +41,7 @@ stacked_barplot = function(data, mapping, ...) {
 #' @return a ggplot
 #' @export
 binomial_proportion_points = function(data, mapping, ..., width = 0.8, size=0.5) {
-  tmp = .summary_binomial(data %>% ungroup(),mapping,.x)
+  tmp = .summary_binomial(data %>% dplyr::ungroup(),mapping,.x)
   ggplot2::ggplot(tmp$data, tmp$mapping)+
     ggplot2::geom_point(mapping=ggplot2::aes(y=mean), position=ggplot2::position_dodge(width=width), size=size, ...)+
     ggplot2::geom_errorbar(mapping=ggplot2::aes(ymin=lower, ymax=upper), position=ggplot2::position_dodge(width=width), width=width*0.9, ...)+
