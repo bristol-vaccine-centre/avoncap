@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9024</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../../articles/web/denominator-check.html">AvonCAP study population denominator</a>
     <a class="dropdown-item" href="../../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
@@ -98,17 +99,17 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
 <span><span class="co">#&gt;   filename directory      path           date       hospital study_year filetype</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ed_y3    avoncap-export …-24/ed_y3.csv 2023-11-24 <span style="color: #BB0000;">NA</span>                3 csv</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ed_y3    avoncap-export …-08/ed_y3.csv 2024-04-08 <span style="color: #BB0000;">NA</span>                3 csv</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawData</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"avoncap-export"</span>,<span class="st">"ed"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-03c0b7b0ee06fe890bfa80030263996a.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-07d12a2ad5e7510be5ccda07ff910781.rda</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">norm</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="va">rawData</span>,.nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.ed</span></span>
 <span><span class="co">#&gt; Admission date is derived from study week and hence approximate.</span></span>
 <span><span class="co">#&gt; Some columns expected in the mappings were not present: ac_study_number, nhs_number, admission_type, c19_diagnosis, c19_adm_swab, c19_test_type, cc_critieria, cc_pos_date, age_march, ethnicity2, hapcovid_screening, hospital_covid, np_swab, adm_np_type, np_date, days_adm_npswab, np_swab_2, adm_np_type_2, np_date_2, np_swab_3, adm_np_type_3, np_date_3, saliva, saliva_date, days_adm_saliva, sputum, sputum_date, days_adm_sputum, pt_ad_ur, adm_ur_taken, nourine_reason, adm_np_type_2, adm_ur_date, days_adm_urine, adm_serum_tak, adm_seru_date, days_adm_serum, covidvax_date, covidvax_dose_2, covidvax_dose_3, covidvax_dose_4, covidvax_dose_5, covidvax_dose_6, flu_date, ppv23_date, c19_variant, adm_diagnosis, previousinfection_date, height, weight, bmi, first_radio, c19_peep, c19_hospadm, c17_high, c19icuon, c19_icudays, c19_vent, c19_ox, c19_ionotropes, c19_complication, c19_death7d, c19_meds, ip_death, days_in_icu, did_the_patient_have_respi, number_of_days_of_ventilat, ett_days, renal_replacement_therapy, complications, ventilatory_support, did_the_patient_receive_ec, inotropic_support_required, anosmia, ageusia, dysgeusia, malaise, myalgia, worse_confusion, general_det</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-01f2ba0fb60912d3b2ae431ed31c9885.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-bda2a7797d25177988eea50db07348ff.rda</span></span>
 <span><span class="co">#&gt; mapping .optout to admin.opted_out</span></span>
 <span><span class="co">#&gt; mapping .record_number to admin.record_number</span></span>
 <span><span class="co">#&gt; mapping .what_was_the_first_surveil to admin.first_record_number</span></span>
@@ -131,7 +132,8 @@
 <span><span class="co">#&gt; mapping .age_at_admission to demog.age</span></span>
 <span><span class="co">#&gt; the input data set does not have a age_march column (or column set)</span></span>
 <span><span class="co">#&gt; mapping .imd to demog.imd_decile</span></span>
-<span><span class="co">#&gt; mapping .gp_practice to admin.gp_practice</span></span>
+<span><span class="co">#&gt; mapping .gp_practice to admin.gp_practice_old</span></span>
+<span><span class="co">#&gt; mapping .gp_practice_drop_down to admin.gp_practice</span></span>
 <span><span class="co">#&gt; mapping .smoking to demog.smoker</span></span>
 <span><span class="co">#&gt; the input data set does not have a ethnicity2 column (or column set)</span></span>
 <span><span class="co">#&gt; mapping .care_home to demog.care_home_resident</span></span>
@@ -338,17 +340,18 @@
 <span><span class="co">#&gt; mapping .home_d_1 to outcome.days_since_last_ed_episode</span></span>
 <span><span class="co">#&gt; mapping .radiology_result_1___2 to radio.consistent_with_pneumonia_1</span></span>
 <span><span class="co">#&gt; mapping .radiology_result_2___2 to radio.consistent_with_pneumonia_2</span></span>
-<span><span class="co">#&gt; Mapped 173 columns</span></span>
-<span><span class="co">#&gt; Did not map 561 columns</span></span>
+<span><span class="co">#&gt; Mapped 174 columns</span></span>
+<span><span class="co">#&gt; Did not map 563 columns</span></span>
 <span></span>
 <span><span class="va">aug</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="va">norm</span>,.nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.avoncap_export.ed</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-0f158b98ad807ce8939006470362728e.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-97d7a03c39e927aeaeba57f329c66f3c.rda</span></span>
 <span><span class="co">#&gt; Created admission.cxr_pneumonia, admission.admission_route, outcome.admitted_to_hospital, outcome.death_within_30_days using: radio.consistent_with_pneumonia_1, radio.consistent_with_pneumonia_2, outcome.functional_status, outcome.survival_duration</span></span>
-<span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.rockwood_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.rockwood_score, admission.curb_65_severity_score</span></span>
+<span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.cci_category_alternate, admission.rockwood_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.rockwood_score, admission.curb_65_severity_score</span></span>
 <span><span class="co">#&gt; Created admin.patient_identifier using: admin.first_record_number, admin.record_number</span></span>
 <span><span class="co">#&gt; Created admission.episode, admission.interval using: admission.date</span></span>
-<span><span class="co">#&gt; Created admin.linked_gp_practice using: admin.gp_practice</span></span>
+<span><span class="co">#&gt; Skipping function due to error: In argument: `admin.linked_gp_practice = ~...`.</span></span>
+<span><span class="co">#&gt; Created admin.catchment_status using: admin.gp_practice</span></span>
 <span><span class="co">#&gt; Created comorbid.diabetes_type, comorbid.solid_cancer_present, comorbid.haemotological_cancer_present, comorbid.any_cancer_present, comorbid.any_chronic_lung_disease, comorbid.any_chronic_heart_disease, comorbid.cva_or_tia, comorbid.any_immune_compromise using: comorbid.diabetes, comorbid.solid_cancer, comorbid.leukaemia, comorbid.lymphoma, comorbid.no_haemotological_cancer, comorbid.asthma, comorbid.bronchiectasis, comorbid.chronic_pleural_dx, comorbid.copd, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.other_chronic_resp_dx, comorbid.pulmonary_hypertension, comorbid.ccf, comorbid.ihd, comorbid.previous_mi, comorbid.congenital_heart_dx, comorbid.hypertension, comorbid.af, comorbid.other_arrythmia, comorbid.other_heart_dx, comorbid.other_other_heart_dx, comorbid.cva, comorbid.tia, comorbid.immunodeficiency, admission.on_immunosuppression</span></span>
 <span><span class="co">#&gt; Skipping function due to error: In argument: `admission.initial_presentation_3_class = `%&gt;%`(...)`.</span></span>
 <span><span class="co">#&gt; Skipping function due to error: In argument: `admission.hospital_acquired = `%&gt;%`(...)`.</span></span>

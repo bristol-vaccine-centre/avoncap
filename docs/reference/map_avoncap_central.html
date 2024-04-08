@@ -22,7 +22,8 @@ gender -&amp;gt; demog.gender (list)
 age_at_admission -&amp;gt; demog.age (double)
 age_march -&amp;gt; demog.age_in_march_2021 (double)
 imd -&amp;gt; demog.imd_decile (name)
-gp_practice -&amp;gt; admin.gp_practice (name)
+gp_practice -&amp;gt; admin.gp_practice_old (name)
+gp_practice_drop_down -&amp;gt; admin.gp_practice (list)
 smoking -&amp;gt; demog.smoker (list)
 ethnicity2 -&amp;gt; demog.ethnicity (list)
 care_home -&amp;gt; demog.care_home_resident (yesno)
@@ -206,7 +207,8 @@ gender -&amp;gt; demog.gender (list)
 age_at_admission -&amp;gt; demog.age (double)
 age_march -&amp;gt; demog.age_in_march_2021 (double)
 imd -&amp;gt; demog.imd_decile (name)
-gp_practice -&amp;gt; admin.gp_practice (name)
+gp_practice -&amp;gt; admin.gp_practice_old (name)
+gp_practice_drop_down -&amp;gt; admin.gp_practice (list)
 smoking -&amp;gt; demog.smoker (list)
 ethnicity2 -&amp;gt; demog.ethnicity (list)
 care_home -&amp;gt; demog.care_home_resident (yesno)
@@ -378,7 +380,7 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9024</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -393,6 +395,7 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/denominator-check.html">AvonCAP study population denominator</a>
     <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
@@ -438,7 +441,8 @@ antibiotic_used -&amp;gt; admission.pre_admission_antibiotic (checkboxes_to_nest
 <li><p>age_at_admission -&gt; demog.age (double)</p></li>
 <li><p>age_march -&gt; demog.age_in_march_2021 (double)</p></li>
 <li><p>imd -&gt; demog.imd_decile (name)</p></li>
-<li><p>gp_practice -&gt; admin.gp_practice (name)</p></li>
+<li><p>gp_practice -&gt; admin.gp_practice_old (name)</p></li>
+<li><p>gp_practice_drop_down -&gt; admin.gp_practice (list)</p></li>
 <li><p>smoking -&gt; demog.smoker (list)</p></li>
 <li><p>ethnicity2 -&gt; demog.ethnicity (list)</p></li>
 <li><p>care_home -&gt; demog.care_home_resident (yesno)</p></li>

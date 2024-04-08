@@ -21,6 +21,7 @@ augment.avoncap_export.ed = function(df,...) {
       derive_patient_identifier,
       derive_admission_episode,
       derive_gp_linkage,
+      derive_catchment_status,
       derive_simpler_comorbidities,
 
       derive_presumed_diagnosis_categories,
@@ -59,6 +60,7 @@ augment.avoncap_export.central = function(df,...) {
       derive_patient_identifier,
       derive_admission_episode,
       derive_gp_linkage,
+      derive_catchment_status,
       derive_simpler_comorbidities,
 
       derive_presumed_diagnosis_categories,

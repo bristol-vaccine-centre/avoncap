@@ -5,7 +5,6 @@
 #' data using the same levels as this scale otherwise the colour legend will be
 #' ordered in a different sequence. This can be achieved using `relevel_serotypes`,
 #'
-#'
 #' @inheritDotParams ggplot2::scale_fill_manual
 #' @param palette_fn a function that returns a set of colours for a number of
 #'   levels. Such functions can be obtained from things like `scales::brewer_pal(...)`
@@ -15,21 +14,10 @@
 #'
 #' @return A ggplot2 scale
 #' @export
-#'
-#' @examples
-#'
-#' x = rlang::exprs(
-#'   PCV7 ~ "PCV7",
-#'   PCV15 ~ "PCV15-7",
-#'   TRUE ~ "Non-PCV15 serotype"
-#' )
-#'
-#' ggplot2::ggplot(
-#'   avoncap::phe_serotypes %>% dplyr::mutate(y=dplyr::row_number()),
-#'   ggplot2::aes(x=serotype, y=y, fill=relevel_serotypes(serotype,exprs=x))
-#' )+ggplot2::geom_bar(stat="identity")+
-#' scale_fill_serotype(exprs=x)
 scale_fill_serotype = function(..., palette_fn = scales::brewer_pal(palette="Dark2"), undefined = "#606060", exprs = rlang::exprs()) {
+
+  # TODO: investigate ggh4x grouped scales:
+  # https://stackoverflow.com/questions/23207878/ggplot2-group-x-axis-discrete-values-into-subgroups
 
   serotype_groups = .serotype_groups(!!!exprs)
 

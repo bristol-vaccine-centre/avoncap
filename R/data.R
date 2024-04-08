@@ -73,3 +73,60 @@ NULL
 #' @name key_dates
 NULL
 
+#' Catchment area GP surgeries
+#'
+#' The default catchment population for AvonCAP is limited to the Bristol,
+#' North Somerset and South Gloucestershire Integrated Care Board (BNSSG ICB).
+#' This list is the list of GP surgeries considered part of the denominator.
+#'
+#' * code - the NHS ODS organisational code of the practice.
+#' * name - the official name of the practice
+#'
+#' @name key_dates
+NULL
+
+
+## denom_by_age_by_day definition ----
+
+#' The avoncap denominator dataset
+#'
+#' The denominator is a time varying quantity
+#'
+#' @usage data(denom_by_age_by_day)
+#'
+#' @format
+#' A dataframe containing the following columns:
+#' - method (character) - estimation method. The default is "Campling 2019"
+#' - age (character) - the age category
+#' - date (date) - the date for which this estimate is valid
+#' - population (integer) - the esimtate of the population size for that age group on that day
+#'
+#' No default value.
+#'
+#' 32592 rows and 4 columns
+#'
+#' @docType data
+#' @keywords datasets
+#' @name denom_by_age_by_day
+NULL
+
+## denom_by_age_by_day definition ends
+
+#' GP surgeries in the Bristol ICB area
+#'
+#' The denominator relates only to patients coming from these GP surgeries
+#'
+#' @usage data(icb_surgeries)
+#'
+#' @format
+#' A dataframe containing the following columns:
+#' - code - an official ODS code for the GP surgery
+#' - name - the official surgery name.
+#'
+#' 82 rows and 2 columns
+#'
+#' @docType data
+#' @keywords datasets
+#' @name icb_surgeries
+NULL
+

@@ -206,7 +206,9 @@ augData2 %>% xglimpse(admission.infective_cause,  admission.presentation_3_class
 augData2 %>% xglimpse(admission.infective_cause,  admission.is_covid)
 
 augData2 %>% xglimpse(admin.consent_withheld, admission.presentation_3_class)
+augData2 %>% xglimpse(admin.consent_withheld, admin.catchment_status)
 
+augData2 %>% xglimpse(admin.consented, admin.catchment_status)
 ```
 
 

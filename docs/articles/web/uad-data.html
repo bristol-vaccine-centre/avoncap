@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9024</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../../articles/web/denominator-check.html">AvonCAP study population denominator</a>
     <a class="dropdown-item" href="../../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
@@ -122,7 +123,7 @@ format).</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">normUA</span> <span class="op">=</span> <span class="va">rawUA</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"serotype"</span>, .nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.urine_antigens.serotype</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-47db867bf7ce62827001276c41513ee8.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-5e058cdd8ab04538de65054bdd016e09.rda</span></span>
 <span><span class="co">#&gt; mapping .RESULT to pneumo.urine_antigen_result</span></span>
 <span><span class="co">#&gt; mapping .EVENT_DATE to pneumo.test_date</span></span>
 <span><span class="co">#&gt; mapping .ANALYSIS to pneumo.urine_antigen_test</span></span>
@@ -132,7 +133,7 @@ format).</p>
 <span><span class="co">#&gt; Did not map 23 columns</span></span>
 <span><span class="va">normBinax</span> <span class="op">=</span> <span class="va">rawUA</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"binax"</span>, .nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.urine_antigens.binax</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-980aa36f9ff48c370b7f834c5f4955bc.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-ac541843aef3f135c47266132f0b67a4.rda</span></span>
 <span><span class="co">#&gt; mapping .RESULT to pneumo.binax_result</span></span>
 <span><span class="co">#&gt; mapping .EVENT_DATE to pneumo.test_date</span></span>
 <span><span class="co">#&gt; mapping .SUBJECT to admin.consented_record_number</span></span>
@@ -178,9 +179,7 @@ relevant</p>
 <code class="sourceCode R"><span></span>
 <span><span class="va">augUA</span> <span class="op">=</span> <span class="va">normUA</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.urine_antigens.serotype</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-449ced232f5e22f9557fdf86328939bd.rda</span></span>
-<span><span class="co">#&gt; Created pneumo.pcv_group using: key.sample, pneumo.urine_antigen</span></span>
-<span><span class="co">#&gt; Created pneumo.non_uad_panel_result, pneumo.uad1_panel_result, pneumo.uad2_panel_result, pneumo.serotype_summary_result, pneumo.serotype_positive_count, pneumo.serotype_results_complete using: key.sample, pneumo.urine_antigen</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-089be0fa10a1811e5ca3630695738a63.rda</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># augUA %&gt;% filter(pneumo.serotype_results_complete) %&gt;% </span></span>

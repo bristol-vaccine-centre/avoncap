@@ -1,0 +1,675 @@
+---
+title: "AvonCAP study population denominator"
+output: rmarkdown::html_vignette
+bibliography: avoncap-denominator.bib
+csl: ieee-with-url.csl
+header-includes:
+  \DeclareUnicodeCharacter{2212}{\textendash}
+vignette: >
+  %\VignetteIndexEntry{AvonCAP study population denominator}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Mr James Campling MSc^1^; Dr Robert Challen MBBS PhD^2^
+
+1) Vaccines Medical Affairs, Pfizer Ltd, Tadworth, UK, KT20 7NS. 
+2) Engineering Mathematics, University of Bristol, UK 
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE
+  # dev = "cairo_pdf"
+)
+library(tidyverse)
+
+cache = memoise::cache_filesystem(rappdirs::user_cache_dir("avoncap"))
+
+here::i_am("vignettes/web/denominator-check.Rmd")
+ggrrr::gg_pedantic()
+```
+
+
+# Background
+
+The AvonCAP study is based on 2 acute hospitals in Bristol. These are the Bristol Royal Infirmary (BRI) and Southmead hospital. 
+BRI is part of the University Hospitals Bristol And Weston NHS Foundation Trust (UHBWFT), and Southmead is part of North Bristol NHS trust (NBT).
+University Hospitals Bristol And Weston NHS Foundation Trust also includes Weston General Hospital which is not part of the study. Both of these trusts are part of the Bristol, North Somerset and South Gloucestershire Integrated Care Board (BNSSG ICB) (previously a Clinical Commissioning Group).
+
+The purpose of this supplementary paper is to compare different methods for estimating the study catchment area, and population denominator, to assess the effect of the ageing population over the study period, and to create time varying estimates of population denominator that take into account population trends over the study period.
+
+# Methods
+
+## Proportional flow - aLRTD admissions / General practice populations
+
+The catchment area of the AvonCAP study was previously estimated [@campling2022] using a proportional flow model linking GP surgeries within the BNSSG ICB to study hospitals based on the proportion of patients presenting with acute lower respiratory tract disease (aLRTD) from each surgery that attended a study hospital between 2017 and 2019, stratified by age. This also collected some information on patients in the BNSSG with aLRTD who go to non-study hospitals such as Weston General.
+
+In brief, hospital admission data were linked to aggregated GP practice patient registration data within BNSSG Clinical Commissioning Group for 2017–2019. The proportion of GP practices' aLRTD hospitalisations that occurred at a specific study hospital was multiplied by their patient registration count for six age groups to obtain each practices' contribution to that hospital's denominator (e.g., if 50% of GP practice admissions were at a specific study hospital among individuals aged 50−64y, the practice contributed half of their patients aged 50–64y to the denominator). 
+
+The registered population of all general practices is available from NHS England [@nhsdigital_gpreg] and the population from October 2019 is used as the baseline population. Due to patients who are admitted to both study hospitals within the 2017-2019 time period there is minor amount of double counting in this method which is pragmatically addressed by truncating the combined proportion of the 2 study hospitals to 1.
+
+```{r}
+# The upper limits of the age bands 
+age_bands = c(18,35,50,65,75,85)
+
+# The pfizer non study hospital admissions data
+# weston component
+oth2017 = readxl::read_excel(
+  here::here("data-raw/pfizer/Final Bristol Data.xlsx"),
+  sheet = "Patients not Bristol Hosp",
+  range = "B6:E62",
+  col_types = c("text","skip","text","text"),
+  col_names = c("age","hosp","admissions")
+) 
+
+oth2018 = readxl::read_excel(
+  here::here("data-raw/pfizer/Final Bristol Data.xlsx"),
+  sheet = "Patients not Bristol Hosp",
+  range = "G6:J60",
+  col_types = c("text","skip","text","text"),
+  col_names = c("age","hosp","admissions")
+)
+
+oth2019 = readxl::read_excel(
+  here::here("data-raw/pfizer/Final Bristol Data.xlsx"),
+  sheet = "Patients not Bristol Hosp",
+  range = "L6:O72",
+  col_types = c("text","skip","text","text"),
+  col_names = c("age","hosp","admissions")
+)
+
+others = bind_rows(
+    oth2017 %>% mutate(year=2017),
+    oth2018 %>% mutate(year=2018),
+    oth2019 %>% mutate(year=2019)
+  ) %>% mutate(
+    admissions = as.numeric(ifelse(admissions == "5*","2",admissions)),
+    hosp = case_when(
+      hosp == "Weston Area Health NHS Trust" ~ "Weston General Hospital",
+      TRUE ~ "Other"
+    ),
+    trust = case_when(
+      hosp == "Weston General Hospital" ~ "UHBWFT",
+      TRUE ~ "Other"
+    ),
+  ) %>% group_by(
+    trust,hosp,age
+  ) %>% summarise(
+    admissions = sum(admissions)
+  ) %>% mutate(
+    age = age %>% stringr::str_replace("^[^0-9]+","") %>% stringr::str_replace(" to ","-"),
+    age_end = as.numeric(stringr::str_extract(age,"([0-9]+[^0-9])?([0-9]+)",2))+1
+  ) %>% group_by(
+    trust,hosp
+  ) %>% group_modify(function(d,...) {
+      # This is interpolated because the numbers are in the wrong age bands
+      d$age_end[d$age_end==86] = NA
+      ages = age_bands
+      r = growthrates::reband_discrete(d$age_end, d$admissions, ages, xlim = c(16,105), labelling = "positive_integer")
+      return(
+        tibble(
+          age = factor(c(NA,"18-34","35-49","50-64","65-74","75-84","85+")),
+          admissions=round(r)
+        )
+      )
+    }) %>% filter(!is.na(age))
+```
+
+
+```{r}
+
+# The pfizer proportional flow data
+
+pfdata3 = readxl::read_excel(
+    here::here("data-raw/pfizer/Final Bristol Data.xlsx"),
+    sheet="17-19 Analysis - All Age Bands2",
+    range = "A6:M497",
+    col_types = c("text","text","text","numeric","skip","skip","numeric","numeric","numeric","skip","numeric","numeric","numeric"),
+    col_names = c("age","code","name","pop2019","admissions.bri","proportion.bri","catchment.bri","admissions.nbt","proportion.nbt","catchment.nbt"),
+    na = "NULL"
+  ) %>% mutate(
+    age = age %>% stringr::str_replace("^[^0-9]+","") %>% stringr::str_replace(" to ","-")
+  )
+
+pfdata4 = pfdata3 %>% 
+  pivot_longer(cols=tidyselect::contains("."), names_to = c(".value", "hosp"),names_pattern = "([^\\.]+)\\.([^\\.]+)") %>%
+  mutate(
+    hosp = case_when(
+      hosp == "bri" ~ "Bristol Royal Infirmary",
+      hosp == "nbt" ~ "Southmead Hospital",
+      TRUE ~ "Other"
+    ),
+    trust = case_when(
+      hosp == "Bristol Royal Infirmary" ~ "UHBWFT",
+      hosp == "Southmead Hospital" ~ "NBT",
+      TRUE ~ "Other"
+    )
+  )
+
+icb_surgeries = pfdata3 %>% select(code,name) %>% distinct()
+
+if(interactive()) usethis::use_data(icb_surgeries,overwrite = TRUE)
+
+# pfdata4 %>% select(age,code,name,pop2019) %>% distinct()
+```
+
+```{r}
+overall = 
+  bind_rows(
+    others,
+    pfdata4 %>% select(trust,hosp,age,admissions) %>% distinct()
+  ) %>% 
+  mutate(
+    trust = factor(trust, levels = c("NBT","UHBWFT","Other")),
+    hosp = factor(hosp, levels=c("Bristol Royal Infirmary","Southmead Hospital","Weston General Hospital","Other")),
+  )
+
+ggrrr::hux_tidy(overall, rowGroupVars = vars(trust, hosp), colGroupVars = vars(age))  %>%
+  huxtable::set_caption('Hospital admissions for aLRTD between 2017 and 2019 stratified by age group for patients registered at GP surgeries in the BNSSG ICB area.')
+```
+
+
+```{r cache=TRUE}
+
+# GP admission data from NHS digital:
+# By practice and single year of age every 3 months.
+# This is timeseries 
+
+practice_data_urls = c(
+
+# Oct 2019
+"https://files.digital.nhs.uk/AA/826F46/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/E5/E67D17/gp-reg-pat-prac-sing-age-male.csv",
+
+# Jan 2020
+"https://files.digital.nhs.uk/42/71C06E/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/1F/C8B4B0/gp-reg-pat-prac-sing-age-male.csv",
+
+# Apr 2020
+"https://files.digital.nhs.uk/43/4884D7/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/EB/78F6FC/gp-reg-pat-prac-sing-age-male.csv",
+
+# Jul 2020
+"https://files.digital.nhs.uk/6F/4BAF21/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/EF/3AE308/gp-reg-pat-prac-sing-age-male.csv",
+
+# Oct 2020
+"https://files.digital.nhs.uk/15/B13283/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/4D/4AABAF/gp-reg-pat-prac-sing-age-male.csv",
+
+# Jan 2021
+"https://files.digital.nhs.uk/53/E188A1/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/58/A251DA/gp-reg-pat-prac-sing-age-male.csv",
+
+# Apr 2021
+"https://files.digital.nhs.uk/CD/C6ABF5/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/5E/465335/gp-reg-pat-prac-sing-age-male.csv",
+
+# Jul 2021
+"https://files.digital.nhs.uk/71/2EA8A0/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/2E/9587B7/gp-reg-pat-prac-sing-age-male.csv",
+
+# Oct 2021
+"https://files.digital.nhs.uk/65/236F49/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/80/CA0613/gp-reg-pat-prac-sing-age-male.csv",
+
+# Jan 2022
+"https://files.digital.nhs.uk/21/DFB741/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/3B/DDDB11/gp-reg-pat-prac-sing-age-male.csv",
+
+# Apr 2022
+"https://files.digital.nhs.uk/3E/1D61F9/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/A6/97EEDD/gp-reg-pat-prac-sing-age-male.csv",
+
+# Jul 2022
+"https://files.digital.nhs.uk/6C/52654C/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/B5/3BEEA4/gp-reg-pat-prac-sing-age-male.csv",
+
+# Oct 2022
+"https://files.digital.nhs.uk/C8/426685/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/13/7F34BC/gp-reg-pat-prac-sing-age-male.csv",
+
+# Jan 2023
+"https://files.digital.nhs.uk/B4/12C025/gp-reg-pat-prac-sing-age-female.csv",
+"https://files.digital.nhs.uk/A4/56BBF0/gp-reg-pat-prac-sing-age-male.csv",
+
+# Apr 2023
+"https://files.digital.nhs.uk/A5/F3533A/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/CE/88E22E/gp-reg-pat-prac-sing-age-male.zip",
+
+# Jul 2023
+"https://files.digital.nhs.uk/AA/56C60E/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/7B/852B2D/gp-reg-pat-prac-sing-age-male.csv",
+
+# Oct 2023
+"https://files.digital.nhs.uk/2A/BC4C8D/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/B0/F2A3A6/gp-reg-pat-prac-sing-age-male.zip",
+
+# Jan 2024
+"https://files.digital.nhs.uk/89/99FEA5/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/31/8D433F/gp-reg-pat-prac-sing-age-male.zip"
+
+)
+
+# readr::read_csv(ggrrr::cache_download("https://files.digital.nhs.uk/6C/52654C/gp-reg-pat-prac-sing-age-female.csv")) %>% glimpse()
+
+.process_gp_data = function(url) {
+  # print(url)
+  df = suppressMessages(readr::read_csv(ggrrr::cache_download(url)))
+  if ("SUB_ICB_LOCATION_CODE" %in% colnames(df)) {
+    df = df %>% rename(CCG_CODE=SUB_ICB_LOCATION_CODE)
+  }
+  if ("SUB_ICB_LOC_CODE" %in% colnames(df)) {
+    df = df %>% rename(CCG_CODE=SUB_ICB_LOC_CODE)
+  }
+  df %>% 
+    filter(AGE != "ALL") %>% 
+    filter(CCG_CODE=="15C") %>%
+    mutate(age = as.numeric(stringr::str_extract(AGE,"([0-9]+)",1))) %>% 
+    mutate(age = case_when(
+        age < 18 ~ "0-17",
+        age < 35 ~ "18-34",
+        age < 50 ~ "35-49",
+        age < 65 ~ "50-64",
+        age < 75 ~ "65-74",
+        age < 85 ~ "75-84",
+        is.na(age) ~ NA_character_,
+        TRUE ~ "85+"
+      ),
+      date = as.Date(tolower(EXTRACT_DATE),tryFormats=c("%d%b%Y","%d-%b-%y"))
+    ) %>%
+    group_by(date,SEX, ORG_CODE,POSTCODE,age) %>% summarise(count = sum(NUMBER_OF_PATIENTS),.groups = "drop")
+}
+
+
+summary_practice_data = ggrrr::cached({
+  bind_rows(
+    lapply(practice_data_urls, .process_gp_data)
+  ) %>% 
+  # combine gender
+  group_by(date, ORG_CODE, POSTCODE, age) %>% 
+  summarise(count = sum(count))
+}, practice_data_urls)
+
+```
+
+
+```{r}
+
+# There is double counting in the PF data where a single patient is admitted to both hospitals in the
+# same year. This leads to probabilities above 1. This is pragmatically dealt with by truncation
+
+prop_flow = pfdata4 %>% group_by(age,code) %>% summarise(proportion = scales::squish(sum(proportion)))
+
+campling_pop_2 = summary_practice_data %>% filter(date == "2019-10-01") %>% 
+  inner_join(prop_flow, by=c("ORG_CODE"="code","age") ) %>% 
+  mutate(population = count*proportion) %>%
+  group_by(age) %>%
+  summarise(
+    population_2 = round(sum(population,na.rm = TRUE)),
+    method_2 = "Campling 2019*"
+  ) 
+
+campling_pop = readr::read_csv(here::here("data-raw/bristol-catchment.csv")) %>%
+  transmute(method = "Campling 2019", age=age_category, population)
+
+# This is identical save for one row which GP population may have been upodated
+# Difference is unconsequential and we stick with the published figures.
+# campling_pop %>% inner_join(campling_pop_2, by="age")
+
+
+```
+
+
+## Proportional flow - NHS Trust Emergency admissions / Middle super output areas
+
+In 2022 the Office of Health Inequalities and Disparity (OHID) produced another proportional flow model linking Middle Super Output Area (MSOA) small scale geographical areas to NHS trusts. This included the NHS Trusts that run the study hospitals, and it used hospital episode statistics describing general or emergency hospital admissions stratified by age and sex [@ohid2022]. 
+
+Adapting the OHID model to get an estimate of the AvonCAP study population is made difficult by the fact that there is not a 1:1 relationship between NHS trusts and the study hospitals. We used the admissions data collected during development of the aLRTD model to generate scaling factors that relate the proportion of admissions in an NHS trust to the admissions in the study hospitals stratified by age. This can be used to attribute the estimated catchment area of the NHS trusts from the OHID model to that of the AvonCAP study hospitals, by scaling down the University Hospital Bristol NHS trust estimate to account for patients that go to Weston General rather than Bristol Royal Infirmary.
+
+The OHID data is published by 5 year age group. This is interpolated and aggregated to the age bands in the AvonCAP study. As aLRTD admissions are typically emergencies we focus on the OHID catchment area based on emergency admissions; the OHID model includes all forms of emergency admission and is not specific to aLRTD.
+
+
+
+```{r}
+
+weston_adj = overall %>% group_by(age, trust) %>%
+  mutate(
+    frac = admissions/sum(admissions),
+  ) %>% mutate(
+      TrustCode = case_when(
+        trust == "UHBWFT" ~ "RVJ",
+        trust == "NBT" ~ "RA7",
+        TRUE ~ NA
+      )
+  ) %>% filter(
+    hosp %in% c("Southmead Hospital","Bristol Royal Infirmary")
+  )
+
+
+ggrrr::hux_tidy(weston_adj %>% transmute(trust,hosp,age,proportion=sprintf("%1.1f%%",frac*100)), rowGroupVars = vars(trust, hosp), colGroupVars = vars(age))  %>%
+  huxtable::set_caption('Scaling factors for NHS Trust based catchment areas to adjust for admissions to non study hospitals.')
+
+```
+
+```{r}
+
+data = readxl::read_excel(ggrrr::cache_download("https://app.box.com/index.php?rm=box_download_shared_file&shared_name=qh8gzpzeo1firv1ezfxx2e6c4tgtrudl&file_id=f_976229590219"),sheet = "Trust Analysis")
+# data = readxl::read_excel(here::here("data-raw/trust-catchment-by-age-2022.xlsx"),sheet = "Trust Analysis")
+
+ohid_pop = data %>% 
+  filter(TrustCode %in% c("RVJ","RA7")) %>%
+  group_by(TrustCode, TrustName, AdmissionType, CatchmentYear, Age) %>%
+  summarise(
+    LCI = sum(LCI),
+    UCI = sum(UCI),
+    Catchment = sum(Catchment),
+    PatientsAdmitted = sum(PatientsAdmitted)
+  ) %>%
+  mutate(
+    age_ul = lead(as.numeric(stringr::str_extract(Age,"^([0-9]+)")),default = 120)
+  ) %>%
+  reframe(
+    age = factor(c(NA,"18-34","35-49","50-64","65-74","75-84","85+")),
+    catchment = growthrates::reband_discrete(x=age_ul, y=Catchment, xout = age_bands),
+    # lower = growthrates::reband_discrete(x=age_ul, y=LCI, xout = age_bands),
+    # upper = growthrates::reband_discrete(x=age_ul, y=UCI, xout = age_bands),
+    admitted = growthrates::reband_discrete(x=age_ul, y=PatientsAdmitted, xout = age_bands)
+  ) %>%
+  inner_join(weston_adj, by=c("TrustCode","age")) %>%
+  # pivot_longer(cols = c(median,lower,upper),names_to = "source", values_to = "catchment") %>%
+  filter( CatchmentYear == "2019" & AdmissionType == "Emergency" ) %>%
+  transmute(
+    age,
+    method = sprintf("OHID (exc Weston) 2019: %s",AdmissionType),
+    # Scale the catchment down by the number of beds in weston, leaving NBT catchment as-is
+    catchment = catchment * frac,
+    admitted = admitted * frac
+  ) %>% 
+  group_by(method, age) %>%
+  summarise(
+    population = sum(catchment)
+  )
+```
+
+## Label propagation
+
+Challen et at. (2022) [@challen2022j] developed a method for estimating catchment areas using label propagation that takes as input the number of beds in all hospitals and the population sizes of small geographical regions to estimate a catchment area at the level of individual hospitals, by optimising supply (beds) and demand (population).
+
+This is able to generate a catchment area for the two study hospitals without including Weston General Hospital, and uses ONS population data from 2019 and hospital bed capacity data from the COVID pandemic.
+
+The label propagation method is not specific to age group or condition, and the catchment population is simply all people within a geographic area.
+
+
+```{r}
+
+# ERIC trust data:
+# https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection/england-2022-23
+
+supply = arear::surgecapacity %>% 
+  filter(sector == "NHS Sector" & tier1) %>% 
+  dplyr::mutate(beds = acuteBeds+hduBeds)
+
+demand = arear::uk2019demographicsmap() %>% 
+  # dplyr::filter(code %>% stringr::str_starts("E")) %>% # easy way to get england only.
+  dplyr::left_join(arear::uk2019adultpopulation %>% dplyr::select(-name,-codeType), by="code")
+
+
+catchment = ggrrr::cached(arear::createCatchment(
+  supplyShape = supply, 
+  supplyIdVar = hospitalId, 
+  supplyVar = beds,
+  demandShape = demand,
+  demandIdVar = code, 
+  demandVar = population,
+  outputMap = TRUE
+), list(
+  supplyShape = supply, 
+  demandShape = demand
+))
+
+catchmentMap = catchment$map %>% dplyr::mutate(bedsPer100K = beds / (population/100000))
+
+# ggplot(catchmentMap)+
+#   ggplot2::geom_sf(mapping = ggplot2::aes(fill = bedsPer100K), size=0.1, colour="white")+
+#   ggplot2::scale_fill_viridis_c(limit=c(NA,400), oob=scales::squish)
+# 
+# avoncap = supply %>% filter(trustId %in% c("RVJ","RA7")) %>% as_tibble() %>% glimpse()
+# 
+avoncap_catch = catchmentMap %>% filter(hospitalId %in% c("RVJ01", "RA701"))
+
+# ggplot()+
+#   ggplot2::geom_sf(data=demand)+
+#   ggplot2::geom_sf(data=avoncap_catch, mapping = ggplot2::aes(fill = bedsPer100K), size=0.1, colour="white")+
+#   ggplot2::scale_fill_viridis_c(limit=c(NA,400), oob=scales::squish)+
+#   geom_sf(data = (arear::surgecapacity %>% filter(tier1)), aes(size=acuteBeds),colour="red")+
+#   coord_sf(xlim=c(-3.5,-1.5), y=c(51,52))
+
+# 
+# sum(avoncap_catch$population)
+
+ukdem = arear::uk2019demographics() %>% 
+  mutate(age_category = avoncap::cut_integer(age,c(35,50,65,75,85),lower_limit = 18, glue="{low}{ifelse(is.finite(high),paste0('-',high),'+')}")) %>%
+  group_by(code, name, codeType, age_category) %>%
+  summarise(population = sum(count)) # %>% glimpse()
+
+challen_pop = catchment$crossMapping %>% filter(hospitalId %in% c("RVJ01", "RA701")) %>%
+  select(-population) %>%
+  inner_join(ukdem, by="code") %>% # glimpse() %>%
+  group_by(age = age_category) %>%
+  summarise(
+    population = sum(population),
+    method = "Challen 2019"
+  )
+```
+
+## Projecting forwards
+
+The ONS publishes population projections for the UK at different levels of granularity. Regionally the population of the South West was projected to grow by 0.9% in 2021 and 2022 [@ons_ew2022]. Age stratified populations are also influenced by the ageing of the "baby boomer" generation, with particular growth expected in the 75-84 age group. Projections are based on 2019 population data, and do not take account of the COVID-19 pandemic. GP registration data is available [@nhsdigital_gpreg] which describes the demographics of each practice on a monthly interval. This can also be used to describe population trends retrospectively.
+
+Although the aLTRD proportional flow method described above [@campling2022] represents the population of individual GP surgeries, and could in theory be used to track the demographic changes in individual surgeries aver time, this is not simple as over the study several GP practices have merged and become a single entity. There is no easy way to track the proportional flow of patients from merged practices, and hence correctly distribute the proportions from old to new. 
+
+The simplifying assumption has been made that age stratified population trends in the aggregate of GP surgeries within the BNSSG ICB, is representative for the population trends in the study hospitals. We therefore use the relative trends in GP registration details for all practices in the BNSSG ICB to scale the baseline 2019 estimated catchment population of the study hospitals using any of the 3 estimation methods above.
+
+```{r fig.cap="Real time GP registrations (solid line) and ONS population projections based on 2018 data (points) for the AvonCAP study period as a percentage change from the 2019 baseline. ONS estimates do not take into account the effects of the COVID-19 pandemic"}
+
+tmptbl3 = ggrrr::cache_download("https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/populationandmigration/populationprojections/datasets/clinicalcommissioninggroupsinenglandtable3/2018based/table3.xls")
+
+trends = readxl::read_excel(tmptbl3, sheet = "Persons",skip = 6) %>%
+  filter(CODE == "E38000222" & `AGE GROUP` != "All ages") %>%
+  rename(Ages = `AGE GROUP`) %>%
+  select(-CODE,-AREA) %>%
+  pivot_longer(-Ages, names_to = "year",values_to = "count") %>%
+  mutate(
+    count = as.numeric(count),
+    age_ul = (stringr::str_extract(Ages, "^([0-9]+)") %>% as.numeric())+5
+  ) %>%
+  group_by(year) %>%
+  reframe(
+    age = factor(c(NA,"18-34","35-49","50-64","65-74","75-84","85+")),
+    count = growthrates::reband_discrete(x=age_ul, y=count, xout = c(18,35,50,65,75,85))
+  ) %>% 
+  filter(!is.na(age))
+
+relative_trends = trends %>% 
+  inner_join(trends %>% filter(year == "2019") %>% select(age,ref = count), by="age") %>%
+  transmute(age, date = as.Date(sprintf("%s-01-01",year)), rel = count/ref) 
+
+# ggplot(relative_trends,aes(x=date, y=rel*100, colour=age))+
+#   geom_line()+
+#   geom_point()+
+#   geom_hline(yintercept=100,colour="black")+
+#   geom_vline(xintercept=Sys.Date(),colour="black")+
+#   ylab("% change from 2019 baseline")
+
+
+gp_trends = summary_practice_data %>% 
+  filter(age != "0-17") %>%
+  group_by(date,age) %>% 
+  summarise(count = sum(count)) %>% 
+  group_by(age) %>% arrange(date) %>% mutate(rel = count/first(count)) 
+
+ggplot(gp_trends,aes(x=date,y=(rel-1)*100,colour=age))+
+  geom_line()+
+  geom_point(data=relative_trends %>% filter(date<"2025-01-01" & date>="2019-01-01"), size= 1)+
+  geom_hline(yintercept=0,colour="black")+
+  ylab("% change from 2019 baseline")+
+  facet_wrap(~age)
+
+
+```
+
+The age stratified relative population increases shown here have some statistical noise and in the younger age groups some seasonality is visible despite the resolution of the data being 3 monthly. ONS data is plotted for comparison and suggests over-estimation in older age groups compared to younger. This could be the result of the pandemic. From this data, and the initial 2019 populations estimated using the 3 methods, an age stratified daily denominator that spans the whole study period is generated using a locally fitted polynomial with span 0.75 and degree 2 [@shyu1992].
+
+# Results
+
+Of the 3 models the aLRTD proportional flow model (Campling 2019) and the label propagation models (Challen 2019) generate catchment populations of very similar sizes, but with moderately different population composition. The OHID emergency admissions proportional flow model produces a catchment population which is overall about 15% larger (4.2% to 24.4% depending on age group) than the aLRTD proportional flow model, which is used here as the referent. The catchment area is used as a denominator in calculations that adjust for population size, and so for example incidence calculations that use the OHID estimates will be smaller than those using the aLRTD proportional flow estimates.
+
+```{r}
+comparison = bind_rows(
+  campling_pop,
+  ohid_pop,
+  challen_pop
+  # cmmid_pop
+) %>% mutate(
+  age_category = factor(age, levels = levels(challen_pop$age)),
+  population = round(population)
+) %>% filter(
+  !is.na(age_category)
+) 
+
+comp_summ = comparison %>% group_by(method) %>% summarise(age_category="ALL", population=sum(population))
+
+comparison2 = bind_rows(comparison,comp_summ) %>%
+  inner_join(
+    bind_rows(comparison,comp_summ) %>% filter(method == "Campling 2019") %>% select(age_category, comparator = population), by="age_category"
+  ) %>% mutate(
+    relative = ifelse(population==comparator,"",sprintf(" (%+1.1f%%)",population/comparator*100-100)),
+    label = sprintf("%d%s",population,relative)
+  )
+
+ggrrr::hux_tidy(comparison2 %>% select(method, age_category, label), colGroupVars = vars(method), rowGroupVars = vars(age_category)) %>%
+  huxtable::set_caption('Comparison between the 3 different catchment population estimates, all valid for 2019: the aLRTD proportional flow (Campling 2019); OHID emergency admissions proportional flow (OHID) and label propagation methods (Challen 2019). Numbers represent estimated catchment population of the study hospitals and in brackets the percentage change between that and the aLRTD proportional flow model as a baseline.')
+```
+
+The principal cause for this difference can be seen in a map of the OHID proportional flow versus the boundaries of the BNSSG ICB. Emergency admissions to the NHS trusts containing the study hospitals arise from the wide area across the South West of England due to their role as a tertiary referral centres. The aLRTD proportional flow model excludes GP surgeries outside of the BNSSG ICB region; these were reported to contain less than 5% of the aLTRD admissions to the study hospitals. The difference between the 2 models may be explained partly by the less specific range of emergency conditions in the OHID model including tertiary referrals for cardio-thoracic surgery or trauma, which will tend to increase the OHID model estimates, and partly by the aLRTD model being limited to the BNSSG ICB, which will tend to reduce the estimates from the aLRTD model.
+
+```{r fig.cap="Comparison of geographical extents of OHID proportional flow model (blue shading) and BNSSG ICB boundaries (red), which also mark the maximum extent of the aLRTD proportional flow model."}
+# ohid_mapping = readxl::read_excel(here::here("data-raw/msoa-to-trust-mapping-2022.xlsx"),sheet = "Emergency")
+
+ohid_mapping = readxl::read_excel(ggrrr::cache_download("https://app.box.com/index.php?rm=box_download_shared_file&shared_name=qh8gzpzeo1firv1ezfxx2e6c4tgtrudl&file_id=f_976234504165"), sheet="Emergency")
+  
+ohid_study_mapping = ohid_mapping %>% 
+    filter(TrustCode %in% c("RVJ","RA7") & CatchmentYear == "2019") %>%
+    group_by(msoa) %>%
+    summarise(
+      proportion = sum(proportion),
+    )
+ 
+ 
+ohid_map = arear::MSOA11 %>% left_join(ohid_study_mapping, by=c("code"="msoa"))
+
+ggplot(ohid_map)+
+  geom_sf(aes(fill=proportion))+
+  geom_sf(data = arear::CCG20 %>% filter(name == "NHS Bristol, North Somerset and South Gloucestershire CCG"), fill=NA, colour="red", linewidth=0.5)+
+  coord_sf(xlim=c(-5.5,-1), y=c(50,52.5))
+
+
+  # geom_sf(aes(fill=adj_prop))+
+  # geom_sf(data = (arear::surgecapacity %>% filter(tier1)), aes(size=acuteBeds),colour="red")+
+  # coord_sf(xlim=c(-3.5,-1.5), y=c(51,52))
+```
+
+## Changes over time
+
+Using the aLRTD proportional flow model, projecting population trends from the GP registration data onto the 2019 estimates, shows a 5.7% population increase in the study period and implies quite marked shifts in age groupings, particularly with a 15.5% increase in the 75-84 group due to the ageing population.
+
+```{r}
+
+
+
+  
+tmp = campling_pop %>%
+  inner_join(gp_trends %>% filter(date <= "2025-01-01" & date >= "2019-01-01"), by=c("age")) %>% 
+  mutate(
+    population = round(population*rel)
+  ) 
+
+comparison3 = 
+  bind_rows(tmp,tmp %>% group_by(method,date) %>% summarise(population = sum(population), age = "ALL")) %>%
+  filter(lubridate::month(date)==10) %>%
+  group_by(age) %>% 
+  arrange(date) %>%
+  mutate(label = sprintf("%.0f (%+.1f%%)",population, (population/first(population)-1)*100))
+
+
+
+h1 = ggrrr::hux_tidy(comparison3 %>% transmute(date = as.character(lubridate::year(date)), age, label), rowGroupVars = vars(age), colGroupVars = vars(date))
+# ggrrr::hux_save_as(h1,"~/tmp/comparison.html")
+h1 %>%
+  huxtable::set_caption('Forward projection of 2019 aLTRD proportional flow catchment populations by age group using GP registration data to cover the AvonCAP study period.')
+```
+
+Interpolation of these shifts allows us to estimate daily denominators,  stratified by age group, for each of the 3 different methods over the whole study period. These denominators can be used for calculating population standardised incidence rates. The incidence of disease in the AvonCAP study can be calculated as the daily count of new cases divided by the per day denominator, to give a daily rate per capita. This can then be summed over a year, for example, and multiplied by 1000 to give an incidence per 1000 person years (or 100,000 for estimates per 100,000 per year). 
+
+Using the number of daily cases per day as the numerator, and the daily estimated population size as the denominator, a binomial regression model can be fitted with time varying rate to produce a normalised daily incidence rate per capita. This can be multiplied by the number of days in the year and 1000 to produce an instantaneous incidence per 1000 person years. A similar calculation can be done on weekly case counts; for this it is reasonable to assume the per day denominator for the start of the week. 
+
+
+```{r fig.cap="Age group stratified smoothed catchment population estimates over the duration of the AvonCAP study."}
+
+comparison4 =  bind_rows(
+    campling_pop,
+    ohid_pop,
+    challen_pop
+  ) %>% 
+  filter(age!="0-17") %>%
+  inner_join(gp_trends %>% filter(date <= "2025-01-01" & date >= "2019-01-01"), by=c("age")) %>% 
+  mutate(
+    population = round(population*rel)
+  )
+
+tmp = comparison4 %>% select(method, date, age, population) %>% 
+  group_by(method,age) %>%
+  group_modify(function(d,...) {
+    range = growthrates::full_seq(d$date, period=1,complete = FALSE)
+    d0 = growthrates::min_date(d$date)
+    predict_at = as.numeric(range-d0)
+    d = d %>% mutate(i = as.numeric(date-d0))
+    model = loess(population ~ i, d)
+    pred = predict(model, tibble(i = predict_at))
+    return(
+      tibble(
+        date = range,
+        population = unname(round(pred))
+      )
+    )
+  })
+
+denom_by_age_by_day = 
+  bind_rows(tmp,tmp %>% group_by(method,date) %>% summarise(population = sum(population), age = "ALL")) %>%
+  ungroup()
+
+# the ALL group is confusing beacuse the Campling and Challen estimates are so close there is overplotting.
+ggplot(denom_by_age_by_day %>% filter(age != "ALL"),aes(x=date,y=population,colour=method))+
+  geom_line(alpha=0.5)+
+  geom_point(data = comparison4 %>% select(method, date, age, population), size=1)+
+  facet_wrap(~age,scales="free")+
+  ggrrr::gg_narrow()+
+  theme(legend.direction = "vertical")
+```
+
+# Conclusion
+
+We previously reported an aLRTD specific denominator for AvonCAP for the year 2019 [@campling2022]. This has the benefit of being specific for the condition central to the AvonCAP study, and therefore should account for the specialist services offered by the study hospitals. For the age group including all adults, this estimate agrees well with those produced by a label propagation algorithm [@challen2022j], with differences arising in the distribution of ages in the population. The label propagation algorithm does not attempt to account for the differential burden of disease in different age groups and is not condition specific. A third estimate using proportion flow of emergency admissions [@ohid2022], produces estimates that are somewhat larger than the aLRTD specific denominator. These include admissions from a very wide geographic area, which could represent hospital to hospital transfers into tertiary care facilities based in Bristol, or trauma patients retrieved by helicopter. All estimates based on 2019 will have changed over the AvonCAP study period due to the ageing population of the UK. In this supplementary we present time varying age stratified population size estimates which can be used as a denominator to produce generalisable estimates of incidence. No single population estimate can be proven to be correct, although we think the aLRTD specific estimate is likely to be most accurate for AvonCAP, particularly if we can exclude patients who live outside of the BNSSG ICB. We therefore assume the daily varying, age stratified aLRTD specific population estimates for the AvonCAP denominator.
+
+```{r}
+if (interactive()) interfacer::use_dataframe(denom_by_age_by_day)
+readr::write_csv(denom_by_age_by_day, here::here("data-raw/bristol-catchment-time-varying.csv"))
+```
+# References
+
+<div id="refs"></div>

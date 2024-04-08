@@ -14,7 +14,7 @@ ordered in a different sequence. This can be achieved using relevel_serotypes,">
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9024</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,6 +29,7 @@ ordered in a different sequence. This can be achieved using relevel_serotypes,">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/denominator-check.html">AvonCAP study population denominator</a>
     <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
@@ -61,7 +62,7 @@ ordered in a different sequence. This can be achieved using <code>relevel_seroty
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">scale_fill_serotype</span><span class="op">(</span></span>
 <span>  <span class="va">...</span>,</span>
-<span>  palette_fn <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/brewer_pal.html" class="external-link">brewer_pal</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Dark2"</span><span class="op">)</span>,</span>
+<span>  palette_fn <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/pal_brewer.html" class="external-link">brewer_pal</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Dark2"</span><span class="op">)</span>,</span>
 <span>  undefined <span class="op">=</span> <span class="st">"#606060"</span>,</span>
 <span>  exprs <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html" class="external-link">exprs</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -125,23 +126,6 @@ unmatched items.</p></dd>
 <p>A ggplot2 scale</p>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html" class="external-link">exprs</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">PCV7</span> <span class="op">~</span> <span class="st">"PCV7"</span>,</span></span>
-<span class="r-in"><span>  <span class="va">PCV15</span> <span class="op">~</span> <span class="st">"PCV15-7"</span>,</span></span>
-<span class="r-in"><span>  <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"Non-PCV15 serotype"</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="va"><a href="phe_serotypes.html">phe_serotypes</a></span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>y<span class="op">=</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">serotype</span>, y<span class="op">=</span><span class="va">y</span>, fill<span class="op">=</span><span class="fu"><a href="relevel_serotypes.html">relevel_serotypes</a></span><span class="op">(</span><span class="va">serotype</span>,exprs<span class="op">=</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span><span class="op">+</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat<span class="op">=</span><span class="st">"identity"</span><span class="op">)</span><span class="op">+</span></span></span>
-<span class="r-in"><span><span class="fu">scale_fill_serotype</span><span class="op">(</span>exprs<span class="op">=</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="scale_fill_serotype-1.png" alt="" width="700" height="433"></span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

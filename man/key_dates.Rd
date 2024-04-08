@@ -14,4 +14,14 @@ A list of key dates:
 \item min_omicron - earliest observation of the omicron variant
 \item max_delta - last observation of the delta variant
 }
+
+The default catchment population for AvonCAP is limited to the Bristol,
+North Somerset and South Gloucestershire Integrated Care Board (BNSSG ICB).
+This list is the list of GP surgeries considered part of the denominator.
+}
+\details{
+\itemize{
+\item code - the NHS ODS organisational code of the practice.
+\item name - the official name of the practice
+}
 }

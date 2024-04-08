@@ -57,17 +57,3 @@ The scale groups colours by PCV group, but it is important to have the source
 data using the same levels as this scale otherwise the colour legend will be
 ordered in a different sequence. This can be achieved using \code{relevel_serotypes},
 }
-\examples{
-
-x = rlang::exprs(
-  PCV7 ~ "PCV7",
-  PCV15 ~ "PCV15-7",
-  TRUE ~ "Non-PCV15 serotype"
-)
-
-ggplot2::ggplot(
-  avoncap::phe_serotypes \%>\% dplyr::mutate(y=dplyr::row_number()),
-  ggplot2::aes(x=serotype, y=y, fill=relevel_serotypes(serotype,exprs=x))
-)+ggplot2::geom_bar(stat="identity")+
-scale_fill_serotype(exprs=x)
-}

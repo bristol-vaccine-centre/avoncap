@@ -24,20 +24,24 @@ validate.avoncap_export.central = function(rawData, ..., dq = avoncap::load_data
 
     # CONSENTED PATIENTS ONLY: consent falg present not declined and not withdrawn
     .active_col(!(include_patient == 1 & withdrawal == 1) & !is.na(consented) & consented != 2 & ppc != 2, "consent for data", na.rm = FALSE) %>%
-    .not_empty(
+    # tolerates NaN for appropriately missing values
+    .not_na(
       c("hr", "systolic_bp", "diastolic_bp", "temperature", "rr", "pulse_ox",
-        "fio2", "news_2_total", "crb_test_mai", "care_home",
+      "fio2", "imd", "symptom_days_preadmit")
+    ) %>%
+    # does not tolerate NaN or infinite values
+    .not_empty(
+      c("news_2_total", "crb_test_mai", "care_home",
         "ckd", "liver_disease", "diabetes", "gastric_ulcers", "pvd", "ctd",
         "immunodeficiency", "other_pn_disease", "cancer",
         "transplant", "smoking", "gender",
         "hospital_length_of_stay", "covid_19_diagnosis",
         "lrtd_30d_outcome", "week_number", "year",
-        "highest_level_care_require", "ventilatory_support", "psi_class", "imd",
+        "highest_level_care_require", "ventilatory_support", "psi_class",
         "age_at_admission",
         "acute_illness", "covid19", "clinical_radio_diagnosis",
         "fever2", "pleurtic_cp", "cough2", "sput_prod", "dyspnoea",
-        "tachypnoea2", "ausc_find", "radiologic",
-        "symptom_days_preadmit", "ethnicity")
+        "tachypnoea2", "ausc_find", "radiologic", "ethnicity","gp_practice_drop_down")
     ) %>%
     .checkbox_not_empty(
       c("resp_disease", "chd", "dementia", "neurological_disease", "hiv", "haem_malig", "final_soc_lrtd_diagnosis")

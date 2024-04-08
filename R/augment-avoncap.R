@@ -45,10 +45,16 @@ derive_polyfill_central = function(df,v,...) {
 #' quantiles. Could merge first two groups but outcomes are usually different.
 #' Covid vaccination cohorts were in 5 year age groups, but vaccination
 #' prioirity was in these groups approximately.
-#' * 65+ Age of pneumovax eligibility
-#' * CCI - 4 bands as defined in https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891119/#:~:text=Based%20on%20the%20CCI%20score,with%20CCI%20scores%20%E2%89%A55.and
-#'   similar in https://link.springer.com/article/10.1007/s10654-021-00802-z
-#' * Rockwood score - independent versus dependent frailty levels.
+#' * Age of eligibility for vaccines: 65+ Age of pneumovax eligibility
+#' * CCI - 4 bands as defined in original Charleson paper:
+#' ** https://pubmed.ncbi.nlm.nih.gov/3558716/
+#' ** in https://link.springer.com/article/10.1007/s10654-021-00802-z there is
+#' rationale given for not using the charleson score as a continuous value.
+#' * Alternate CCI - 0,1,2,3+ is also used as a grouping in the original charleson
+#' paper
+#' * Rockwood score - Completely independent versus dependent frailty levels.
+#' * CURB65 categorisation - As per derivation study (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1746657/): 0-1 consider home treatment; 2 consider
+#' admit as inpatient; 3-5 admit, consider ICU.
 #'
 #' @inherit derive_template
 #' @concept derived
@@ -60,8 +66,28 @@ derive_continuous_categories = function(df,v,...) {
       demog.age_eligible = cut(demog.age,breaks = c(0,65,Inf), labels = c("18-64","65+"),ordered_result = TRUE)
     ) %>%
     dplyr::mutate(
-      admission.cci_category = cut(admission.charlson_comorbidity_index, breaks = c(-Inf,0,2,4,Inf), labels=c("None (0)","Mild (1-2)","Moderate (3-4)","Severe (5+)"), include.lowest = FALSE, ordered_result = TRUE),
-      admission.rockwood_category = cut(admission.rockwood_score, breaks=c(0,5,Inf), labels=c("Independent (0-4)","Frail (5-9)"),ordered_result = TRUE),
+      admission.cci_category =  dplyr::case_when(
+        is.na(admission.charlson_comorbidity_index) ~ NA_character_,
+        admission.charlson_comorbidity_index == 0 ~ "None (0)",
+        admission.charlson_comorbidity_index <= 2 ~ "Mild (1-2)",
+        admission.charlson_comorbidity_index <= 4 ~ "Moderate (3-4)",
+        admission.charlson_comorbidity_index > 4 ~ "Severe (5+)",
+        TRUE ~ NA_character_
+      ) %>% ordered(labels=c("None (0)","Mild (1-2)","Moderate (3-4)","Severe (5+)")),
+      admission.cci_category_alternate =  dplyr::case_when(
+        is.na(admission.charlson_comorbidity_index) ~ NA_character_,
+        admission.charlson_comorbidity_index == 0 ~ "0",
+        admission.charlson_comorbidity_index == 1 ~ "1",
+        admission.charlson_comorbidity_index == 2 ~ "2",
+        admission.charlson_comorbidity_index >= 3 ~ "3+",
+        TRUE ~ NA_character_
+      ) %>% ordered(labels=c("0","1","2","3+")),
+      admission.rockwood_category = dplyr::case_when(
+        is.na(admission.rockwood_score) ~ NA_character_,
+        admission.rockwood_score <= 4 ~ "Independent (0-4)",
+        admission.rockwood_score > 4 ~ "Frail (5-9)",
+        TRUE ~ NA_character_
+      ) %>% ordered(c("Independent (0-4)","Frail (5-9)")),
       admission.curb_65_category = dplyr::case_when(
         admission.curb_65_severity_score == "0-Very Low" ~ "0-1 (Mild)",
         admission.curb_65_severity_score == "1-Low" ~ "0-1 (Mild)",
@@ -121,18 +147,44 @@ derive_admission_episode = function(df,v) {
 derive_gp_linkage = function(df,v) {
   df %>% dplyr::mutate(
     admin.linked_gp_practice = dplyr::case_when(
-      stringr::str_detect(tolower(admin.gp_practice), "concord") ~ "Concord",
-      stringr::str_detect(tolower(admin.gp_practice), "court") ~ "Courtside",
-      stringr::str_detect(tolower(admin.gp_practice), "montpelier") ~ "Montpelier",
-      stringr::str_detect(tolower(admin.gp_practice), "tyntesfield|tynesfield|tyntesield") ~ "Tyntesfield",
-      stringr::str_detect(tolower(admin.gp_practice), "wellspring") ~ "Wellspring",
-      stringr::str_detect(tolower(admin.gp_practice), "pioneer") ~ "Pioneer",
-      !is.na(admin.gp_practice) ~ "Other specified",
-      TRUE ~ "Not recorded"
-    ) %>% factor(levels = c("Concord", "Courtside", "Montpelier", "Tyntesfield", "Wellspring", "Pioneer","Other specified","Not recorded"))
+      is.na(admin.gp_practice) ~ "Not recorded",
+      admin.gp_practice %in%
+        c("Concord Medical Centre","Courtside Surgery","Montpelier Health Centre",
+          "The Wellspring Surgery","Tyntesfield Medical Group","Pioneer Medical Group")
+      ) ~ as.character(admin.gp_practice),
+      TRUE ~ "Other specified"
+    ) %>% factor(levels = c(
+      "Concord Medical Centre","Courtside Surgery","Montpelier Health Centre",
+      "The Wellspring Surgery","Tyntesfield Medical Group","Pioneer Medical Group",
+      "Other specified","Not recorded"))
+}
+
+#' Identify patients who are in the BNSSG ICB based on their GP practice name
+#'
+#' Names are normalised by removing commonly mixed up components and
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_catchment_status = function(df,v) {
+  df %>% dplyr::mutate(
+    admin.catchment_status = dplyr::case_when(
+      is.na(admin.gp_practice) ~ "No GP details",
+      admin.gp_practice == "Other" ~ "Outside Bristol area",
+      TRUE ~ "Bristol area"
+    ) %>% factor(levels = c("Bristol area","Outside Bristol area","No GP details"))
   )
 }
 
+.normalise_gp_name = function(practice_name = avoncap::icb_surgeries$name) {
+  practice_name %>% tolower() %>%
+    ifelse(. == "the family practice","tfp",.) %>%
+    stringr::str_replace_all("[^a-z0-9\\s].*$","") %>%
+    stringr::str_remove_all("the|surgery|practice|family|way|road|centre|health|medical|fam|prac|group|hc|community|primary|care") %>%
+    stringr::str_replace_all("[^a-z0-9\\s]","") %>%
+    stringr::str_replace_all("\\s+"," ") %>%
+    trimws()
+}
 
 #' Rationalise some of the more detailed comorbidities
 #'

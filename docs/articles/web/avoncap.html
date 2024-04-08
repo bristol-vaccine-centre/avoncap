@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9024</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../../articles/web/denominator-check.html">AvonCAP study population denominator</a>
     <a class="dropdown-item" href="../../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
@@ -157,6 +158,12 @@
 <span><span class="co">#&gt; │   │   ├── central_y1.csv</span></span>
 <span><span class="co">#&gt; │   │   ├── central_y2.csv</span></span>
 <span><span class="co">#&gt; │   │   ├── central_y3.csv</span></span>
+<span><span class="co">#&gt; │   │   └── ed_y3.csv</span></span>
+<span><span class="co">#&gt; │   ├── <span style="color: #0000BB; font-weight: bold;">2024-04-08</span></span></span>
+<span><span class="co">#&gt; │   │   ├── central_y1.csv</span></span>
+<span><span class="co">#&gt; │   │   ├── central_y2.csv</span></span>
+<span><span class="co">#&gt; │   │   ├── central_y3.csv</span></span>
+<span><span class="co">#&gt; │   │   ├── central_y4.csv</span></span>
 <span><span class="co">#&gt; │   │   └── ed_y3.csv</span></span>
 <span><span class="co">#&gt; │   ├── 22-23 codebook NBT.pdf</span></span>
 <span><span class="co">#&gt; │   ├── 22-23 codebook UHBW.pdf</span></span>
@@ -280,7 +287,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"missing"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; No suitable files matching "missing", before date: 2023-11-29. Try one of: </span></span>
+<span><span class="co">#&gt; No suitable files matching "missing", before date: 2024-04-08. Try one of: </span></span>
 <span><span class="co">#&gt; as an input to 'type'</span></span>
 <span><span class="co">#&gt; Error in avoncap::load_data("missing") : aborting.</span></span></code></pre></div>
 </div>
@@ -333,8 +340,8 @@
 <span>  <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; validate data using: validate.nhs_extract.deltave</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.nhs_extract.deltave</span></span>
-<span><span class="co">#&gt; Some columns expected in the mappings were not present: consent_urine, consent_blood, consent_resp_samples1, what_was_the_first_surveil, admission_type, gp_practice, hapcovid_screening, hospital_covid, np_swab, adm_np_type, np_date, days_adm_npswab, np_swab_2, adm_np_type_2, np_date_2, np_swab_3, adm_np_type_3, np_date_3, saliva, saliva_date, days_adm_saliva, sputum, sputum_date, days_adm_sputum, pt_ad_ur, adm_ur_taken, nourine_reason, adm_np_type_2, adm_ur_date, days_adm_urine, adm_serum_tak, adm_seru_date, days_adm_serum, adm_diagnosis, survive_1yr, survival_1yr_days, yr_survival_complete, confusion, abx_14d_prior, antibiotic_used</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-d7c1d79c23a6ff33f91f44e2f67687f8.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; Some columns expected in the mappings were not present: consent_urine, consent_blood, consent_resp_samples1, what_was_the_first_surveil, admission_type, gp_practice, gp_practice_drop_down, hapcovid_screening, hospital_covid, np_swab, adm_np_type, np_date, days_adm_npswab, np_swab_2, adm_np_type_2, np_date_2, np_swab_3, adm_np_type_3, np_date_3, saliva, saliva_date, days_adm_saliva, sputum, sputum_date, days_adm_sputum, pt_ad_ur, adm_ur_taken, nourine_reason, adm_np_type_2, adm_ur_date, days_adm_urine, adm_serum_tak, adm_seru_date, days_adm_serum, adm_diagnosis, survive_1yr, survival_1yr_days, yr_survival_complete, confusion, abx_14d_prior, antibiotic_used</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-bda0498ea084c1927734e74ce7edb1bc.rda</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="mapping-columns">Mapping columns<a class="anchor" aria-label="anchor" href="#mapping-columns"></a>
@@ -354,23 +361,24 @@
 <span><span class="co">#&gt;  [1] "consent_urine"              "consent_blood"             </span></span>
 <span><span class="co">#&gt;  [3] "consent_resp_samples1"      "what_was_the_first_surveil"</span></span>
 <span><span class="co">#&gt;  [5] "admission_type"             "gp_practice"               </span></span>
-<span><span class="co">#&gt;  [7] "hapcovid_screening"         "hospital_covid"            </span></span>
-<span><span class="co">#&gt;  [9] "np_swab"                    "adm_np_type"               </span></span>
-<span><span class="co">#&gt; [11] "np_date"                    "days_adm_npswab"           </span></span>
-<span><span class="co">#&gt; [13] "np_swab_2"                  "adm_np_type_2"             </span></span>
-<span><span class="co">#&gt; [15] "np_date_2"                  "np_swab_3"                 </span></span>
-<span><span class="co">#&gt; [17] "adm_np_type_3"              "np_date_3"                 </span></span>
-<span><span class="co">#&gt; [19] "saliva"                     "saliva_date"               </span></span>
-<span><span class="co">#&gt; [21] "days_adm_saliva"            "sputum"                    </span></span>
-<span><span class="co">#&gt; [23] "sputum_date"                "days_adm_sputum"           </span></span>
-<span><span class="co">#&gt; [25] "pt_ad_ur"                   "adm_ur_taken"              </span></span>
-<span><span class="co">#&gt; [27] "nourine_reason"             "adm_np_type_2"             </span></span>
-<span><span class="co">#&gt; [29] "adm_ur_date"                "days_adm_urine"            </span></span>
-<span><span class="co">#&gt; [31] "adm_serum_tak"              "adm_seru_date"             </span></span>
-<span><span class="co">#&gt; [33] "days_adm_serum"             "adm_diagnosis"             </span></span>
-<span><span class="co">#&gt; [35] "survive_1yr"                "survival_1yr_days"         </span></span>
-<span><span class="co">#&gt; [37] "yr_survival_complete"       "confusion"                 </span></span>
-<span><span class="co">#&gt; [39] "abx_14d_prior"              "antibiotic_used"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [7] "gp_practice_drop_down"      "hapcovid_screening"        </span></span>
+<span><span class="co">#&gt;  [9] "hospital_covid"             "np_swab"                   </span></span>
+<span><span class="co">#&gt; [11] "adm_np_type"                "np_date"                   </span></span>
+<span><span class="co">#&gt; [13] "days_adm_npswab"            "np_swab_2"                 </span></span>
+<span><span class="co">#&gt; [15] "adm_np_type_2"              "np_date_2"                 </span></span>
+<span><span class="co">#&gt; [17] "np_swab_3"                  "adm_np_type_3"             </span></span>
+<span><span class="co">#&gt; [19] "np_date_3"                  "saliva"                    </span></span>
+<span><span class="co">#&gt; [21] "saliva_date"                "days_adm_saliva"           </span></span>
+<span><span class="co">#&gt; [23] "sputum"                     "sputum_date"               </span></span>
+<span><span class="co">#&gt; [25] "days_adm_sputum"            "pt_ad_ur"                  </span></span>
+<span><span class="co">#&gt; [27] "adm_ur_taken"               "nourine_reason"            </span></span>
+<span><span class="co">#&gt; [29] "adm_np_type_2"              "adm_ur_date"               </span></span>
+<span><span class="co">#&gt; [31] "days_adm_urine"             "adm_serum_tak"             </span></span>
+<span><span class="co">#&gt; [33] "adm_seru_date"              "days_adm_serum"            </span></span>
+<span><span class="co">#&gt; [35] "adm_diagnosis"              "survive_1yr"               </span></span>
+<span><span class="co">#&gt; [37] "survival_1yr_days"          "yr_survival_complete"      </span></span>
+<span><span class="co">#&gt; [39] "confusion"                  "abx_14d_prior"             </span></span>
+<span><span class="co">#&gt; [41] "antibiotic_used"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="original-field-names-and-labels-">Original field names, and labels.<a class="anchor" aria-label="anchor" href="#original-field-names-and-labels-"></a>
@@ -847,14 +855,32 @@
 <code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
 <span><span class="va">augData</span> <span class="op">=</span> <span class="va">normData</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.nhs_extract.deltave</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-e96e03e3c7a11d5c627f7f9b24dc35f7.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-342f101dd64ebe350dff0271c03e7e10.rda</span></span>
+<span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.cci_category_alternate, admission.rockwood_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.rockwood_score, admission.curb_65_severity_score</span></span>
+<span><span class="co">#&gt; Created admission.episode, admission.interval using: admin.patient_identifier, admission.date</span></span>
+<span><span class="co">#&gt; Created comorbid.diabetes_type, comorbid.solid_cancer_present, comorbid.haemotological_cancer_present, comorbid.any_cancer_present, comorbid.any_chronic_lung_disease, comorbid.any_chronic_heart_disease, comorbid.cva_or_tia, comorbid.any_immune_compromise using: comorbid.diabetes, comorbid.solid_cancer, comorbid.leukaemia, comorbid.lymphoma, comorbid.no_haemotological_cancer, comorbid.asthma, comorbid.bronchiectasis, comorbid.chronic_pleural_dx, comorbid.copd, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.other_chronic_resp_dx, comorbid.pulmonary_hypertension, comorbid.ccf, comorbid.ihd, comorbid.previous_mi, comorbid.congenital_heart_dx, comorbid.hypertension, comorbid.af, comorbid.other_arrythmia, comorbid.other_heart_dx, comorbid.other_other_heart_dx, comorbid.cva, comorbid.tia, comorbid.immunodeficiency, admission.on_immunosuppression</span></span>
+<span><span class="co">#&gt; Created admission.covid_pcr_result, admission.is_covid using: diagnosis.covid_19_diagnosis, diagnosis.admission_swab, diagnosis.test_type</span></span>
+<span><span class="co">#&gt; Created diagnosis.pneumonia, diagnosis.LRTI, diagnosis.exacerbation_of_chronic_respiratory_disease, diagnosis.heart_failure using: diagnosis.SOC_CAP_clinically_confirmed, diagnosis.SOC_CAP_radiologically_confirmed, diagnosis.SOC_CAP_no_radiology, diagnosis.SOC_Empyema_or_abscess, admission.cxr_pneumonia, diagnosis.SOC_LRTI, diagnosis.SOC_exacerbation_COPD, diagnosis.SOC_exacerbation_non_COPD, diagnosis.SOC_congestive_heart_failure</span></span>
+<span><span class="co">#&gt; Created admission.infective_cause using: diagnosis.SOC_non_infectious_process, diagnosis.SOC_non_LRTI</span></span>
+<span><span class="co">#&gt; Created admission.category, admission.presentation_3_class using:</span></span>
+<span><span class="co">#&gt; Created diagnosis.infection_context using: diagnosis.first_COVID_positive_swab_date, admission.date</span></span>
+<span><span class="co">#&gt; Created genomic.variant_inferred using: genomic.variant, admission.date</span></span>
+<span><span class="co">#&gt; Created symptom_onset.date_of_symptoms, symptom_onset.time_of_symptoms_since_first_vaccine_dose, symptom_onset.time_of_symptoms_since_second_vaccine_dose, symptom_onset.time_of_symptoms_since_third_vaccine_dose, symptom_onset.time_of_symptoms_since_fourth_vaccine_dose, vaccination.dose_interval, vaccination.booster_interval, vaccination.second_booster_interval using: admission.date, admission.duration_symptoms, admission.time_since_first_vaccine_dose, admission.time_since_second_vaccine_dose, admission.time_since_third_vaccine_dose, admission.time_since_fourth_vaccine_dose</span></span>
+<span><span class="co">#&gt; Created vaccination.protection using: vaccination.covid_vaccination, admission.time_since_fourth_vaccine_dose, admission.duration_symptoms, admission.time_since_third_vaccine_dose, admission.time_since_second_vaccine_dose, admission.time_since_first_vaccine_dose, admission.previous_covid_infection</span></span>
+<span><span class="co">#&gt; Created vaccination.vaccination using: vaccination.covid_vaccination, admission.time_since_sixth_vaccine_dose, admission.duration_symptoms, admission.time_since_fifth_vaccine_dose, admission.time_since_fourth_vaccine_dose, admission.time_since_third_vaccine_dose, admission.time_since_second_vaccine_dose, admission.time_since_first_vaccine_dose</span></span>
+<span><span class="co">#&gt; Created vaccination.brand_combination using: vaccination.first_dose_brand, vaccination.second_dose_brand, vaccination.third_dose_brand</span></span>
+<span><span class="co">#&gt; Created admission.pneumococcal_high_risk using: demog.age, comorbid.other_pneumococcal_risks, comorbid.copd, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.hypertension, comorbid.ccf, comorbid.ihd, comorbid.ckd, comorbid.liver_disease, comorbid.diabetes, comorbid.immunodeficiency, comorbid.asthma, admission.on_immunosuppression</span></span>
+<span><span class="co">#&gt; Created admission.pneumococcal_risk_classification using: comorbid.cva, comorbid.immunodeficiency, comorbid.leukaemia, comorbid.lymphoma, comorbid.no_haemotological_cancer, admission.on_immunosuppression, comorbid.transplant_recipient, comorbid.ckd, comorbid.HIV, comorbid.solid_cancer, demog.care_home_resident, demog.smoker, demog.age, demog.alcohol_abuse, comorbid.diabetes, comorbid.diabetes_medications, comorbid.paraplegia, comorbid.copd, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.asthma, comorbid.liver_disease, comorbid.ccf, comorbid.ihd, comorbid.other_pneumococcal_risks</span></span>
+<span><span class="co">#&gt; Created day_7.WHO_clinical_progression, outcome.WHO_clinical_progression using: day_7.death, day_7.max_ventilation_level, day_7.ionotropes_needed, day_7.max_o2_level, outcome.survival_duration, outcome.functional_status, outcome.highest_level_ventilatory_support, outcome.received_ionotropes, outcome.respiratory_support_needed</span></span>
+<span><span class="co">#&gt; Skipping function due to error: In argument: `outcome.death_within_1_year = `%&gt;%`(...)`.</span></span>
+<span><span class="co">#&gt; Created day_7.max_o2_gt_28, day_7.max_o2_gt_35, day_7.max_o2_gt_50, day_7.WHO_score_gt_6, day_7.WHO_score_gt_5, day_7.los_gt_3, day_7.los_gt_5, day_7.los_gt_7 using: day_7.max_o2_level, day_7.length_of_stay, outcome.survival_duration</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="loading-and-normalising-the-central-database">loading and normalising the central database<a class="anchor" aria-label="anchor" href="#loading-and-normalising-the-central-database"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawData2</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"avoncap-export"</span>,<span class="st">"central"</span>, merge<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-661870e05dda065d07719eda3b0f2765.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-8717cafc64581830f09b2f6b8611d48d.rda</span></span>
 <span><span class="co"># without merge: currently: INCONSISTENT COLUMN(S) IN FILES: sars_cov2_antigen</span></span>
 <span><span class="co"># due to the fact it is mostly a numeric but some values "&gt;250"</span></span>
 <span></span>
@@ -862,56 +888,47 @@
 <span></span>
 <span><span class="va">failures</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/validate_data.html">validate_data</a></span><span class="op">(</span><span class="op">)</span>  <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/write_issues.html">write_issues</a></span><span class="op">(</span><span class="st">"~/avoncap-issues"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; validate data using: validate.avoncap_export.central</span></span>
-<span><span class="co">#&gt; missing value in consented in 80 rows</span></span>
-<span><span class="co">#&gt; missing value in ppc in 80 rows</span></span>
-<span><span class="co">#&gt; missing value in include_patient in 80 rows</span></span>
-<span><span class="co">#&gt; missing value in hosp in 80 rows</span></span>
+<span><span class="co">#&gt; non-finite value in consented in 10 rows</span></span>
+<span><span class="co">#&gt; non-finite value in ppc in 10 rows</span></span>
+<span><span class="co">#&gt; non-finite value in include_patient in 10 rows</span></span>
+<span><span class="co">#&gt; non-finite value in hosp in 10 rows</span></span>
+<span><span class="co">#&gt; non-finite value in withdrawal in 21 rows</span></span>
+<span><span class="co">#&gt; missing value in hr in 4 rows</span></span>
+<span><span class="co">#&gt; missing value in systolic_bp in 5 rows</span></span>
+<span><span class="co">#&gt; missing value in diastolic_bp in 6 rows</span></span>
+<span><span class="co">#&gt; missing value in rr in 5 rows</span></span>
+<span><span class="co">#&gt; missing value in pulse_ox in 6 rows</span></span>
+<span><span class="co">#&gt; missing value in fio2 in 4 rows</span></span>
+<span><span class="co">#&gt; missing value in imd in 17 rows</span></span>
 <span><span class="co">#&gt; missing columns: ethnicity in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in hr in 3 rows</span></span>
-<span><span class="co">#&gt; missing value in systolic_bp in 7 rows</span></span>
-<span><span class="co">#&gt; missing value in diastolic_bp in 7 rows</span></span>
-<span><span class="co">#&gt; missing value in temperature in 3 rows</span></span>
-<span><span class="co">#&gt; missing value in rr in 10 rows</span></span>
-<span><span class="co">#&gt; missing value in pulse_ox in 7 rows</span></span>
-<span><span class="co">#&gt; missing value in fio2 in 8 rows</span></span>
-<span><span class="co">#&gt; missing value in care_home in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in ckd in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in liver_disease in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in diabetes in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in gastric_ulcers in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in pvd in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in ctd in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in immunodeficiency in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in other_pn_disease in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in cancer in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in transplant in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in smoking in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in hospital_length_of_stay in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in covid_19_diagnosis in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in lrtd_30d_outcome in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in week_number in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in year in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in highest_level_care_require in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in ventilatory_support in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in imd in 10 rows</span></span>
-<span><span class="co">#&gt; missing value in clinical_radio_diagnosis in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in symptom_days_preadmit in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in resp_disease in 2 rows</span></span>
+<span><span class="co">#&gt; non-finite value in news_2_total in 34 rows</span></span>
+<span><span class="co">#&gt; non-finite value in care_home in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in liver_disease in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in gastric_ulcers in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in transplant in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in hospital_length_of_stay in 7 rows</span></span>
+<span><span class="co">#&gt; non-finite value in covid_19_diagnosis in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in lrtd_30d_outcome in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in highest_level_care_require in 6 rows</span></span>
+<span><span class="co">#&gt; non-finite value in ventilatory_support in 7 rows</span></span>
+<span><span class="co">#&gt; non-finite value in psi_class in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in gp_practice_drop_down in 279 rows</span></span>
+<span><span class="co">#&gt; missing value in resp_disease in 1 rows</span></span>
 <span><span class="co">#&gt; missing value in chd in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in dementia in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in neurological_disease in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in hiv in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in haem_malig in 2 rows</span></span>
+<span><span class="co">#&gt; missing value in dementia in 1 rows</span></span>
+<span><span class="co">#&gt; missing value in neurological_disease in 1 rows</span></span>
+<span><span class="co">#&gt; missing value in hiv in 1 rows</span></span>
+<span><span class="co">#&gt; missing value in haem_malig in 1 rows</span></span>
 <span><span class="co">#&gt; missing value in final_soc_lrtd_diagnosis in 1 rows</span></span>
 <span><span class="co">#&gt; both pneumonia and NP-LRTI in final SOC dx in 1 rows</span></span>
-<span><span class="co">#&gt; marked as survived in lrtd_30d_outcome but survival_days &lt;= 30 days in 136 rows</span></span>
-<span><span class="co">#&gt; 30 day and 1 yr survival duration different in 50 rows</span></span>
-<span><span class="co">#&gt; length of stay &gt; 30 day survival duration in 110 rows</span></span>
-<span><span class="co">#&gt; length of stay &gt; 1 yr survival duration in 93 rows</span></span>
-<span><span class="co">#&gt; marked as died lrtd_30d_outcome but survival_days &gt; 30 days in 2 rows</span></span>
-<span><span class="co">#&gt; missing value in dm_meds in 5 rows</span></span>
-<span><span class="co">#&gt; missing value in current in 1 rows</span></span>
-<span><span class="co">#&gt; missing value in pregnancy in 1 rows</span></span>
+<span><span class="co">#&gt; marked as survived in lrtd_30d_outcome but survival_days &lt;= 30 days in 1 rows</span></span>
+<span><span class="co">#&gt; 30 day and 1 yr survival duration different in 10 rows</span></span>
+<span><span class="co">#&gt; length of stay &gt; 30 day survival duration in 91 rows</span></span>
+<span><span class="co">#&gt; length of stay &gt; 1 yr survival duration in 104 rows</span></span>
+<span><span class="co">#&gt; marked as died lrtd_30d_outcome but survival_days &gt; 30 days in 3 rows</span></span>
+<span><span class="co">#&gt; non-finite value in dm_meds in 19 rows</span></span>
+<span><span class="co">#&gt; non-finite value in current in 1 rows</span></span>
+<span><span class="co">#&gt; non-finite value in pregnancy in 3 rows</span></span>
 <span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-7498859e4eaf9f364dc024b6ee4039c2.rda</span></span>
 <span></span>
 <span><span class="va">normData2</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -919,7 +936,7 @@
 <span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-767899bd2d292ad780aeb94b72046017.rda</span></span>
 <span><span class="co">#&gt; Admission date is derived from study week and hence approximate.</span></span>
 <span><span class="co">#&gt; Some columns expected in the mappings were not present: nhs_number, np_swab_3, adm_np_type_3, covidvax_date, covidvax_dose_2, covidvax_dose_3, covidvax_dose_4, covidvax_dose_5, covidvax_dose_6, flu_date, ppv23_date, previousinfection_date</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-b7f84324e2b4f3dc956bad790ce6cc96.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-b32a34214ef53747436e7f95e3bcdd41.rda</span></span>
 <span></span>
 <span><span class="va">tmp</span> <span class="op">=</span> <span class="va">failures</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> </span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.error_type</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none checked in checkbox"</span>,<span class="st">"missing value"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span></span>
@@ -936,124 +953,124 @@
 <span>    <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">.variable</span>,scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"No quality checked variables with more than 20 missing items (excluding consent flags)"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt; No quality checked variables with more than 20 missing items (excluding consent flags)</span></span></code></pre></div>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="avoncap_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normMicro</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"micro"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.micro</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b1452b07c5b368fef65b90881bbe0087-092db6dfd9e9db61f884d7bae35acc29.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b1452b07c5b368fef65b90881bbe0087-5b6bd849f6d438ad91309c87df73cf77.rda</span></span>
 <span></span>
 <span><span class="va">normMicro</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">micro.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">micro.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">micro.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pathogen</span>,<span class="va">detected</span>,  useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                   detected</span></span>
 <span><span class="co">#&gt; pathogen                              no   yes  &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;   Aspergillus                      28522    19     0</span></span>
-<span><span class="co">#&gt;   Streptococcus Agalactiae         28529    12     0</span></span>
-<span><span class="co">#&gt;   Candida                          27844   697     0</span></span>
-<span><span class="co">#&gt;   Achromobacter Xylosoxidans       28526    15     0</span></span>
-<span><span class="co">#&gt;   Bacteroides                      28537     4     0</span></span>
-<span><span class="co">#&gt;   Bacteroides fragilis             28533     8     0</span></span>
-<span><span class="co">#&gt;   Bacteroides ovatus               28541     0     0</span></span>
-<span><span class="co">#&gt;   Bacteroides uniformis            28541     0     0</span></span>
-<span><span class="co">#&gt;   Burholderia cepacia              28538     3     0</span></span>
-<span><span class="co">#&gt;   Citrobacter freundii complex     28516    25     0</span></span>
-<span><span class="co">#&gt;   Citrobacter koseri               28504    37     0</span></span>
-<span><span class="co">#&gt;   Clostridium perfringens          28532     9     0</span></span>
-<span><span class="co">#&gt;   Eggerthella lenta                28541     0     0</span></span>
-<span><span class="co">#&gt;   Enterobacter aerogenes           28534     7     0</span></span>
-<span><span class="co">#&gt;   Enterobacter cloacae             28434   107     0</span></span>
-<span><span class="co">#&gt;   Enterococcus faecalis            28480    61     0</span></span>
-<span><span class="co">#&gt;   Enterococcus faecium             28504    37     0</span></span>
-<span><span class="co">#&gt;   Escherichia coli                 28056   485     0</span></span>
-<span><span class="co">#&gt;   Haemophilus influenzae           28192   349     0</span></span>
-<span><span class="co">#&gt;   Haemophilus parainfluenzae       28539     2     0</span></span>
-<span><span class="co">#&gt;   Klebsiella oxytoca               28474    67     0</span></span>
-<span><span class="co">#&gt;   Klebsiella pneumoniae            28370   171     0</span></span>
-<span><span class="co">#&gt;   Morganella morganii              28536     5     0</span></span>
-<span><span class="co">#&gt;   Peptostreptococcus anaerobius    28540     1     0</span></span>
-<span><span class="co">#&gt;   Proteus mirabilis                28479    62     0</span></span>
-<span><span class="co">#&gt;   Pseudomonas aeruginosa           28162   379     0</span></span>
-<span><span class="co">#&gt;   Serratia marcescens              28499    42     0</span></span>
-<span><span class="co">#&gt;   Staphylcoccus aureus             28138   403     0</span></span>
-<span><span class="co">#&gt;   Streptococcus anginosus          28531    10     0</span></span>
-<span><span class="co">#&gt;   Streptococcus pneumoniae         28373   168     0</span></span>
-<span><span class="co">#&gt;   Streptococcus salivarius group   28536     5     0</span></span>
-<span><span class="co">#&gt;   Stenotrophomonas maltophilia     28488    53     0</span></span>
-<span><span class="co">#&gt;   Acinetobacter                    28525    16     0</span></span>
-<span><span class="co">#&gt;   Aspergillus niger                28541     0     0</span></span>
-<span><span class="co">#&gt;   Bacillus                         28534     7     0</span></span>
-<span><span class="co">#&gt;   Candida albicans                 28510    31     0</span></span>
-<span><span class="co">#&gt;   Candida glabrata                 28535     6     0</span></span>
-<span><span class="co">#&gt;   Candida tropicalis               28535     6     0</span></span>
-<span><span class="co">#&gt;   Coagulase negative staphylcoccus 28528    13     0</span></span>
-<span><span class="co">#&gt;   Corynebacterium                  28518    23     0</span></span>
-<span><span class="co">#&gt;   Enterococcus                     28536     5     0</span></span>
-<span><span class="co">#&gt;   Gram positive coccus             28519    22     0</span></span>
-<span><span class="co">#&gt;   Klebsiella                       28515    26     0</span></span>
-<span><span class="co">#&gt;   Legionella pneumoniae            28539     2     0</span></span>
-<span><span class="co">#&gt;   MRSA                             28534     7     0</span></span>
-<span><span class="co">#&gt;   MSSA                             28540     1     0</span></span>
-<span><span class="co">#&gt;   Moraxella catarrhalis            28469    72     0</span></span>
-<span><span class="co">#&gt;   Mycobacterium tuberculosis       28534     7     0</span></span>
-<span><span class="co">#&gt;   Pneumocytis jirovecii            28539     2     0</span></span>
-<span><span class="co">#&gt;   Pseudomonas                      28456    85     0</span></span>
-<span><span class="co">#&gt;   Pseudomonas fluorescens          28540     1     0</span></span>
-<span><span class="co">#&gt;   Staphylcoccus                    28520    21     0</span></span>
-<span><span class="co">#&gt;   Staphylococcus capitis           28488    53     0</span></span>
-<span><span class="co">#&gt;   Staphylococcus epidermidis       28255   286     0</span></span>
-<span><span class="co">#&gt;   Staphylococcus hominis           28375   166     0</span></span>
-<span><span class="co">#&gt;   Streptococcus                    28521    20     0</span></span>
-<span><span class="co">#&gt;   Streptococcus beta-hemolytic     28474    67     0</span></span>
-<span><span class="co">#&gt;   Streptococcus pyogenes           28530    11     0</span></span>
-<span><span class="co">#&gt;   Streptococcus viridans           28541     0     0</span></span>
-<span><span class="co">#&gt;   Yeast                            28501    40     0</span></span>
-<span><span class="co">#&gt;   Other                            27918   623     0</span></span>
+<span><span class="co">#&gt;   Aspergillus                      29712    19     0</span></span>
+<span><span class="co">#&gt;   Streptococcus Agalactiae         29719    12     0</span></span>
+<span><span class="co">#&gt;   Candida                          28997   734     0</span></span>
+<span><span class="co">#&gt;   Achromobacter Xylosoxidans       29716    15     0</span></span>
+<span><span class="co">#&gt;   Bacteroides                      29727     4     0</span></span>
+<span><span class="co">#&gt;   Bacteroides fragilis             29723     8     0</span></span>
+<span><span class="co">#&gt;   Bacteroides ovatus               29731     0     0</span></span>
+<span><span class="co">#&gt;   Bacteroides uniformis            29731     0     0</span></span>
+<span><span class="co">#&gt;   Burholderia cepacia              29728     3     0</span></span>
+<span><span class="co">#&gt;   Citrobacter freundii complex     29705    26     0</span></span>
+<span><span class="co">#&gt;   Citrobacter koseri               29690    41     0</span></span>
+<span><span class="co">#&gt;   Clostridium perfringens          29722     9     0</span></span>
+<span><span class="co">#&gt;   Eggerthella lenta                29731     0     0</span></span>
+<span><span class="co">#&gt;   Enterobacter aerogenes           29723     8     0</span></span>
+<span><span class="co">#&gt;   Enterobacter cloacae             29623   108     0</span></span>
+<span><span class="co">#&gt;   Enterococcus faecalis            29668    63     0</span></span>
+<span><span class="co">#&gt;   Enterococcus faecium             29694    37     0</span></span>
+<span><span class="co">#&gt;   Escherichia coli                 29231   500     0</span></span>
+<span><span class="co">#&gt;   Haemophilus influenzae           29363   368     0</span></span>
+<span><span class="co">#&gt;   Haemophilus parainfluenzae       29729     2     0</span></span>
+<span><span class="co">#&gt;   Klebsiella oxytoca               29664    67     0</span></span>
+<span><span class="co">#&gt;   Klebsiella pneumoniae            29553   178     0</span></span>
+<span><span class="co">#&gt;   Morganella morganii              29726     5     0</span></span>
+<span><span class="co">#&gt;   Peptostreptococcus anaerobius    29730     1     0</span></span>
+<span><span class="co">#&gt;   Proteus mirabilis                29665    66     0</span></span>
+<span><span class="co">#&gt;   Pseudomonas aeruginosa           29332   399     0</span></span>
+<span><span class="co">#&gt;   Serratia marcescens              29686    45     0</span></span>
+<span><span class="co">#&gt;   Staphylcoccus aureus             29323   408     0</span></span>
+<span><span class="co">#&gt;   Streptococcus anginosus          29721    10     0</span></span>
+<span><span class="co">#&gt;   Streptococcus pneumoniae         29552   179     0</span></span>
+<span><span class="co">#&gt;   Streptococcus salivarius group   29726     5     0</span></span>
+<span><span class="co">#&gt;   Stenotrophomonas maltophilia     29675    56     0</span></span>
+<span><span class="co">#&gt;   Acinetobacter                    29715    16     0</span></span>
+<span><span class="co">#&gt;   Aspergillus niger                29731     0     0</span></span>
+<span><span class="co">#&gt;   Bacillus                         29723     8     0</span></span>
+<span><span class="co">#&gt;   Candida albicans                 29700    31     0</span></span>
+<span><span class="co">#&gt;   Candida glabrata                 29724     7     0</span></span>
+<span><span class="co">#&gt;   Candida tropicalis               29725     6     0</span></span>
+<span><span class="co">#&gt;   Coagulase negative staphylcoccus 29716    15     0</span></span>
+<span><span class="co">#&gt;   Corynebacterium                  29708    23     0</span></span>
+<span><span class="co">#&gt;   Enterococcus                     29726     5     0</span></span>
+<span><span class="co">#&gt;   Gram positive coccus             29706    25     0</span></span>
+<span><span class="co">#&gt;   Klebsiella                       29705    26     0</span></span>
+<span><span class="co">#&gt;   Legionella pneumoniae            29729     2     0</span></span>
+<span><span class="co">#&gt;   MRSA                             29724     7     0</span></span>
+<span><span class="co">#&gt;   MSSA                             29730     1     0</span></span>
+<span><span class="co">#&gt;   Moraxella catarrhalis            29657    74     0</span></span>
+<span><span class="co">#&gt;   Mycobacterium tuberculosis       29724     7     0</span></span>
+<span><span class="co">#&gt;   Pneumocytis jirovecii            29729     2     0</span></span>
+<span><span class="co">#&gt;   Pseudomonas                      29643    88     0</span></span>
+<span><span class="co">#&gt;   Pseudomonas fluorescens          29730     1     0</span></span>
+<span><span class="co">#&gt;   Staphylcoccus                    29710    21     0</span></span>
+<span><span class="co">#&gt;   Staphylococcus capitis           29675    56     0</span></span>
+<span><span class="co">#&gt;   Staphylococcus epidermidis       29430   301     0</span></span>
+<span><span class="co">#&gt;   Staphylococcus hominis           29552   179     0</span></span>
+<span><span class="co">#&gt;   Streptococcus                    29711    20     0</span></span>
+<span><span class="co">#&gt;   Streptococcus beta-hemolytic     29662    69     0</span></span>
+<span><span class="co">#&gt;   Streptococcus pyogenes           29719    12     0</span></span>
+<span><span class="co">#&gt;   Streptococcus viridans           29731     0     0</span></span>
+<span><span class="co">#&gt;   Yeast                            29691    40     0</span></span>
+<span><span class="co">#&gt;   Other                            29085   646     0</span></span>
 <span><span class="co">#&gt;   &lt;NA&gt;                                 0     0     0</span></span>
 <span><span class="va">normMicro</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">micro.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">micro.test_type</span>, <span class="va">micro.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">micro.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">detected</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">group_by</span><span class="op">(</span><span class="va">pathogen</span>, <span class="va">micro.test_type</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">count</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 196 × 3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pathogen, micro.test_type [196]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 198 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pathogen, micro.test_type [198]</span></span></span>
 <span><span class="co">#&gt;    pathogen                   micro.test_type      n</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                      <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Candida                    Sputum             445</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Other                      Blood culture      336</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Escherichia coli           Blood culture      335</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Staphylococcus epidermidis Blood culture      277</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Haemophilus influenzae     Sputum             268</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Pseudomonas aeruginosa     Sputum             238</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Other                      Sputum             187</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Staphylcoccus aureus       Blood culture      180</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Staphylococcus hominis     Blood culture      164</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Candida                    Respiratory swab   131</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 186 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Candida                    Sputum             475</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Other                      Blood culture      351</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Escherichia coli           Blood culture      345</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Staphylococcus epidermidis Blood culture      292</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Haemophilus influenzae     Sputum             285</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Pseudomonas aeruginosa     Sputum             255</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Other                      Sputum             194</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Staphylcoccus aureus       Blood culture      182</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Staphylococcus hominis     Blood culture      177</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Candida                    Respiratory swab   132</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 188 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normVirol</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"virol"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.virol</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b6f8ed1851f16d8282d50544e149e955-092db6dfd9e9db61f884d7bae35acc29.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-b6f8ed1851f16d8282d50544e149e955-5b6bd849f6d438ad91309c87df73cf77.rda</span></span>
 <span></span>
 <span><span class="va">normVirol</span>  <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">virol.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">virol.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">virol.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pathogen</span>,<span class="va">detected</span>,  useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                          detected</span></span>
 <span><span class="co">#&gt; pathogen                                     no   yes  &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;   Influenza A                             67892   632     0</span></span>
-<span><span class="co">#&gt;   Influenza B                             68507    17     0</span></span>
-<span><span class="co">#&gt;   RSV                                     68219   305     0</span></span>
-<span><span class="co">#&gt;   Adenovirus                              68502    22     0</span></span>
-<span><span class="co">#&gt;   Human Metapneumovirus                   68309   215     0</span></span>
-<span><span class="co">#&gt;   Human Rhinovirus/Enterovirus            68150   374     0</span></span>
-<span><span class="co">#&gt;   Parainfluenza Type 1                    68509    15     0</span></span>
-<span><span class="co">#&gt;   Parainfluenza Type 2                    68515     9     0</span></span>
-<span><span class="co">#&gt;   Parainfluenza Type 3                    68410   114     0</span></span>
-<span><span class="co">#&gt;   Parainfluenza Type 4                    68473    51     0</span></span>
-<span><span class="co">#&gt;   Covid-19                                54172 14352     0</span></span>
-<span><span class="co">#&gt;   Other                                   68478    46     0</span></span>
-<span><span class="co">#&gt;   Coronavirus 229E                        68523     1     0</span></span>
-<span><span class="co">#&gt;   Coronavirus HKU1                        68522     2     0</span></span>
-<span><span class="co">#&gt;   Coronavirus NL63                        68522     2     0</span></span>
-<span><span class="co">#&gt;   Coronavirus OC43                        68520     4     0</span></span>
-<span><span class="co">#&gt;   Middle East Respiratory Syndrome (MERS) 68524     0     0</span></span>
-<span><span class="co">#&gt;   Bordetella parapertussis (IS1001)       68522     2     0</span></span>
-<span><span class="co">#&gt;   Bordetella pertussis (ptxP)             68524     0     0</span></span>
-<span><span class="co">#&gt;   Chlamydia pneumoniae                    68522     2     0</span></span>
-<span><span class="co">#&gt;   Mycoplasma pneumoniae                   68524     0     0</span></span>
+<span><span class="co">#&gt;   Influenza A                             69575   639     0</span></span>
+<span><span class="co">#&gt;   Influenza B                             70197    17     0</span></span>
+<span><span class="co">#&gt;   RSV                                     69900   314     0</span></span>
+<span><span class="co">#&gt;   Adenovirus                              70192    22     0</span></span>
+<span><span class="co">#&gt;   Human Metapneumovirus                   69997   217     0</span></span>
+<span><span class="co">#&gt;   Human Rhinovirus/Enterovirus            69807   407     0</span></span>
+<span><span class="co">#&gt;   Parainfluenza Type 1                    70199    15     0</span></span>
+<span><span class="co">#&gt;   Parainfluenza Type 2                    70205     9     0</span></span>
+<span><span class="co">#&gt;   Parainfluenza Type 3                    70099   115     0</span></span>
+<span><span class="co">#&gt;   Parainfluenza Type 4                    70156    58     0</span></span>
+<span><span class="co">#&gt;   Covid-19                                55490 14724     0</span></span>
+<span><span class="co">#&gt;   Other                                   70167    47     0</span></span>
+<span><span class="co">#&gt;   Coronavirus 229E                        70213     1     0</span></span>
+<span><span class="co">#&gt;   Coronavirus HKU1                        70211     3     0</span></span>
+<span><span class="co">#&gt;   Coronavirus NL63                        70212     2     0</span></span>
+<span><span class="co">#&gt;   Coronavirus OC43                        70210     4     0</span></span>
+<span><span class="co">#&gt;   Middle East Respiratory Syndrome (MERS) 70214     0     0</span></span>
+<span><span class="co">#&gt;   Bordetella parapertussis (IS1001)       70212     2     0</span></span>
+<span><span class="co">#&gt;   Bordetella pertussis (ptxP)             70214     0     0</span></span>
+<span><span class="co">#&gt;   Chlamydia pneumoniae                    70212     2     0</span></span>
+<span><span class="co">#&gt;   Mycoplasma pneumoniae                   70214     0     0</span></span>
 <span><span class="co">#&gt;   &lt;NA&gt;                                        0     0     0</span></span>
 <span><span class="va">normVirol</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">virol.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">virol.test_type</span>, <span class="va">virol.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">virol.pathogen</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">detected</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="co"># with(table(pathogen, virol.test_type,  useNA = "always")) %&gt;% </span></span>
@@ -1063,48 +1080,48 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># Groups:   pathogen, virol.test_type [51]</span></span></span>
 <span><span class="co">#&gt;    pathogen                     virol.test_type               n</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Covid-19                     PCR - COVID only           <span style="text-decoration: underline;">9</span>034</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Covid-19                     POCT Test (Abbott)         <span style="text-decoration: underline;">3</span>899</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Covid-19                     PCR Respiratory (Biofire)   711</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Covid-19                     PCR Quad Panel              462</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Covid-19                     PCR - COVID only           <span style="text-decoration: underline;">9</span>056</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Covid-19                     POCT Test (Abbott)         <span style="text-decoration: underline;">4</span>122</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Covid-19                     PCR Respiratory (Biofire)   778</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Covid-19                     PCR Quad Panel              507</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Influenza A                  PCR - Respiratory panel     250</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Human Rhinovirus/Enterovirus PCR - Respiratory panel     242</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Influenza A                  PCR Respiratory (Biofire)   229</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> RSV                          PCR - Respiratory panel     161</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Covid-19                     Lateral Flow - COVID only   159</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Influenza A                  PCR Quad Panel              143</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Human Rhinovirus/Enterovirus PCR - Respiratory panel     246</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Influenza A                  PCR Respiratory (Biofire)   236</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Covid-19                     Lateral Flow - COVID only   174</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> RSV                          PCR - Respiratory panel     163</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Human Rhinovirus/Enterovirus PCR Respiratory (Biofire)   152</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 41 more rows</span></span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normRadio</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"radio"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.radio</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-ebbd016b214d0a4b408623ae4e2c8e3c-092db6dfd9e9db61f884d7bae35acc29.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-ebbd016b214d0a4b408623ae4e2c8e3c-5b6bd849f6d438ad91309c87df73cf77.rda</span></span>
 <span></span>
 <span><span class="co"># old format tmp3  %&gt;% filter(radio.test_performed=="yes") %&gt;% with(table(radio.test_type, radio.lung_malignancy))</span></span>
 <span><span class="va">normRadio</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">radio.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">radio.alrtd_finding</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">radio.alrtd_finding</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">finding</span>,<span class="va">present</span>,  useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                   present</span></span>
 <span><span class="co">#&gt; finding                               no   yes  &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;   Normal                           32297 24171     4</span></span>
-<span><span class="co">#&gt;   Consistent with pneumonia        38503 17965     4</span></span>
-<span><span class="co">#&gt;   Consistent with heart failure    51485  4983     4</span></span>
-<span><span class="co">#&gt;   Consistent with pleural effusion 45341 11127     4</span></span>
-<span><span class="co">#&gt;   Consistent with COVID-19         50254  6214     4</span></span>
-<span><span class="co">#&gt;   Other abnormal finding           52457  4011     4</span></span>
+<span><span class="co">#&gt;   Normal                           33361 25096     4</span></span>
+<span><span class="co">#&gt;   Consistent with pneumonia        39834 18623     4</span></span>
+<span><span class="co">#&gt;   Consistent with heart failure    53298  5159     4</span></span>
+<span><span class="co">#&gt;   Consistent with pleural effusion 46918 11539     4</span></span>
+<span><span class="co">#&gt;   Consistent with COVID-19         52225  6232     4</span></span>
+<span><span class="co">#&gt;   Other abnormal finding           54280  4177     4</span></span>
 <span><span class="co">#&gt;   &lt;NA&gt;                                 0     0     0</span></span>
 <span><span class="va">normRadio</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">radio.test_performed</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">select</span><span class="op">(</span><span class="va">radio.test_type</span>, <span class="va">radio.non_alrtd_finding</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">unnest</span><span class="op">(</span><span class="va">radio.non_alrtd_finding</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">present</span><span class="op">==</span><span class="st">"yes"</span><span class="op">)</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">finding</span>, <span class="va">radio.test_type</span>,  useNA <span class="op">=</span> <span class="st">"always"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                        radio.test_type</span></span>
 <span><span class="co">#&gt; finding                                  CXR CT scan (CT thorax, CTPA, HRCT)</span></span>
-<span><span class="co">#&gt;   Pulmonary embolus                      192                             786</span></span>
-<span><span class="co">#&gt;   Pneumothorax and/or pneumomediastinum 1049                             203</span></span>
-<span><span class="co">#&gt;   Cavity including abscesses              50                              36</span></span>
+<span><span class="co">#&gt;   Pulmonary embolus                      202                             804</span></span>
+<span><span class="co">#&gt;   Pneumothorax and/or pneumomediastinum 1088                             208</span></span>
+<span><span class="co">#&gt;   Cavity including abscesses              51                              36</span></span>
 <span><span class="co">#&gt;   Aspergillioma                            1                               2</span></span>
-<span><span class="co">#&gt;   Lung malignancy                        417                             347</span></span>
-<span><span class="co">#&gt;   Lung nodules                           404                             521</span></span>
-<span><span class="co">#&gt;   Tuberculosis (old or new)               11                               2</span></span>
-<span><span class="co">#&gt;   Empyema                                154                             135</span></span>
+<span><span class="co">#&gt;   Lung malignancy                        432                             359</span></span>
+<span><span class="co">#&gt;   Lung nodules                           438                             556</span></span>
+<span><span class="co">#&gt;   Tuberculosis (old or new)               13                               3</span></span>
+<span><span class="co">#&gt;   Empyema                                158                             141</span></span>
 <span><span class="co">#&gt;   &lt;NA&gt;                                     0                               0</span></span>
 <span><span class="co">#&gt;                                        radio.test_type</span></span>
 <span><span class="co">#&gt; finding                                 US thorax  MRI Other &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;   Pulmonary embolus                             5    0    19    0</span></span>
+<span><span class="co">#&gt;   Pulmonary embolus                             5    0    20    0</span></span>
 <span><span class="co">#&gt;   Pneumothorax and/or pneumomediastinum         4    0     0    0</span></span>
 <span><span class="co">#&gt;   Cavity including abscesses                    4    0     0    0</span></span>
 <span><span class="co">#&gt;   Aspergillioma                                 0    0     0    0</span></span>
@@ -1116,23 +1133,24 @@
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">normHaem</span> <span class="op">=</span> <span class="va">rawData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span>instrument <span class="op">=</span> <span class="st">"haem"</span><span class="op">)</span> </span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.central.haem</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-ec9364966e50cafa76af72883eb95839.rda</span></span>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-74cfa8e70babfb9a67e549d23a6e987c.rda</span></span>
 <span><span class="va">augHaem</span> <span class="op">=</span> <span class="va">normHaem</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.avoncap_export.central.haem</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-108f036b134a7f079d6c20b54245db5c.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-fa69c419498486fa82b314924aecdfa5.rda</span></span>
+<span><span class="co">#&gt; Created haem.troponin_level, haem.crp_level, haem.white_cell_count_level, haem.d_dimer_level, haem.pro_bnp_level using: haem.troponin, haem.crp, haem.white_cell_count, haem.d_dimer, haem.pro_bnp</span></span>
 <span></span>
 <span><span class="va">augHaem</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">haem.troponin_level</span>, <span class="va">haem.d_dimer_level</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                   haem.troponin_level</span></span>
 <span><span class="co">#&gt; haem.d_dimer_level   ≤18   &gt;18 Unknown</span></span>
 <span><span class="co">#&gt;            ≤0.5      351    64     319</span></span>
 <span><span class="co">#&gt;            &gt;0.5      951   621    1125</span></span>
-<span><span class="co">#&gt;            Unknown  4380  5725   19044</span></span>
+<span><span class="co">#&gt;            Unknown  4636  5935   19687</span></span>
 <span><span class="va">augHaem</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">haem.crp_level</span>, <span class="va">haem.white_cell_count_level</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                            haem.crp_level</span></span>
 <span><span class="co">#&gt; haem.white_cell_count_level  &lt;10 10-50  &gt;50 Unknown</span></span>
-<span><span class="co">#&gt;                     ≤10     5312  6326 5105     329</span></span>
-<span><span class="co">#&gt;                     &gt;10     2721  4358 7948     150</span></span>
-<span><span class="co">#&gt;                     Unknown   18    22   21     270</span></span>
+<span><span class="co">#&gt;                     ≤10     5519  6536 5247     343</span></span>
+<span><span class="co">#&gt;                     &gt;10     2799  4509 8234     161</span></span>
+<span><span class="co">#&gt;                     Unknown   18    22   21     280</span></span>
 <span></span>
 <span><span class="co"># x = augHaem %&gt;% summary()</span></span>
 <span><span class="co"># t(x)</span></span></code></pre></div>
@@ -1144,12 +1162,13 @@
 <code class="sourceCode R"><span><span class="co"># devtools::load_all()</span></span>
 <span><span class="va">augData2</span> <span class="op">=</span> <span class="va">normData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.avoncap_export.central</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-56b9caf324c137ebf53543410de402e1.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-6f1f3cd70525b5b50aa1f49cfebacfae.rda</span></span>
 <span><span class="co">#&gt; Created outcome.admitted_to_hospital using:</span></span>
-<span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.rockwood_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.rockwood_score, admission.curb_65_severity_score</span></span>
+<span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.cci_category_alternate, admission.rockwood_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.rockwood_score, admission.curb_65_severity_score</span></span>
 <span><span class="co">#&gt; Created admin.patient_identifier using: admin.first_record_number, admin.record_number</span></span>
 <span><span class="co">#&gt; Created admission.episode, admission.interval using: admission.date</span></span>
-<span><span class="co">#&gt; Created admin.linked_gp_practice using: admin.gp_practice</span></span>
+<span><span class="co">#&gt; Skipping function due to error: In argument: `admin.linked_gp_practice = ~...`.</span></span>
+<span><span class="co">#&gt; Created admin.catchment_status using: admin.gp_practice</span></span>
 <span><span class="co">#&gt; Created comorbid.diabetes_type, comorbid.solid_cancer_present, comorbid.haemotological_cancer_present, comorbid.any_cancer_present, comorbid.any_chronic_lung_disease, comorbid.any_chronic_heart_disease, comorbid.cva_or_tia, comorbid.any_immune_compromise using: comorbid.diabetes, comorbid.solid_cancer, comorbid.leukaemia, comorbid.lymphoma, comorbid.no_haemotological_cancer, comorbid.asthma, comorbid.bronchiectasis, comorbid.chronic_pleural_dx, comorbid.copd, comorbid.interstitial_lung_dx, comorbid.cystic_fibrosis, comorbid.other_chronic_resp_dx, comorbid.pulmonary_hypertension, comorbid.ccf, comorbid.ihd, comorbid.previous_mi, comorbid.congenital_heart_dx, comorbid.hypertension, comorbid.af, comorbid.other_arrythmia, comorbid.other_heart_dx, comorbid.other_other_heart_dx, comorbid.cva, comorbid.tia, comorbid.immunodeficiency, admission.on_immunosuppression</span></span>
 <span><span class="co">#&gt; Created admission.initial_presentation_3_class using: admission.presumed_CAP_clinically_confirmed, admission.presumed_CAP_radiologically_confirmed, admission.presumed_CAP_no_radiology, admission.presumed_Empyema_or_abscess, admission.presumed_LRTI, admission.presumed_exacerbation_COPD, admission.presumed_exacerbation_non_COPD, admission.presumed_congestive_heart_failure</span></span>
 <span><span class="co">#&gt; Created admission.hospital_acquired, admission.days_before_enrollment using: admission.hospital_acquired_covid, admission.non_lrtd_hospital_acquired_covid, admission.date, admin.enrollment_date</span></span>
@@ -1177,50 +1196,63 @@
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.category</span>,  <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admission.category</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class Confirmed SARS-CoV-2 No evidence SARS-CoV-2</span></span>
-<span><span class="co">#&gt;               Pneumonia                        5264                  10275</span></span>
-<span><span class="co">#&gt;               NP-LRTI                          4610                   7039</span></span>
-<span><span class="co">#&gt;               No evidence LRTI                   68                      0</span></span>
+<span><span class="co">#&gt;               Pneumonia                        5352                  10697</span></span>
+<span><span class="co">#&gt;               NP-LRTI                          4770                   7291</span></span>
+<span><span class="co">#&gt;               No evidence LRTI                   70                      0</span></span>
 <span><span class="co">#&gt;               &lt;NA&gt;                                0                      0</span></span>
 <span><span class="co">#&gt;                               admission.category</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class Non-infective  &lt;NA&gt;</span></span>
 <span><span class="co">#&gt;               Pneumonia                    0     0</span></span>
 <span><span class="co">#&gt;               NP-LRTI                      0     0</span></span>
-<span><span class="co">#&gt;               No evidence LRTI          5324     0</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;                         0  1329</span></span>
+<span><span class="co">#&gt;               No evidence LRTI          5509     0</span></span>
+<span><span class="co">#&gt;               &lt;NA&gt;                         0  1407</span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.covid_pcr_result</span>,  <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admission.covid_pcr_result</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class SARS-CoV-2 PCR negative SARS-CoV-2 PCR positive</span></span>
-<span><span class="co">#&gt;               Pneumonia                           9471                    5203</span></span>
-<span><span class="co">#&gt;               NP-LRTI                             6326                    4531</span></span>
-<span><span class="co">#&gt;               No evidence LRTI                    4479                      52</span></span>
+<span><span class="co">#&gt;               Pneumonia                           9813                    5291</span></span>
+<span><span class="co">#&gt;               NP-LRTI                             6516                    4690</span></span>
+<span><span class="co">#&gt;               No evidence LRTI                    4603                      54</span></span>
 <span><span class="co">#&gt;               &lt;NA&gt;                                   0                       0</span></span>
 <span><span class="co">#&gt;                               admission.covid_pcr_result</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;               Pneumonia         865</span></span>
-<span><span class="co">#&gt;               NP-LRTI           792</span></span>
-<span><span class="co">#&gt;               No evidence LRTI  861</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;             1329</span></span>
+<span><span class="co">#&gt;               Pneumonia         945</span></span>
+<span><span class="co">#&gt;               NP-LRTI           855</span></span>
+<span><span class="co">#&gt;               No evidence LRTI  922</span></span>
+<span><span class="co">#&gt;               &lt;NA&gt;             1407</span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.infective_cause</span>,  <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admission.infective_cause</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class Non-infective Infective  &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;               Pneumonia                    0     15539     0</span></span>
-<span><span class="co">#&gt;               NP-LRTI                      0     11649     0</span></span>
-<span><span class="co">#&gt;               No evidence LRTI          5324        68     0</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;                         0         0  1329</span></span>
+<span><span class="co">#&gt;               Pneumonia                    0     16049     0</span></span>
+<span><span class="co">#&gt;               NP-LRTI                      0     12061     0</span></span>
+<span><span class="co">#&gt;               No evidence LRTI          5509        70     0</span></span>
+<span><span class="co">#&gt;               &lt;NA&gt;                         0         0  1407</span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.infective_cause</span>,  <span class="va">admission.is_covid</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         admission.infective_cause</span></span>
 <span><span class="co">#&gt; admission.is_covid       Non-infective Infective  &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;   Confirmed SARS-CoV-2               0      9942     0</span></span>
-<span><span class="co">#&gt;   No evidence SARS-CoV-2          5324     17314     0</span></span>
-<span><span class="co">#&gt;   &lt;NA&gt;                               0         0  1329</span></span>
+<span><span class="co">#&gt;   Confirmed SARS-CoV-2               0     10192     0</span></span>
+<span><span class="co">#&gt;   No evidence SARS-CoV-2          5509     17988     0</span></span>
+<span><span class="co">#&gt;   &lt;NA&gt;                               0         0  1407</span></span>
 <span></span>
 <span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admin.consent_withheld</span>, <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admin.consent_withheld</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class    no   yes</span></span>
-<span><span class="co">#&gt;               Pneumonia        15539     0</span></span>
-<span><span class="co">#&gt;               NP-LRTI          11649     0</span></span>
-<span><span class="co">#&gt;               No evidence LRTI  5392     0</span></span>
-<span><span class="co">#&gt;               &lt;NA&gt;                 0  1329</span></span></code></pre></div>
+<span><span class="co">#&gt;               Pneumonia        16049     0</span></span>
+<span><span class="co">#&gt;               NP-LRTI          12061     0</span></span>
+<span><span class="co">#&gt;               No evidence LRTI  5579     0</span></span>
+<span><span class="co">#&gt;               &lt;NA&gt;                 0  1407</span></span>
+<span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admin.consent_withheld</span>, <span class="va">admin.catchment_status</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                       admin.consent_withheld</span></span>
+<span><span class="co">#&gt; admin.catchment_status    no   yes</span></span>
+<span><span class="co">#&gt;   Bristol area         30350     7</span></span>
+<span><span class="co">#&gt;   Outside Bristol area  3060     3</span></span>
+<span><span class="co">#&gt;   No GP details          279  1397</span></span>
+<span></span>
+<span><span class="va">augData2</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admin.consented</span>, <span class="va">admin.catchment_status</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                       admin.consented</span></span>
+<span><span class="co">#&gt; admin.catchment_status Not approached   Yes Declined consent  &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   Bristol area                  15851 14499                0     7</span></span>
+<span><span class="co">#&gt;   Outside Bristol area           1552  1508                0     3</span></span>
+<span><span class="co">#&gt;   No GP details                   163   255             1258     0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

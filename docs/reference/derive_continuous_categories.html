@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9022</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9024</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/web/avoncap.html">Getting started</a>
+    <a class="dropdown-item" href="../articles/web/denominator-check.html">AvonCAP study population denominator</a>
     <a class="dropdown-item" href="../articles/web/ed-data.html">The emergency department data set</a>
     <a class="dropdown-item" href="../articles/web/gp-data.html">The primary care data set</a>
     <a class="dropdown-item" href="../articles/web/longitudinal-pneumo.html">Pneumococcus longitudinal serotype data</a>
@@ -86,10 +87,16 @@ principled reason here. Boundaries fall approx 0.1, 0.2, 0.4, 0.6, 0.8
 quantiles. Could merge first two groups but outcomes are usually different.
 Covid vaccination cohorts were in 5 year age groups, but vaccination
 prioirity was in these groups approximately.</p></li>
-<li><p>65+ Age of pneumovax eligibility</p></li>
-<li><p>CCI - 4 bands as defined in https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891119/#:~:text=Based%20on%20the%20CCI%20score,with%20CCI%20scores%20%E2%89%A55.and
-similar in https://link.springer.com/article/10.1007/s10654-021-00802-z</p></li>
-<li><p>Rockwood score - independent versus dependent frailty levels.</p></li>
+<li><p>Age of eligibility for vaccines: 65+ Age of pneumovax eligibility</p></li>
+<li><p>CCI - 4 bands as defined in original Charleson paper:
+** https://pubmed.ncbi.nlm.nih.gov/3558716/
+** in https://link.springer.com/article/10.1007/s10654-021-00802-z there is
+rationale given for not using the charleson score as a continuous value.</p></li>
+<li><p>Alternate CCI - 0,1,2,3+ is also used as a grouping in the original charleson
+paper</p></li>
+<li><p>Rockwood score - Completely independent versus dependent frailty levels.</p></li>
+<li><p>CURB65 categorisation - As per derivation study (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1746657/): 0-1 consider home treatment; 2 consider
+admit as inpatient; 3-5 admit, consider ICU.</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

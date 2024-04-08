@@ -28,10 +28,16 @@ principled reason here. Boundaries fall approx 0.1, 0.2, 0.4, 0.6, 0.8
 quantiles. Could merge first two groups but outcomes are usually different.
 Covid vaccination cohorts were in 5 year age groups, but vaccination
 prioirity was in these groups approximately.
-\item 65+ Age of pneumovax eligibility
-\item CCI - 4 bands as defined in https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3891119/#:~:text=Based\%20on\%20the\%20CCI\%20score,with\%20CCI\%20scores\%20\%E2\%89\%A55.and
-similar in https://link.springer.com/article/10.1007/s10654-021-00802-z
-\item Rockwood score - independent versus dependent frailty levels.
+\item Age of eligibility for vaccines: 65+ Age of pneumovax eligibility
+\item CCI - 4 bands as defined in original Charleson paper:
+** https://pubmed.ncbi.nlm.nih.gov/3558716/
+** in https://link.springer.com/article/10.1007/s10654-021-00802-z there is
+rationale given for not using the charleson score as a continuous value.
+\item Alternate CCI - 0,1,2,3+ is also used as a grouping in the original charleson
+paper
+\item Rockwood score - Completely independent versus dependent frailty levels.
+\item CURB65 categorisation - As per derivation study (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1746657/): 0-1 consider home treatment; 2 consider
+admit as inpatient; 3-5 admit, consider ICU.
 }
 }
 \concept{derived}

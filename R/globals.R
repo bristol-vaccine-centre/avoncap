@@ -40,6 +40,7 @@ utils::globalVariables(c(
 	"admin.enrollment_date",
 	"admin.first_record_number",
 	"admin.gp_practice",
+	"admin.gp_practice_old",
 	"admin.hospital",
 	"admin.np_swab_date_1",
 	"admin.np_swab_date_2",

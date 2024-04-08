@@ -132,7 +132,7 @@ validate_data = function(
 
 # tmp = iris %>% .id_col() %>% dplyr::mutate(Sepal.Width = ifelse(Sepal.Width > mean(Sepal.Width), NA, Sepal.Width)) %>% .not_empty("Sepal.Width")
 # tmp %>% .get_failures()
-.not_empty = function(df, cols) {
+.not_na = function(df, cols) {
 
   df = df %>% .col_present(cols)
   for (col in intersect(cols,colnames(df))) {
@@ -148,6 +148,24 @@ validate_data = function(
   return(df)
 
 }
+
+.not_empty = function(df, cols) {
+
+  df = df %>% .col_present(cols)
+  for (col in intersect(cols,colnames(df))) {
+    col = as.symbol(col)
+    tmp = df %>%
+      .identify_failures(is.na(!!col) | !is.finite(!!col)) %>%
+      dplyr::mutate(
+        .error_type = "missing value",
+        .variable = rlang::as_label(col)
+      )
+    df = .update_validation(df,tmp, sprintf("non-finite value in %s",rlang::as_label(col)))
+  }
+  return(df)
+
+}
+
 
 .checkbox_not_empty = function(df, cols, active_only=TRUE) {
 
