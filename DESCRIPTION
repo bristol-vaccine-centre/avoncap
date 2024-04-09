@@ -39,7 +39,7 @@ Imports:
     survival,
     data.tree,
     colorspace,
-    dtrackr (>= 0.4.4.9000)
+    dtrackr (>= 0.4.4)
 Suggests: 
     knitr,
     rmarkdown,
