@@ -40,13 +40,19 @@ get_value_sets = function(df) {
   return(v)
 }
 
-# This is a sub class of list access operator that throws an error if you attempt to access a value that does not exist (rather than returning NULL)
-# the point of this is to throw errors early if the data changes.
-`$.checked_list` <- function(x, y) {
-  if (is.character(y)) {
-    ylab = y
+
+#' Get a value if it exists
+#'
+#' This is a sub class of list access operator that throws an error if you attempt to access a value that does not exist (rather than returning NULL)
+#' the point of this is to throw errors early if the data changes.
+#'
+#' @export
+#' @noRd
+`$.checked_list` <- function(x, name) {
+  if (is.character(name)) {
+    ylab = name
   } else {
-    ylab <- deparse(substitute(y))
+    ylab <- deparse(substitute(name))
   }
   if(!ylab %in% names(x)) {
     stop("The value `",ylab,"` is not a valid entry") # for ",xlab)

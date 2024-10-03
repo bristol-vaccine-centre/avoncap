@@ -690,9 +690,25 @@ map_avoncap_central = function() {list(
         "Tazocin",
         "Meropenem",
         "Other"), nameCol = "antibiotic", valueCol = "given"
-    )
+    ),
 
     # TODO: antivirals but they are in different format.
     # TODO: readmissions? - 4 possible blocks?
+
+  "antiplatelets" = .normalise_list(admission.antiplatelet_therapy, c("no","yes","unknown"), referrent = "no", explicitUnavailable = "unknown"),
+  "anticoagulants" = .normalise_list(admission.anticoagulant_therapy, c("no","yes","unknown"), referrent = "no", explicitUnavailable = "unknown"),
+  "statins" = .normalise_list(admission.cholesterol_lowering_therapy, c("no","yes","unknown"), referrent = "no", explicitUnavailable = "unknown"),
+  "hypertensives" = .normalise_list(admission.antihypertensive_therapy, c("no","yes","unknown"), referrent = "no", explicitUnavailable = "unknown"),
+
+  "antiviral_14d_prior" = .normalise_checkboxes_to_nested_list(
+    admission.pre_admission_antiviral,
+    c(
+      "Other",
+      "Oseltamivir or Zanamivir",
+      "Molnupiravir",
+      "Sotrovimab",
+      "Paxlovid"
+    ), nameCol = "antiviral", valueCol = "given"
+  )
 
 )}

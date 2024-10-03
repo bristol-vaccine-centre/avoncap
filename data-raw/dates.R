@@ -1,5 +1,5 @@
 key_dates = list(
-  mortality_updated = as.Date("2023-12-23"),
+  mortality_updated = as.Date("2024-10-04"),
 
   # Variants
   min_alpha = as.Date("2020-12-05"),

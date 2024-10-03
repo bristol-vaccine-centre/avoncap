@@ -1,6 +1,6 @@
 Package: avoncap
 Title: AvonCap Study Analysis
-Version: 0.0.0.9024
+Version: 0.0.0.9028
 Authors@R: 
     person("Rob", "Challen", , "rob.challen@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5504-7768"))
@@ -8,7 +8,7 @@ Description: A WIP set of functions allowing data load, wrangling of the AvonCap
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     dplyr,
     lubridate,
@@ -31,7 +31,7 @@ Imports:
     ggstance,
     glue,
     nplyr,
-    openxlsx,
+    writexl,
     patchwork,
     rappdirs,
     binom,

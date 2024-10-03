@@ -327,14 +327,29 @@ create_keys = function(df, key_spec = list("id"="{dplyr::row_number()}")) {
 
 # TODO: use labelled:: for column names
 
-.normalise_list = function(renameTo, values, ordered = FALSE, zeroValue=FALSE, codes=(1:length(values))-zeroValue, referrent = NULL) {
+.normalise_list = function(renameTo, values, ordered = FALSE, zeroValue=FALSE, codes=(1:length(values))-zeroValue, referrent = NULL, explicitUnavailable = FALSE) {
   renameTo=rlang::ensym(renameTo)
   return(function(df, valueCol) {
     valueCol = as.symbol(valueCol)
     message("mapping ",valueCol," to ",renameTo)
-    # TODO: do we need to handle a NaN value (explicit unavailable) and if so how?
+    # Handle NaN values (explicit unavailable) introduced from string "NA" when numeric strings are parsed
+    # These are values that are not missing but stated as not available. They get put in as NaN to distinguish them
+    # from missing in csv values (which will be NA).
+    if (!isFALSE(explicitUnavailable)) {
+      if (isTRUE(explicitUnavailable)) {
+        explicitUnavailable = length(values)
+      } else {
+        explicitUnavailable = which(values==explicitUnavailable)
+        if (length(explicitUnavailable) == 0) stop("Cannot match value for `unavailable`")
+      }
+      # Maps NaN to last value
+      df = df %>% dplyr::mutate(!!renameTo := ifelse(is.nan(!!valueCol), explicitUnavailable, !!valueCol))
+    } else {
+      df = df %>% dplyr::mutate(!!renameTo := !!valueCol)
+    }
+
     df = df %>%
-      dplyr::mutate(!!renameTo := !!valueCol %>% factor(levels=codes, labels=values, ordered = ordered))
+      dplyr::mutate(!!renameTo := !!renameTo %>% factor(levels=codes, labels=values, ordered = ordered))
     if (!is.null(referrent)) {
       df = df %>% dplyr::mutate(!!renameTo := forcats::fct_relevel(!!renameTo, referrent))
     }

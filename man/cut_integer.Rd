@@ -18,7 +18,7 @@ cut_integer(
 
 \item{cut_points}{a vector of integer valued cut points which define the lower boundaries of conditions}
 
-\item{glue}{a glue spec that may be used to generate a label. It can use {low}, {high}, {next_low}, or {label} as values.}
+\item{glue}{a glue spec that may be used to generate a label. It can use \code{low}, \code{high}, \code{next_low}, or \code{label} as values.}
 
 \item{lower_limit}{the minimum value we should include (this is inclusive for the bottom category) (default -Inf)}
 

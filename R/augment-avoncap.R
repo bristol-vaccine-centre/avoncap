@@ -331,6 +331,25 @@ derive_nosocomial_status = function(df,v) {
   # normData2 %>% xglimpse(delayed_enrol = admission.date + 28 < admin.enrollment_date, hap = admission.hospital_acquired_covid=="yes" | admission.non_lrtd_hospital_acquired_covid == "yes")
 }
 
+#' Create a flag for patients who have been given antivirals
+#'
+#' @inherit derive_template
+#' @concept derived
+#' @export
+derive_antiviral_status = function(df,v) {
+  df %>% dplyr::mutate(
+    admission.pre_admission_antivirals_given = purrr::map_lgl(
+      admission.pre_admission_antiviral, ~ !all(.x$given == "no"))
+  ) %>% dplyr::mutate(
+    admission.pre_admission_antivirals_given = dplyr::case_when(
+      is.na(admission.pre_admission_antivirals_given) ~ "unknown",
+      admission.pre_admission_antivirals_given == TRUE ~ "yes",
+      admission.pre_admission_antivirals_given == FALSE ~ "no",
+      TRUE ~ "unknown"
+    ) %>% factor(c("no","yes","unknown"))
+  )
+}
+
 # Diagnostic ----
 
 #' Determine if an admission is proven SARS-CoV-2 PCR positive

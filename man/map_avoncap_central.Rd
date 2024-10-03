@@ -193,6 +193,11 @@ a list
 \item flu_vaccine -> vaccination.influenza_vaccination (list)
 \item abx_14d_prior -> admission.pre_admission_antibiotics_given (yesno_unknown)
 \item antibiotic_used -> admission.pre_admission_antibiotic (checkboxes_to_nested_list)
+\item antiplatelets -> admission.antiplatelet_therapy (list)
+\item anticoagulants -> admission.anticoagulant_therapy (list)
+\item statins -> admission.cholesterol_lowering_therapy (list)
+\item hypertensives -> admission.antihypertensive_therapy (list)
+\item antiviral_14d_prior -> admission.pre_admission_antiviral (checkboxes_to_nested_list)
 }
 }
 \concept{map}

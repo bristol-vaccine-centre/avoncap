@@ -31,9 +31,8 @@ devtools::load_all()
 # loading and normalising the central database
 
 ```{r}
+rawData = avoncap::load_data("avoncap-export","central", merge=FALSE)
 rawData2 = avoncap::load_data("avoncap-export","central", merge=TRUE)
-# without merge: currently: INCONSISTENT COLUMN(S) IN FILES: sars_cov2_antigen
-# due to the fact it is mostly a numeric but some values ">250"
 
 # devtools::load_all()
 rawData3 = rawData2 %>% avoncap::validate_data() 

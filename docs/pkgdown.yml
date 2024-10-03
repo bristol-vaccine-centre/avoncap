@@ -1,5 +1,5 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: 3.1.13
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   avoncap: web/avoncap.html
@@ -9,5 +9,5 @@ articles:
   longitudinal-pneumo: web/longitudinal-pneumo.html
   quality-assurance: web/quality-assurance.html
   uad-data: web/uad-data.html
-last_built: 2024-04-08T16:03Z
+last_built: 2024-10-03T15:38Z
 

@@ -27,7 +27,7 @@ validate.avoncap_export.central = function(rawData, ..., dq = avoncap::load_data
     # tolerates NaN for appropriately missing values
     .not_na(
       c("hr", "systolic_bp", "diastolic_bp", "temperature", "rr", "pulse_ox",
-      "fio2", "imd", "symptom_days_preadmit")
+      "fio2", "imd", "symptom_days_preadmit", "hypertensives", "statins", "anticoagulants", "antiplatelets")
     ) %>%
     # does not tolerate NaN or infinite values
     .not_empty(

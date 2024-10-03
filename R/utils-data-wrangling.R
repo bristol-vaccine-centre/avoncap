@@ -65,7 +65,7 @@ standard_exclusions = function(avoncap_df, censoring=7) {
 #'
 #' @param x a vector of integer valued numbers, e.g. ages, counts
 #' @param cut_points a vector of integer valued cut points which define the lower boundaries of conditions
-#' @param glue a glue spec that may be used to generate a label. It can use {low}, {high}, {next_low}, or {label} as values.
+#' @param glue a glue spec that may be used to generate a label. It can use `low`, `high`, `next_low`, or `label` as values.
 #' @param lower_limit the minimum value we should include (this is inclusive for the bottom category) (default -Inf)
 #' @param upper_limit the maximum value we should include (this is also inclusive for the top category) (default Inf)
 #' @param ... not used

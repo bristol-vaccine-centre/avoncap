@@ -251,7 +251,27 @@ practice_data_urls = c(
 
 # Jan 2024
 "https://files.digital.nhs.uk/89/99FEA5/gp-reg-pat-prac-sing-age-female.zip",
-"https://files.digital.nhs.uk/31/8D433F/gp-reg-pat-prac-sing-age-male.zip"
+"https://files.digital.nhs.uk/31/8D433F/gp-reg-pat-prac-sing-age-male.zip",
+
+# Apr 2024
+"https://files.digital.nhs.uk/02/8BBFA4/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/0A/5B0CEF/gp-reg-pat-prac-sing-age-male.zip",
+
+# May 2024
+"https://files.digital.nhs.uk/22/26E36F/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/67/205C56/gp-reg-pat-prac-sing-age-male.zip",
+
+# June 2024
+"https://files.digital.nhs.uk/6C/46D903/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/56/162C5B/gp-reg-pat-prac-sing-age-male.zip",
+
+# July 2024
+"https://files.digital.nhs.uk/7E/E3D3AD/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/66/010415/gp-reg-pat-prac-sing-age-male.zip",
+
+# Aug 2024
+"https://files.digital.nhs.uk/F9/943629/gp-reg-pat-prac-sing-age-female.zip",
+"https://files.digital.nhs.uk/CA/0E8B3B/gp-reg-pat-prac-sing-age-male.zip"
 
 )
 
@@ -280,7 +300,7 @@ practice_data_urls = c(
         is.na(age) ~ NA_character_,
         TRUE ~ "85+"
       ),
-      date = as.Date(tolower(EXTRACT_DATE),tryFormats=c("%d%b%Y","%d-%b-%y"))
+      date = as.Date(tolower(EXTRACT_DATE),tryFormats=c("%d%b%Y","%d-%b-%y","%Y-%m-%d"))
     ) %>%
     group_by(date,SEX, ORG_CODE,POSTCODE,age) %>% summarise(count = sum(NUMBER_OF_PATIENTS),.groups = "drop")
 }
@@ -635,7 +655,7 @@ comparison4 =  bind_rows(
 tmp = comparison4 %>% select(method, date, age, population) %>% 
   group_by(method,age) %>%
   group_modify(function(d,...) {
-    range = growthrates::full_seq(d$date, period=1,complete = FALSE)
+    range = growthrates::date_seq(d$date, period=1,complete = FALSE)
     d0 = growthrates::min_date(d$date)
     predict_at = as.numeric(range-d0)
     d = d %>% mutate(i = as.numeric(date-d0))

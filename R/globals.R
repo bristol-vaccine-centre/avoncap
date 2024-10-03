@@ -522,6 +522,14 @@ utils::globalVariables(c(
 	"X3",
 	"y",
 	"year",
-	"pandemic_period", "pcv_vaccine_period", "pre_covid"
+	"pandemic_period",
+	"pcv_vaccine_period",
+	"pre_covid",
+  "admission.anticoagulant_therapy",
+	"admission.antihypertensive_therapy",
+  "admission.antiplatelet_therapy",
+	"admission.cholesterol_lowering_therapy",
+  "admission.pre_admission_antiviral"
+
 
 ))

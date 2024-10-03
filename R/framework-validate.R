@@ -236,31 +236,21 @@ write_issues = function(df, file) {
 
   failures = df %>% .get_failures()
 
-  wb = openxlsx::createWorkbook()
-
   issues = failures %>% dplyr::group_by(.row_number) %>% dplyr::summarise(issues = dplyr::n()) %>% dplyr::group_by(issues) %>% dplyr::summarise(`item count`=dplyr::n()) %>% dplyr::mutate(issues = sprintf("%d issues",issues))
   issues = failures %>% dplyr::summarise(`item count`=dplyr::n_distinct(.row_number)) %>% dplyr::mutate(issues = "Items with issues") %>% dplyr::bind_rows(issues) %>% dplyr::select(issues,`item count`)
   issues = tibble::tibble(issues = "Total items", `item count`=nrow(df)) %>% dplyr::bind_rows(issues)
 
-  openxlsx::addWorksheet(wb = wb, sheetName = "Items by number of issues")
-  openxlsx::writeDataTable(wb = wb, sheet = 1, x = issues)
-  openxlsx::setColWidths(wb, sheet = 1, cols = 1:length(issues), widths = "auto")
-
   missing = failures %>% dplyr::filter(.error_type %in% c("missing value","none checked in checkbox")) %>% dplyr::group_by(`patient subgroup` = .subgroup, `missing value` = .variable) %>% dplyr::count() %>% dplyr::arrange(`patient subgroup`,dplyr::desc(n))
-  openxlsx::addWorksheet(wb = wb, sheetName = "Missing items by field")
-  openxlsx::writeDataTable(wb = wb, sheet = 2, x = missing)
-  openxlsx::setColWidths(wb, sheet = 2, cols = 1:length(missing), widths = "auto")
 
   inconsistent = failures %>% dplyr::filter(!.error_type %in% c("missing value","none checked in checkbox")) %>% dplyr::group_by(`error` = .error_type) %>% dplyr::count() %>% dplyr::arrange(dplyr::desc(n))
-  openxlsx::addWorksheet(wb = wb, sheetName = "Inconsistent entries")
-  openxlsx::writeDataTable(wb = wb, sheet = 3, x = inconsistent)
-  openxlsx::setColWidths(wb, sheet = 3, cols = 1:length(inconsistent), widths = "auto")
 
-  openxlsx::addWorksheet(wb = wb, sheetName = "Data quality list")
-  openxlsx::writeDataTable(wb = wb, sheet = 4, x = failures)
-  openxlsx::setColWidths(wb, sheet = 4, cols = 1:length(failures), widths = "auto")
+  sheet = list(
+    "Items by number of issues" = issues,
+    "Missing items by field" = missing,
+    "Inconsistent entries" = inconsistent,
+    "Data quality list" = failures
+  )
 
-  openxlsx::saveWorkbook(wb, file, overwrite = TRUE)
-
+  writexl::write_xlsx(sheet, file)
   return(failures)
 }

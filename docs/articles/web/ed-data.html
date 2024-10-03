@@ -8,10 +8,10 @@
 <meta name="description" content="avoncap">
 <title>The emergency department data set • avoncap</title>
 <script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="The emergency department data set">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="The emergency department data set">
 <meta property="og:description" content="avoncap">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -22,11 +22,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../../index.html">avoncap</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9028</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,17 +99,18 @@
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 7</span></span></span>
 <span><span class="co">#&gt;   filename directory      path           date       hospital study_year filetype</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;fs::path&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ed_y3    avoncap-export …-08/ed_y3.csv 2024-04-08 <span style="color: #BB0000;">NA</span>                3 csv</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ed_y3    avoncap-export …-03/ed_y3.csv 2024-10-03 <span style="color: #BB0000;">NA</span>                3 csv</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawData</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"avoncap-export"</span>,<span class="st">"ed"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-17eb1883a6ef139c6aff94d868955a14-07d12a2ad5e7510be5ccda07ff910781.rda</span></span></code></pre></div>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/data-6c0a3f301ee14020e3907a7472c55225-dd5ed475c3e320951a881834a7e14565.rda</span></span>
+<span><span class="co">#&gt; Loaded 2443 rows from 1 files, (2443=2443)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">norm</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="va">rawData</span>,.nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Normalising data using: normalise.avoncap_export.ed</span></span>
 <span><span class="co">#&gt; Admission date is derived from study week and hence approximate.</span></span>
-<span><span class="co">#&gt; Some columns expected in the mappings were not present: ac_study_number, nhs_number, admission_type, c19_diagnosis, c19_adm_swab, c19_test_type, cc_critieria, cc_pos_date, age_march, ethnicity2, hapcovid_screening, hospital_covid, np_swab, adm_np_type, np_date, days_adm_npswab, np_swab_2, adm_np_type_2, np_date_2, np_swab_3, adm_np_type_3, np_date_3, saliva, saliva_date, days_adm_saliva, sputum, sputum_date, days_adm_sputum, pt_ad_ur, adm_ur_taken, nourine_reason, adm_np_type_2, adm_ur_date, days_adm_urine, adm_serum_tak, adm_seru_date, days_adm_serum, covidvax_date, covidvax_dose_2, covidvax_dose_3, covidvax_dose_4, covidvax_dose_5, covidvax_dose_6, flu_date, ppv23_date, c19_variant, adm_diagnosis, previousinfection_date, height, weight, bmi, first_radio, c19_peep, c19_hospadm, c17_high, c19icuon, c19_icudays, c19_vent, c19_ox, c19_ionotropes, c19_complication, c19_death7d, c19_meds, ip_death, days_in_icu, did_the_patient_have_respi, number_of_days_of_ventilat, ett_days, renal_replacement_therapy, complications, ventilatory_support, did_the_patient_receive_ec, inotropic_support_required, anosmia, ageusia, dysgeusia, malaise, myalgia, worse_confusion, general_det</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-bda2a7797d25177988eea50db07348ff.rda</span></span>
+<span><span class="co">#&gt; Some columns expected in the mappings were not present: ac_study_number, nhs_number, admission_type, c19_diagnosis, c19_adm_swab, c19_test_type, cc_critieria, cc_pos_date, age_march, ethnicity2, hapcovid_screening, hospital_covid, np_swab, adm_np_type, np_date, days_adm_npswab, np_swab_2, adm_np_type_2, np_date_2, np_swab_3, adm_np_type_3, np_date_3, saliva, saliva_date, days_adm_saliva, sputum, sputum_date, days_adm_sputum, pt_ad_ur, adm_ur_taken, nourine_reason, adm_np_type_2, adm_ur_date, days_adm_urine, adm_serum_tak, adm_seru_date, days_adm_serum, covidvax_date, covidvax_dose_2, covidvax_dose_3, covidvax_dose_4, covidvax_dose_5, covidvax_dose_6, flu_date, ppv23_date, c19_variant, adm_diagnosis, previousinfection_date, height, weight, bmi, first_radio, c19_peep, c19_hospadm, c17_high, c19icuon, c19_icudays, c19_vent, c19_ox, c19_ionotropes, c19_complication, c19_death7d, c19_meds, ip_death, days_in_icu, did_the_patient_have_respi, number_of_days_of_ventilat, ett_days, renal_replacement_therapy, complications, ventilatory_support, did_the_patient_receive_ec, inotropic_support_required, anosmia, ageusia, dysgeusia, malaise, myalgia, worse_confusion, general_det, antiplatelets, anticoagulants, statins, hypertensives</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/norm-0ef4812a2d1bc751062531c384a2b89e-74eba42fb17d78e88e3e9ed4a0a389f1.rda</span></span>
 <span><span class="co">#&gt; mapping .optout to admin.opted_out</span></span>
 <span><span class="co">#&gt; mapping .record_number to admin.record_number</span></span>
 <span><span class="co">#&gt; mapping .what_was_the_first_surveil to admin.first_record_number</span></span>
@@ -333,6 +334,10 @@
 <span><span class="co">#&gt; mapping .ppv23 to vaccination.pneumovax</span></span>
 <span><span class="co">#&gt; mapping .flu_vaccine to vaccination.influenza_vaccination</span></span>
 <span><span class="co">#&gt; mapping .abx_14d_prior to admission.pre_admission_antibiotics_given</span></span>
+<span><span class="co">#&gt; the input data set does not have a antiplatelets column (or column set)</span></span>
+<span><span class="co">#&gt; the input data set does not have a anticoagulants column (or column set)</span></span>
+<span><span class="co">#&gt; the input data set does not have a statins column (or column set)</span></span>
+<span><span class="co">#&gt; the input data set does not have a hypertensives column (or column set)</span></span>
 <span><span class="co">#&gt; mapping .ed_hours to outcome.emergency_dept_length_of_stay</span></span>
 <span><span class="co">#&gt; mapping .ed_reattendance to admin.ed_episodes_in_last_30_days</span></span>
 <span><span class="co">#&gt; mapping .hosp_adm_30d to outcome.admitted_within_30_days</span></span>
@@ -340,12 +345,12 @@
 <span><span class="co">#&gt; mapping .home_d_1 to outcome.days_since_last_ed_episode</span></span>
 <span><span class="co">#&gt; mapping .radiology_result_1___2 to radio.consistent_with_pneumonia_1</span></span>
 <span><span class="co">#&gt; mapping .radiology_result_2___2 to radio.consistent_with_pneumonia_2</span></span>
-<span><span class="co">#&gt; Mapped 174 columns</span></span>
-<span><span class="co">#&gt; Did not map 563 columns</span></span>
+<span><span class="co">#&gt; Mapped 180 columns</span></span>
+<span><span class="co">#&gt; Did not map 557 columns</span></span>
 <span></span>
 <span><span class="va">aug</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="va">norm</span>,.nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.avoncap_export.ed</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-97d7a03c39e927aeaeba57f329c66f3c.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-d07cf21403eea5d4a96a91465ebb0fe6.rda</span></span>
 <span><span class="co">#&gt; Created admission.cxr_pneumonia, admission.admission_route, outcome.admitted_to_hospital, outcome.death_within_30_days using: radio.consistent_with_pneumonia_1, radio.consistent_with_pneumonia_2, outcome.functional_status, outcome.survival_duration</span></span>
 <span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.cci_category_alternate, admission.rockwood_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.rockwood_score, admission.curb_65_severity_score</span></span>
 <span><span class="co">#&gt; Created admin.patient_identifier using: admin.first_record_number, admin.record_number</span></span>
@@ -372,25 +377,26 @@
 <span><span class="co">#&gt; Skipping function due to error: In argument: `outcome.icu_admission = `%&gt;%`(...)`.</span></span>
 <span><span class="co">#&gt; Created survival.length_of_stay, survival.uncensored_time_to_death, survival.last_observed_event using: admin.enrollment_date, outcome.length_of_stay, outcome.survival_duration, outcome.one_year_survival_duration, admission.date</span></span>
 <span><span class="co">#&gt; Created survival.length_of_stay_category, survival.30_day_death_time, survival.30_day_death_event, survival.1_yr_death_time, survival.1_yr_death_event, survival.30_day_discharge_time, survival.30_day_discharge_event using:</span></span>
-<span><span class="co">#&gt; Created  using:</span></span></code></pre></div>
+<span><span class="co">#&gt; Created  using:</span></span>
+<span><span class="co">#&gt; Created admission.pre_admission_antivirals_given using: admission.pre_admission_antiviral</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aug</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">admission.category</span>, <span class="va">admission.presentation_3_class</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                               admission.category</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class Confirmed SARS-CoV-2 No evidence SARS-CoV-2</span></span>
-<span><span class="co">#&gt;               Pneumonia                          21                    388</span></span>
-<span><span class="co">#&gt;               NP-LRTI                           183                   1335</span></span>
+<span><span class="co">#&gt;               Pneumonia                          21                    391</span></span>
+<span><span class="co">#&gt;               NP-LRTI                           189                   1362</span></span>
 <span><span class="co">#&gt;               No evidence LRTI                    0                      0</span></span>
 <span><span class="co">#&gt;                               admission.category</span></span>
 <span><span class="co">#&gt; admission.presentation_3_class Non-infective</span></span>
 <span><span class="co">#&gt;               Pneumonia                    0</span></span>
 <span><span class="co">#&gt;               NP-LRTI                      0</span></span>
-<span><span class="co">#&gt;               No evidence LRTI           515</span></span>
+<span><span class="co">#&gt;               No evidence LRTI           480</span></span>
 <span><span class="va">aug</span> <span class="op"><a href="../../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="../../reference/xglimpse.html">xglimpse</a></span><span class="op">(</span><span class="va">pneumo.presentation_class</span>, <span class="va">outcome.admitted_within_30_days</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                pneumo.presentation_class</span></span>
 <span><span class="co">#&gt; outcome.admitted_within_30_days No evidence LRTI NP-LRTI CAP+/RAD- CAP+/RAD+</span></span>
-<span><span class="co">#&gt;                            no                443    1452        78       283</span></span>
-<span><span class="co">#&gt;                            yes                33      66         7        41</span></span>
-<span><span class="co">#&gt;                            &lt;NA&gt;               39       0         0         0</span></span></code></pre></div>
+<span><span class="co">#&gt;                            no                445    1484        78       286</span></span>
+<span><span class="co">#&gt;                            yes                33      67         7        41</span></span>
+<span><span class="co">#&gt;                            &lt;NA&gt;                2       0         0         0</span></span></code></pre></div>
 </div>
   </main>
 </div>
@@ -398,13 +404,11 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Rob Challen.</p>
+  <p>Developed by Rob Challen.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
     </footer>

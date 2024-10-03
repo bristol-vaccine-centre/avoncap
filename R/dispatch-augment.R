@@ -47,7 +47,11 @@ augment.avoncap_export.ed = function(df,...) {
       derive_severe_disease_outcomes,
       derive_survival_times_avoncap,
       derive_survival_censoring,
-      derive_reordered_factors(),
+      derive_reordered_factors(list(
+          demog.gender = "Female"
+      )),
+
+      derive_antiviral_status,
       ...
     )
 }
@@ -89,7 +93,11 @@ augment.avoncap_export.central = function(df,...) {
       derive_quintile_category(survival.length_of_stay),
       derive_hospital_burden_outcomes,
 
-      derive_reordered_factors(),
+      derive_reordered_factors(list(
+        demog.gender = "Female"
+      )),
+
+      derive_antiviral_status,
       ...
     ) %>%
     .wipe_non_consented_data()

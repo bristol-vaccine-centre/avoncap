@@ -22,7 +22,7 @@ a dataframe
 \item Confirmed death within 30 days (subject to potential censoring)
 \item Confirmed death within 1 year (subject to potential censoring). The
 date of censoring depends on when the mortality data was updated. Currently
-this is 23 Dec 2023
+this is 04 Oct 2024
 \item Confirmed death (any length follow up)
 \item Any ICU admission
 }

@@ -84,6 +84,13 @@ input = function(...) {
       "",
       "`My Projects` > `.. select project ..` > `Dictionary` > `Download the current Data Dictionary`",
       "Files must be in a dated subdirectory (`yyyy-mm-dd`) and named `central_y1.csv`, `central_y2.csv`, `uad-control.csv`, etc... "
+    ),
+    "avoncap-data-quality" = c(
+      "# True missing fields",
+      "",
+      "These files are a set of avoncap records that have been manually checked",
+      "and found to be truly missing data (and not just not filled in)",
+      "Files must be in a dated subdirectory (`yyyy-mm-dd`)"
     )
   )
   additional = list(
@@ -335,7 +342,7 @@ load_data = function(type, subtype=NULL, reproduce_at = as.Date(getOption("repro
         merge = TRUE
       }
     } else {
-      merge = TRUE
+      if (!merge) message("NOT MERGING FILES")
     }
 
 

@@ -13,6 +13,9 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/test/confusion.html</loc>
+  </url>
+  <url>
     <loc>/articles/web/avoncap.html</loc>
   </url>
   <url>
@@ -68,6 +71,9 @@
   </url>
   <url>
     <loc>/reference/derive_admission_episode.html</loc>
+  </url>
+  <url>
+    <loc>/reference/derive_antiviral_status.html</loc>
   </url>
   <url>
     <loc>/reference/derive_catchment_status.html</loc>
