@@ -102,8 +102,7 @@
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> ed_y3    avoncap-export …-03/ed_y3.csv 2024-10-03 <span style="color: #BB0000;">NA</span>                3 csv</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rawData</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/load_data.html">load_data</a></span><span class="op">(</span><span class="st">"avoncap-export"</span>,<span class="st">"ed"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/data-6c0a3f301ee14020e3907a7472c55225-dd5ed475c3e320951a881834a7e14565.rda</span></span>
-<span><span class="co">#&gt; Loaded 2443 rows from 1 files, (2443=2443)</span></span></code></pre></div>
+<span><span class="co">#&gt; using cached item: ~/.cache/avoncap/data-6c0a3f301ee14020e3907a7472c55225-dd5ed475c3e320951a881834a7e14565.rda</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">norm</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/normalise_data.html">normalise_data</a></span><span class="op">(</span><span class="va">rawData</span>,.nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
@@ -350,7 +349,7 @@
 <span></span>
 <span><span class="va">aug</span> <span class="op">=</span> <span class="fu">avoncap</span><span class="fu">::</span><span class="fu"><a href="../../reference/augment_data.html">augment_data</a></span><span class="op">(</span><span class="va">norm</span>,.nocache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Augmenting data using: augment.avoncap_export.ed</span></span>
-<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-d07cf21403eea5d4a96a91465ebb0fe6.rda</span></span>
+<span><span class="co">#&gt; caching item: ~/.cache/avoncap/augment-4c0c0c577381837fb7b8ee36b440288a-47afb1d0b916597c31aa5f88e3b86748.rda</span></span>
 <span><span class="co">#&gt; Created admission.cxr_pneumonia, admission.admission_route, outcome.admitted_to_hospital, outcome.death_within_30_days using: radio.consistent_with_pneumonia_1, radio.consistent_with_pneumonia_2, outcome.functional_status, outcome.survival_duration</span></span>
 <span><span class="co">#&gt; Created demog.age_category, demog.age_eligible, admission.cci_category, admission.cci_category_alternate, admission.rockwood_category, admission.curb_65_category using: demog.age, admission.charlson_comorbidity_index, admission.rockwood_score, admission.curb_65_severity_score</span></span>
 <span><span class="co">#&gt; Created admin.patient_identifier using: admin.first_record_number, admin.record_number</span></span>
