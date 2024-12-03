@@ -16,7 +16,7 @@ relevel_serotypes(serotypes, ..., exprs)
 the RHS. which are interpreted as the parameters for a \code{dplyr::case_when}
 call. This must be protected against interpretation by wrapping it in
 \code{rlang::exprs()}. The predicates are tested against \code{avoncap::serotype_data$map}
-and could use any of  the following columns 'c("4", "6B", "9V", "14", "18C", "19F", "23F", "1", "3", "5", "6A", "7F", "19A", "22F", "33F", "8", "10A", "11A", "12F", "15B", "2", "9N", "17F", "20")','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)','c(FALSE, FALSE, FALS
+and could use any of  the following columns 'serotype', 'PCV7', 'PCV13', 'PCV15', 'PCV20', 'PPV23', 'PCV13on7', 'PCV15on13', 'PCV20on15', 'PPV23on20', 'PCV10SSI', 'PCV10GSK', 'PCV15Zhifei', 'PCV24Vaxcyte', 'PCV24Affinivax'
 a default option of the form \code{TRUE ~ "Non PCV serotype"} must exist to capture
 unmatched items.}
 }

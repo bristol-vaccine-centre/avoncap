@@ -14,19 +14,20 @@ normalise_data(rawData, instrument = NULL, ...)
 \item{instrument}{the numeric instrument number if applicable}
 
 \item{...}{
-  Arguments passed on to \code{\link[=normalise_generic]{normalise_generic}}
-  \describe{
+  Named arguments passed on to \code{\link[=normalise_generic]{normalise_generic}}\describe{
     \item{\code{remove_mapped}}{gets rid of original columns for which we have a mapping
 (leaving the new versions)}
-    \item{\code{remove_unmapped}}{gets rid of columns for which we do not have a mapping}
-    \item{\code{mappings}}{a set of mappings (see \code{zzz-avoncap-mappings.R})}
-    \item{\code{messages}}{a set of \code{dtrackr} glue specs that populate the first box fo
+\item{\code{remove_unmapped}}{gets rid of columns for which we do not have a mapping}
+\item{\code{mappings}}{a set of mappings (see \code{zzz-avoncap-mappings.R})}
+\item{\code{messages}}{a set of \code{dtrackr} glue specs that populate the first box fo
 the flow chart. (can use \code{{files}}, \code{{reproduce_at}}, \code{{date}}, \code{{.total}})}
-    \item{\code{data_source_info}}{\itemize{
+\item{\code{data_source_info}}{\itemize{
 \item if not null a filename, and the function will write
 out a file with the details of the input files used.
 }}
-  }}
+\item{\code{...}}{passed onto \code{.cached(...)}. e.g. \code{nocache = TRUE} can be used to
+defeat caching.}
+}}
 }
 \value{
 a tracked dataframe with n

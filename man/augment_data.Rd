@@ -12,10 +12,11 @@ augment_data(x, ...)
 }}
 
 \item{...}{
-  Arguments passed on to \code{\link[=augment_generic]{augment_generic}}
-  \describe{
+  Named arguments passed on to \code{\link[=augment_generic]{augment_generic}}\describe{
     \item{\code{df}}{a data frame}
-  }}
+\item{\code{...}}{unnamed parameters are a list of functions, named parameters
+are passed to those functions (if they match formal arguments).}
+}}
 }
 \value{
 a tracked dataframe with

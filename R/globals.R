@@ -529,7 +529,7 @@ utils::globalVariables(c(
 	"admission.antihypertensive_therapy",
   "admission.antiplatelet_therapy",
 	"admission.cholesterol_lowering_therapy",
-  "admission.pre_admission_antiviral"
-
-
+  "admission.pre_admission_antiviral",
+	"start_of_week",
+	"consent_extra_gp"
 ))

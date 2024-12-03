@@ -11,6 +11,8 @@
 
 normalise.avoncap_export.uad_controls = function(rawData, ...) {
   # Controls database has some naming inconsistencies:
+  warning("This hasn't been updated since the change to admission_dates reconstruction")
+  # TODO: we have admission dates as data now so we should probably use those wherever possible
   rawData %>%
     .reconstruct_admission_date(...) %>%
     .reconstruct_hospital(...) %>%
@@ -27,6 +29,8 @@ normalise.avoncap_export.uad_controls = function(rawData, ...) {
 
 normalise.avoncap_export.ed = function(rawData, ...) {
   # Controls database has some naming inconsistencies:
+  warning("This hasn't been updated since the change to admission_dates reconstruction")
+  # TODO: we have admission dates as data now so we should probably use those wherever possible
   rawData %>%
     .reconstruct_admission_date(...) %>%
     .reconstruct_hospital(...) %>%
@@ -118,6 +122,7 @@ normalise.avoncap_export.ed.radio = function(rawData, ...) {
 normalise.avoncap_export.central = function(rawData, ...) {
   rawData %>%
     .merge_ethnicity(...) %>%
+    .merge_admission_dates(...) %>%
     .reconstruct_admission_date(...) %>%
     normalise_generic(mappings=c(
         map_avoncap_consent(),
@@ -277,6 +282,39 @@ normalise.urine_antigens.binax = function(rawData, ...) {
   return(rawData)
 }
 
+
+.merge_admission_dates = function(rawData, dates = try(avoncap::load_data("admission-dates",reproduce_at = Sys.Date()),silent = TRUE), ...) {
+
+  if (!"record_number" %in% colnames(rawData)) {
+    message("Aborting attempt to assign ethnicity to a data set without a `record_number` identifier")
+    return(rawData)
+  }
+  # some data sets have ethnicity in them already, ethnicity2 is the name of the column
+  if (!"admission_date" %in% colnames(rawData)) {
+
+    if ("try-error" %in% class(dates)) {
+      dates = NULL
+      message("No admission-date data was found, please supply a value to the dates parameter if needed.")
+    }
+
+    if(!is.null(dates)) {
+
+      # make sure unique in case we loaded data more than once.
+      dates = dates %>%
+        dplyr::group_by(record_number) %>%
+        dplyr::filter(dplyr::row_number()==1) %>%
+        dplyr::ungroup() %>%
+        dplyr::transmute(
+          record_number,
+          admission_date = as.Date(admission_date,"%d/%m/%Y"))
+
+      rawData = rawData %>%
+        dplyr::left_join(dates , by="record_number", suffix = c("",".dates"))
+    }
+  }
+  return(rawData)
+}
+
 # TODO: convert this to a derive_ function
 # as long as there are done first then we should be OK.
 .reconstruct_admission_times = function(rawData, ...) {
@@ -296,6 +334,32 @@ normalise.urine_antigens.binax = function(rawData, ...) {
         year = lubridate::year(admission_date),
         week_number = lubridate::epiweek(admission_date),
         study_week = study_week(admission_date),
+        study_year = year-2019+ifelse(week_number>31,0,1)
+      )
+  } else {
+
+  }
+}
+
+# TODO: convert this to a derive_ function
+# as long as there are done first then we should be OK.
+.reconstruct_admission_times_legacy = function(rawData, ...) {
+  # The dates vary between the different sources
+  # This makes sure everything has
+  # a numeric year,
+  # an admission_date (which may be start of week),
+  # a week_number (epiweek),
+  # a study_week (weeks since 2019-12-30)
+  # a study_year (years since 2019)
+  tmp = rawData
+  if ("admission_date" %in% colnames(tmp)) {
+    # the NHS data set has and admission date
+    # bit not week_number / study_week / study_year
+    tmp = tmp %>%
+      dplyr::mutate(
+        year = lubridate::year(admission_date),
+        week_number = lubridate::epiweek(admission_date),
+        study_week = study_week_legacy(admission_date),
         study_year = year-2019+ifelse(week_number>30,0,1)
       )
   } else {
@@ -303,7 +367,7 @@ normalise.urine_antigens.binax = function(rawData, ...) {
   }
 }
 
-.reconstruct_admission_date = function(rawData,...) {
+.reconstruct_admission_date_legacy = function(rawData,...) {
   tmp = rawData
   if (all(c("study_year","week_number") %in% colnames(tmp))) {
     tmp = tmp %>%
@@ -319,13 +383,16 @@ normalise.urine_antigens.binax = function(rawData, ...) {
           study_year == 2 & week_number<=30 ~ 2022,
           study_year == 3 & week_number>30 ~ 2022,
           study_year == 3 & week_number<=30 ~ 2023,
+          #study_year == 3 & week_number>31 ~ 2022,
+          #study_year == 3 & week_number<=31 ~ 2023,
           study_year == 4 & week_number>30 ~ 2023,
           study_year == 4 & week_number<=30 ~ 2024,
           TRUE ~ NA_real_
         )) %>%
       dplyr::mutate(
         study_week = (year-2020)*52+week_number-1,
-        admission_date = start_date_of_week(study_week)
+        # study_week = (year-2020)*52+week_number-1+ifelse(year>2022,1,0),
+        admission_date = start_date_of_week_legacy(study_week)
         # week_number = lubridate::epiweek(admission_date)
       )
     message("Admission date is derived from study week and hence approximate.")
@@ -333,6 +400,56 @@ normalise.urine_antigens.binax = function(rawData, ...) {
     if ("enrollment_date" %in% colnames(tmp)) {
       tmp = tmp %>% dplyr::mutate(admission_date = enrollment_date)
       warning("Using enrollment_date as an approximate admission date.")
+    } else {
+      warning("The loaded data has neither an admission_date column, nor both of study_year, and week_number")
+      warning("and no enrollment_date either.")
+      warning("Was rawData loaded with avoncap::load_data(...)? If not the study_year number may be missing.")
+      stop("Aborted.")
+    }
+  }
+  return(tmp)
+}
+
+
+.reconstruct_admission_date = function(rawData,...) {
+  tmp = rawData
+  if (!"admission_date" %in% colnames(tmp)) {
+    tmp = tmp %>% dplyr::mutate(admission_date=NA)
+    message("Admission date is derived from study week and hence approximate.")
+  }
+  if (all(c("study_year","week_number") %in% colnames(tmp))) {
+    tmp = tmp %>%
+      # the Bristol data set has week_number which is a week number from start of the study in that year.
+      # The study starts on week 31 but annoyingly this is a short week.
+      # Therefore for the 20-21 database (i.e. study_year 1) weeks 32-52 are in 2020 and most of 0-31 are in 2021
+      # we get the year from the file-name itself (which assumes it was correctly named)
+      # We only use this heuristic when the year is not given and the admission date is not known.
+      # This is mostly un-consented patients who may get an inferred date that is wrong
+      dplyr::mutate(
+        year = dplyr::case_when(
+          !is.na(year) & is.numeric(year) & year >= 2020 & year < 2025 ~ year,
+          study_year == 1 & week_number>31 ~ 2020,
+          study_year == 1 & week_number<=31 ~ 2021, # This is wrong for the first 2 days data but not used
+          study_year == 2 & week_number>31 ~ 2021,
+          study_year == 2 & week_number<=31 ~ 2022,
+          study_year == 3 & week_number>31 ~ 2022,
+          study_year == 3 & week_number<=31 ~ 2023,
+          study_year == 4 & week_number>31 ~ 2023,
+          study_year == 4 & week_number<=31 ~ 2024,
+          TRUE ~ NA_real_
+        )) %>%
+      dplyr::left_join(
+        avoncap::year_week_number_lookup, by=c("year","week_number"), suffix=c("",".inferred")
+      ) %>%
+      dplyr::mutate(
+        admission_date = as.Date(ifelse(is.na(admission_date), start_of_week, admission_date)),
+        study_week = ifelse(is.na(study_week), study_week(admission_date), study_week)
+      )
+
+  } else {
+    if ("enrollment_date" %in% colnames(tmp)) {
+      tmp = tmp %>% dplyr::mutate(admission_date = enrollment_date)
+      warning("Using enrollment_date as a VERY approximate admission date.")
     } else {
       warning("The loaded data has neither an admission_date column, nor both of study_year, and week_number")
       warning("and no enrollment_date either.")

@@ -1,13 +1,15 @@
 pandoc: 3.1.13
-pkgdown: 2.0.9
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  avoncap: web/avoncap.html
-  denominator-check: web/denominator-check.html
-  ed-data: web/ed-data.html
-  gp-data: web/gp-data.html
-  longitudinal-pneumo: web/longitudinal-pneumo.html
-  quality-assurance: web/quality-assurance.html
-  uad-data: web/uad-data.html
-last_built: 2024-10-07T08:51Z
-
+  web/avoncap: web/avoncap.html
+  web/denominator-check: web/denominator-check.html
+  web/ed-data: web/ed-data.html
+  web/gp-data: web/gp-data.html
+  web/longitudinal-pneumo: web/longitudinal-pneumo.html
+  web/quality-assurance: web/quality-assurance.html
+  web/uad-data: web/uad-data.html
+last_built: 2024-12-03T17:26Z
+urls:
+  reference: https://bristol-vaccine-centre.github.io/avoncap/reference
+  article: https://bristol-vaccine-centre.github.io/avoncap/articles

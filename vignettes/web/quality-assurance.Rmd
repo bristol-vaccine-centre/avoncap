@@ -70,7 +70,7 @@ if (nrow(tmp) > 0) {
 # normData2 = rawData2 %>% 
 #   avoncap::normalise_data(.nocache = TRUE)
 
-augData2 = normData2 %>% avoncap::augment_data(.nocache = TRUE)
+augData2 = normData2 %>% avoncap::augment_data()
 avoncap::find_new_field_names(normData2, "adm_diagnosis")
 
 ```

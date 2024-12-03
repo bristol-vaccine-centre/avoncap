@@ -30,10 +30,10 @@ km_plot(
 term on the lhs of the cox model formula}
 
 \item{...}{
-  Arguments passed on to \code{\link[survival:survfit]{survival::survfit}}
-  \describe{
+  Named arguments passed on to \code{\link[survival:survfit]{survival::survfit}}\describe{
     \item{\code{formula}}{either a formula or a previously fitted model}
-  }}
+\item{\code{...}}{other arguments to the specific method}
+}}
 
 \item{maxtime}{the longest x value to plot (optional)}
 

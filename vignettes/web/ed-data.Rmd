@@ -48,9 +48,9 @@ rawData = avoncap::load_data("avoncap-export","ed")
 
 ```{r}
 
-norm = avoncap::normalise_data(rawData,.nocache=TRUE)
+norm = avoncap::normalise_data(rawData)
 
-aug = avoncap::augment_data(norm,.nocache=TRUE)
+aug = avoncap::augment_data(norm)
 
 ```
 

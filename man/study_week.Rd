@@ -10,7 +10,7 @@ study_week(dates)
 \item{dates}{a list of date objects}
 }
 \value{
-an integer number of weeks since 2019-12-30
+an integer number of completed weeks since the start of the study.
 }
 \description{
 Convert a date to a study week

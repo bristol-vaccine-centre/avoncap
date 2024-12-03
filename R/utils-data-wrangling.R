@@ -16,8 +16,7 @@
 #' @param dates a list of date objects
 #'
 #' @return an integer number of weeks since 2019-12-30
-#' @export
-study_week = function(dates) {
+study_week_legacy = function(dates) {
   return(as.integer(as.Date(dates)-as.Date("2019-12-30")) %/% 7)
 }
 
@@ -27,12 +26,33 @@ study_week = function(dates) {
 #' This is poorly named as only give the start date is the input is an integer
 #'
 #' @param study_week does accept decimals and returns the nearest whole date to the value
-#'
-#' @return a vector of sudy_week numbers
-#' @export
-start_date_of_week = function(study_week) {
+start_date_of_week_legacy = function(study_week) {
   return(as.Date("2019-12-30")+floor(study_week*7))
 }
+
+#' Convert a date to a study week
+#'
+#' @param dates a list of date objects
+#'
+#' @return an integer number of completed weeks since the start of the study.
+#' @export
+study_week = function(dates) {
+  return(as.integer(as.Date(dates)-as.Date("2020-08-01")) %/% 7)
+}
+
+
+#' Convert a study week back into a date
+#'
+#' This is poorly named as only give the start date is the input is an integer
+#'
+#' @param study_week does accept decimals and returns the nearest whole date to the value
+#'
+#' @return a vector of study_week numbers starting at zero for the first week of the study
+#' @export
+start_date_of_week = function(study_week) {
+  return(as.Date("2020-08-01")+floor(study_week*7))
+}
+
 
 ## Exclusions ----
 

@@ -1,387 +1,134 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/test/confusion.html</loc>
-  </url>
-  <url>
-    <loc>/articles/web/avoncap.html</loc>
-  </url>
-  <url>
-    <loc>/articles/web/denominator-check.html</loc>
-  </url>
-  <url>
-    <loc>/articles/web/ed-data.html</loc>
-  </url>
-  <url>
-    <loc>/articles/web/gp-data.html</loc>
-  </url>
-  <url>
-    <loc>/articles/web/longitudinal-pneumo.html</loc>
-  </url>
-  <url>
-    <loc>/articles/web/quality-assurance.html</loc>
-  </url>
-  <url>
-    <loc>/articles/web/uad-data.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/all_files.html</loc>
-  </url>
-  <url>
-    <loc>/reference/augment_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/augment_generic.html</loc>
-  </url>
-  <url>
-    <loc>/reference/binomial_proportion_points.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cut_integer.html</loc>
-  </url>
-  <url>
-    <loc>/reference/default_column_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/denom_by_age_by_day.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_WHO_outcome_score.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_aLRTD_categories.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_admission_episode.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_antiviral_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_catchment_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_completed_vaccination_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_consent_flag.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_continuous_categories.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_continuous_categories_pneumo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_covid_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_diagnosis_categories.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_effective_vaccination_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_genomic_variant.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_gp_linkage.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_haematology_categories.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_hospital_burden_outcomes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_infective_classification.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_invasive_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_nosocomial_covid_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_nosocomial_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pandemic_timings.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_patient_identifier.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pcv_groupings.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_phe_pcv_group.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pneumo_clinical_syndrome.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pneumo_polyfill.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pneumo_uad_panel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pneumo_uad_status.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pneumococcal_categories.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pneumococcal_high_risk.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_pneumococcal_risk_category.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_polyfill_central.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_polyfill_ed.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_presumed_diagnosis_categories.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_qcovid.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_quintile_category.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_severe_disease_outcomes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_simpler_comorbidities.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_survival_censoring.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_survival_times_avoncap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_survival_times_pneumo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_template.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_vaccination_timings.html</loc>
-  </url>
-  <url>
-    <loc>/reference/derive_vaccine_combinations.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-cache_clear.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-cache_delete_stale.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-cache_download.html</loc>
-  </url>
-  <url>
-    <loc>/reference/dot-cached.html</loc>
-  </url>
-  <url>
-    <loc>/reference/doublingTimeFromGrowthRate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/epiestimRtEstimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/extract_dependencies.html</loc>
-  </url>
-  <url>
-    <loc>/reference/find_new_field_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/frameworks.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_value_sets.html</loc>
-  </url>
-  <url>
-    <loc>/reference/icb_surgeries.html</loc>
-  </url>
-  <url>
-    <loc>/reference/imd_to_townsend.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/input.html</loc>
-  </url>
-  <url>
-    <loc>/reference/key_dates.html</loc>
-  </url>
-  <url>
-    <loc>/reference/km_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/load_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/locfitGrowthEstimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/locfitPoissonRateEstimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/locfitProportionEstimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/locfitProportionalGrowthEstimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_central.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_consent.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_ed.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_ed_consent.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_haem.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_micro.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_pneumococcal.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_radio.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_avoncap_virol.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_urine_antigens.html</loc>
-  </url>
-  <url>
-    <loc>/reference/map_urine_binax.html</loc>
-  </url>
-  <url>
-    <loc>/reference/most_recent_files.html</loc>
-  </url>
-  <url>
-    <loc>/reference/normalise_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/normalise_generic.html</loc>
-  </url>
-  <url>
-    <loc>/reference/original_field_names.html</loc>
-  </url>
-  <url>
-    <loc>/reference/phe_serotypes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pointPoissonEstimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pointProportionEstimate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/readable_label.html</loc>
-  </url>
-  <url>
-    <loc>/reference/readable_label_mapping.html</loc>
-  </url>
-  <url>
-    <loc>/reference/relevel_serotypes.html</loc>
-  </url>
-  <url>
-    <loc>/reference/renameResult.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rtFromGrowthRate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/save_data_source_info.html</loc>
-  </url>
-  <url>
-    <loc>/reference/scale_fill_serotype.html</loc>
-  </url>
-  <url>
-    <loc>/reference/serotype_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/serotype_pcv_map.html</loc>
-  </url>
-  <url>
-    <loc>/reference/serotype_uad_map.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_input.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spline_term_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/stacked_barplot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/start_date_of_week.html</loc>
-  </url>
-  <url>
-    <loc>/reference/study_week.html</loc>
-  </url>
-  <url>
-    <loc>/reference/uad_groups.html</loc>
-  </url>
-  <url>
-    <loc>/reference/uad_pcv_map.html</loc>
-  </url>
-  <url>
-    <loc>/reference/upset_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/valid_inputs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/validate_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/weekendEffect.html</loc>
-  </url>
-  <url>
-    <loc>/reference/write_issues.html</loc>
-  </url>
-  <url>
-    <loc>/reference/xglimpse.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/404.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/LICENSE-text.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/LICENSE.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/index.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/test/confusion.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/web/avoncap.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/web/denominator-check.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/web/ed-data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/web/gp-data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/web/longitudinal-pneumo.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/web/quality-assurance.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/articles/web/uad-data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/authors.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/index.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/all_files.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/augment_data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/augment_generic.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/binomial_proportion_points.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/cut_integer.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/default_column_names.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/denom_by_age_by_day.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_WHO_outcome_score.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_aLRTD_categories.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_admission_episode.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_antiviral_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_catchment_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_completed_vaccination_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_consent_flag.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_continuous_categories.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_continuous_categories_pneumo.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_covid_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_diagnosis_categories.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_effective_vaccination_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_genomic_variant.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_gp_linkage.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_haematology_categories.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_hospital_burden_outcomes.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_infective_classification.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_invasive_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_nosocomial_covid_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_nosocomial_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pandemic_timings.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_patient_identifier.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pcv_groupings.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_phe_pcv_group.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pneumo_clinical_syndrome.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pneumo_polyfill.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pneumo_uad_panel.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pneumo_uad_status.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pneumococcal_categories.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pneumococcal_high_risk.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_pneumococcal_risk_category.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_polyfill_central.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_polyfill_ed.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_presumed_diagnosis_categories.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_qcovid.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_quintile_category.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_severe_disease_outcomes.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_simpler_comorbidities.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_survival_censoring.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_survival_times_avoncap.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_survival_times_pneumo.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_template.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_vaccination_timings.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/derive_vaccine_combinations.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/dot-cache_clear.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/dot-cache_delete_stale.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/dot-cache_download.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/dot-cached.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/doublingTimeFromGrowthRate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/epiestimRtEstimate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/extract_dependencies.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/find_new_field_names.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/frameworks.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/get_value_sets.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/icb_surgeries.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/imd_to_townsend.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/index.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/input.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/key_dates.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/km_plot.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/load_data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/locfitGrowthEstimate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/locfitPoissonRateEstimate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/locfitProportionEstimate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/locfitProportionalGrowthEstimate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_central.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_consent.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_ed.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_ed_consent.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_haem.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_micro.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_pneumococcal.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_radio.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_avoncap_virol.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_urine_antigens.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/map_urine_binax.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/most_recent_files.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/normalise_data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/normalise_generic.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/original_field_names.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/phe_serotypes.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/pipe.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/pointPoissonEstimate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/pointProportionEstimate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/readable_label.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/readable_label_mapping.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/relevel_serotypes.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/renameResult.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/rtFromGrowthRate.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/save_data_source_info.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/scale_fill_serotype.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/serotype_data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/serotype_pcv_map.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/serotype_uad_map.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/set_input.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/spline_term_plot.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/stacked_barplot.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/start_date_of_week.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/start_date_of_week_legacy.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/study_week.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/study_week_legacy.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/uad_groups.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/uad_pcv_map.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/upset_plot.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/valid_inputs.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/validate_data.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/weekendEffect.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/write_issues.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/xglimpse.html</loc></url>
+<url><loc>https://bristol-vaccine-centre.github.io/avoncap/reference/year_week_number_lookup.html</loc></url>
 </urlset>
+

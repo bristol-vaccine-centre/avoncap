@@ -41,7 +41,7 @@ validate.avoncap_export.central = function(rawData, ..., dq = avoncap::load_data
         "age_at_admission",
         "acute_illness", "covid19", "clinical_radio_diagnosis",
         "fever2", "pleurtic_cp", "cough2", "sput_prod", "dyspnoea",
-        "tachypnoea2", "ausc_find", "radiologic", "ethnicity","gp_practice_drop_down")
+        "tachypnoea2", "ausc_find", "radiologic", "ethnicity")
     ) %>%
     .checkbox_not_empty(
       c("resp_disease", "chd", "dementia", "neurological_disease", "hiv", "haem_malig", "final_soc_lrtd_diagnosis")
@@ -62,6 +62,13 @@ validate.avoncap_export.central = function(rawData, ..., dq = avoncap::load_data
     .conflicting_values(survival_1yr_days != survival_days, label = "30 day and 1 yr survival duration different") %>%
     .conflicting_values(hospital_length_of_stay > survival_days, label = "length of stay > 30 day survival duration") %>%
     .conflicting_values(hospital_length_of_stay > survival_1yr_days, label = "length of stay > 1 yr survival duration") %>%
+    .clear_active() %>%
+
+    # CONSENTED TO HAVE GP PRACTICE DATA LINKAGE
+    .active_col(
+      !(include_patient == 1 & withdrawal == 1) & !is.na(consented) & consented != 2 & ppc != 2 & consent_extra_gp==1,
+      "GP details sharing constent") %>%
+    .not_empty("gp_practice_drop_down") %>%
     .clear_active() %>%
 
     # NOT HOSPTIAL ACQUIRED

@@ -109,7 +109,7 @@ others = bind_rows(
       # This is interpolated because the numbers are in the wrong age bands
       d$age_end[d$age_end==86] = NA
       ages = age_bands
-      r = growthrates::reband_discrete(d$age_end, d$admissions, ages, xlim = c(16,105), labelling = "positive_integer")
+      r = ggoutbreak::reband_discrete(d$age_end, d$admissions, ages, xlim = c(16,105), labelling = "positive_integer")
       return(
         tibble(
           age = factor(c(NA,"18-34","35-49","50-64","65-74","75-84","85+")),
@@ -395,10 +395,10 @@ ohid_pop = data %>%
   ) %>%
   reframe(
     age = factor(c(NA,"18-34","35-49","50-64","65-74","75-84","85+")),
-    catchment = growthrates::reband_discrete(x=age_ul, y=Catchment, xout = age_bands),
-    # lower = growthrates::reband_discrete(x=age_ul, y=LCI, xout = age_bands),
-    # upper = growthrates::reband_discrete(x=age_ul, y=UCI, xout = age_bands),
-    admitted = growthrates::reband_discrete(x=age_ul, y=PatientsAdmitted, xout = age_bands)
+    catchment = ggoutbreak::reband_discrete(x=age_ul, y=Catchment, xout = age_bands),
+    # lower = ggoutbreak::reband_discrete(x=age_ul, y=LCI, xout = age_bands),
+    # upper = ggoutbreak::reband_discrete(x=age_ul, y=UCI, xout = age_bands),
+    admitted = ggoutbreak::reband_discrete(x=age_ul, y=PatientsAdmitted, xout = age_bands)
   ) %>%
   inner_join(weston_adj, by=c("TrustCode","age")) %>%
   # pivot_longer(cols = c(median,lower,upper),names_to = "source", values_to = "catchment") %>%
@@ -511,7 +511,7 @@ trends = readxl::read_excel(tmptbl3, sheet = "Persons",skip = 6) %>%
   group_by(year) %>%
   reframe(
     age = factor(c(NA,"18-34","35-49","50-64","65-74","75-84","85+")),
-    count = growthrates::reband_discrete(x=age_ul, y=count, xout = c(18,35,50,65,75,85))
+    count = ggoutbreak::reband_discrete(x=age_ul, y=count, xout = c(18,35,50,65,75,85))
   ) %>% 
   filter(!is.na(age))
 
@@ -655,8 +655,8 @@ comparison4 =  bind_rows(
 tmp = comparison4 %>% select(method, date, age, population) %>% 
   group_by(method,age) %>%
   group_modify(function(d,...) {
-    range = growthrates::date_seq(d$date, period=1,complete = FALSE)
-    d0 = growthrates::min_date(d$date)
+    range = ggoutbreak::date_seq(d$date, period=1,complete = FALSE)
+    d0 = ggoutbreak::min_date(d$date)
     predict_at = as.numeric(range-d0)
     d = d %>% mutate(i = as.numeric(date-d0))
     model = loess(population ~ i, d)

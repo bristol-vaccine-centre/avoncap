@@ -12,19 +12,18 @@ scale_fill_serotype(
 )
 }
 \arguments{
-\item{...}{
-  Arguments passed on to \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual}}
-  \describe{
+\item{...}{an unwrapped version of the \code{exprs} parameter
+  Named arguments passed on to \code{\link[ggplot2:scale_manual]{ggplot2::scale_fill_manual}}\describe{
     \item{\code{values}}{a set of aesthetic values to map data values to. The values
 will be matched in order (usually alphabetical) with the limits of the
 scale, or with \code{breaks} if provided. If this is a named vector, then the
 values will be matched based on the names instead. Data values that don't
 match will be given \code{na.value}.}
-    \item{\code{aesthetics}}{Character string or vector of character strings listing the
+\item{\code{aesthetics}}{Character string or vector of character strings listing the
 name(s) of the aesthetic(s) that this scale works with. This can be useful, for
 example, to apply colour settings to the \code{colour} and \code{fill} aesthetics at the
 same time, via \code{aesthetics = c("colour", "fill")}.}
-    \item{\code{breaks}}{One of:
+\item{\code{breaks}}{One of:
 \itemize{
 \item \code{NULL} for no breaks
 \item \code{waiver()} for the default breaks (the scale limits)
@@ -32,8 +31,8 @@ same time, via \code{aesthetics = c("colour", "fill")}.}
 \item A function that takes the limits as input and returns breaks
 as output
 }}
-    \item{\code{na.value}}{The aesthetic value to use for missing (\code{NA}) values}
-  }}
+\item{\code{na.value}}{The aesthetic value to use for missing (\code{NA}) values}
+}}
 
 \item{palette_fn}{a function that returns a set of colours for a number of
 levels. Such functions can be obtained from things like \code{scales::brewer_pal(...)}}
@@ -45,7 +44,7 @@ levels. Such functions can be obtained from things like \code{scales::brewer_pal
 the RHS. which are interpreted as the parameters for a \code{dplyr::case_when}
 call. This must be protected against interpretation by wrapping it in
 \code{rlang::exprs()}. The predicates are tested against \code{avoncap::serotype_data$map}
-and could use any of  the following columns 'c("4", "6B", "9V", "14", "18C", "19F", "23F", "1", "3", "5", "6A", "7F", "19A", "22F", "33F", "8", "10A", "11A", "12F", "15B", "2", "9N", "17F", "20")','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)','c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)','c(FALSE, FALSE, FALS
+and could use any of  the following columns 'serotype', 'PCV7', 'PCV13', 'PCV15', 'PCV20', 'PPV23', 'PCV13on7', 'PCV15on13', 'PCV20on15', 'PPV23on20', 'PCV10SSI', 'PCV10GSK', 'PCV15Zhifei', 'PCV24Vaxcyte', 'PCV24Affinivax'
 a default option of the form \code{TRUE ~ "Non PCV serotype"} must exist to capture
 unmatched items.}
 }

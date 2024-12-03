@@ -130,3 +130,26 @@ NULL
 #' @name icb_surgeries
 NULL
 
+
+#' Year and week number lookup table
+#'
+#' Inference of admission date from year and week number. This is far from easy
+#' as the year and week_number data is noisy and lacking in consistency. In
+#' general we don't use this and rely instead on the admission_date but this
+#' is not always available.
+#'
+#' @usage data(year_week_number_lookup)
+#'
+#' @format
+#' A dataframe containing the following columns:
+#' - year - The given year. This can be inferred from database year and week number
+#' - week_number - The given week_number. This starts numbering from 31 up to 53 and then resets to 1 for any given year
+#' - start_of_week - the start date of the week of the study. This is used as a proxy for the admission date if it is unknown.
+#' - study_week - the number of complete weeks singe the start of the study
+#'
+#' 213 rows and 5 columns
+#'
+#' @docType data
+#' @keywords datasets
+#' @name year_week_number_lookup
+NULL

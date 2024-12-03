@@ -1,6 +1,6 @@
 Package: avoncap
 Title: AvonCap Study Analysis
-Version: 0.0.0.9028
+Version: 0.0.0.9029
 Authors@R: 
     person("Rob", "Challen", , "rob.challen@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5504-7768"))
@@ -8,7 +8,7 @@ Description: A WIP set of functions allowing data load, wrangling of the AvonCap
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2.9003
 Imports: 
     dplyr,
     lubridate,
@@ -49,3 +49,6 @@ VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
 LazyData: true
+URL: https://bristol-vaccine-centre.github.io/avoncap/,
+	https://github.com/bristol-vaccine-centre/avoncap/
+BugReports: https://github.com/bristol-vaccine-centre/avoncap/issues

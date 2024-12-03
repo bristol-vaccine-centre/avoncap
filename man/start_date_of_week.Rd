@@ -10,7 +10,7 @@ start_date_of_week(study_week)
 \item{study_week}{does accept decimals and returns the nearest whole date to the value}
 }
 \value{
-a vector of sudy_week numbers
+a vector of study_week numbers starting at zero for the first week of the study
 }
 \description{
 This is poorly named as only give the start date is the input is an integer

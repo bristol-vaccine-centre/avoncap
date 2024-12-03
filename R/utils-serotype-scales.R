@@ -65,7 +65,7 @@ scale_fill_serotype = function(..., palette_fn = scales::brewer_pal(palette="Dar
 #'   the RHS. which are interpreted as the parameters for a `dplyr::case_when`
 #'   call. This must be protected against interpretation by wrapping it in
 #'   `rlang::exprs()`. The predicates are tested against `avoncap::serotype_data$map`
-#'   and could use any of  the following columns `r paste0("'", avoncap::serotype_data$map, "'", collapse =",")`
+#'   and could use any of  the following columns `r paste0("'", colnames(avoncap::serotype_data$map), "'", collapse =", ")`
 #'   a default option of the form `TRUE ~ "Non PCV serotype"` must exist to capture
 #'   unmatched items.
 #' @export
